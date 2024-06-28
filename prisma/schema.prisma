@@ -21,6 +21,8 @@ model ClothingItem {
   sizes       Size[]
   attributes  Attribute[]
   stocks      Stock[]
+  reviews     Review[]
+  OrderItem   OrderItem[]
 }
 
 model Size {
@@ -49,4 +51,41 @@ model Stock {
   size           Size         @relation(fields: [sizeId], references: [id])
   attributeId    Int
   attribute      Attribute    @relation(fields: [attributeId], references: [id])
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  totalAmount Float
+  items       OrderItem[]
+  // Add more fields as needed (e.g., customer, shipping address, status)
+}
+
+model OrderItem {
+  id             Int          @id @default(autoincrement())
+  quantity       Int
+  price          Float
+  orderId        Int
+  order          Order        @relation(fields: [orderId], references: [id])
+  clothingItemId Int
+  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
+}
+
+model Review {
+  id             Int          @id @default(autoincrement())
+  content        String
+  rating         Int
+  createdAt      DateTime     @default(now())
+  clothingItemId Int
+  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
+}
+
+model Discount {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  description String
+  amount      Float
+  validFrom   DateTime
+  validUntil  DateTime
+  // Add more fields as needed (e.g., minimum order amount, usage limit)
 }
