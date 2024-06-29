@@ -1,4 +1,5 @@
-export async function addProducts(formdata: FormData) {
-  console.log("test");
-  console.log(formdata);
+"use server";
+
+export async function addProducts(formData: FormData) {
+  console.log(formData);
 }
