@@ -7,28 +7,22 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 
 interface Props {
   head: string[];
   rows: any;
-  deleteAction: (
-    id: number
-  ) => Promise<{ status: string; message: string } | undefined>;
+  deleteAction: (id: number) => Promise<{ status: string; message: string[] }>;
   editAction: (
     prevState: any,
     formData: FormData
-  ) => Promise<{ status: string; message: string }>;
+  ) => Promise<{ status: string; message: string[] }>;
   name: string;
 }
 
 export default function TableAbstract(props: Props) {
   const [edit, setEdit] = useState({ edit: false, id: -1 });
-  const [newName, setNewName] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [target, setTarget] = useState("");
 
   const handleEdit = (id: number) => {
     if (edit.edit === true) {
@@ -37,32 +31,29 @@ export default function TableAbstract(props: Props) {
       }
     }
     setEdit({ id, edit: true });
-    setTarget(props.name);
   };
 
   const initialState = {
     status: "",
-    message: "",
+    message: [""],
   };
   const [state, formAction] = useFormState(props.editAction, initialState);
+  const [delState, setDelState] = useState(initialState);
 
   useEffect(() => {
     if (state && state.status === "success") {
-      setNewName("");
-      setNewDescription("");
       setEdit({ edit: false, id: -1 });
-      setTarget("");
     }
-    if (state && state.status != "success" && state.status != "")
+    if (state && state.status != "success" && state.status != "") {
       console.log(state);
-  }, [state]);
+    }
 
-  useEffect(() => {
-    setNewName("");
-    setNewDescription("");
-    setTarget(props.name);
-  }, [edit]);
+    if (delState && delState.status != "success" && delState.status != "") {
+      console.log(delState);
+    }
+  }, [state, delState]);
 
+  // make sure head and rows are in same order!!
   return (
     <>
       <Table>
@@ -85,12 +76,11 @@ export default function TableAbstract(props: Props) {
                 {el.name && (
                   <TableCell>
                     <input
-                      className="text-black"
-                      onChange={(e) => setNewName(e.target.value)}
+                      className="text-black placeholder:text-black"
                       type="text"
-                      value={newName === "" ? el.name : newName}
                       form="editForm"
                       name="name"
+                      defaultValue={el.name}
                     />
                   </TableCell>
                 )}
@@ -98,16 +88,47 @@ export default function TableAbstract(props: Props) {
                   <TableCell>
                     <input
                       className="text-black"
-                      onChange={(e) => setNewDescription(e.target.value)}
                       type="text"
-                      value={
-                        newDescription === "" ? el.description : newDescription
-                      }
                       form="editForm"
                       name="description"
+                      defaultValue={el.description}
                     />
                   </TableCell>
                 )}
+                {el.categoryId && (
+                  <TableCell>
+                    <input
+                      className="text-black"
+                      type="text"
+                      form="editForm"
+                      name="categoryId"
+                      defaultValue={el.categoryId}
+                    />
+                  </TableCell>
+                )}
+                {el.basePrice && (
+                  <TableCell>
+                    <input
+                      className="text-black"
+                      type="text"
+                      form="editForm"
+                      name="basePrice"
+                      defaultValue={el.basePrice}
+                    />
+                  </TableCell>
+                )}
+                {(el.image === "" || el.image) && (
+                  <TableCell>
+                    <input
+                      className="text-black"
+                      type="text"
+                      form="editForm"
+                      name="image"
+                      defaultValue={el.image}
+                    />
+                  </TableCell>
+                )}
+
                 {el.createdAt && (
                   <TableCell>{el.createdAt.toString()}</TableCell>
                 )}
@@ -129,6 +150,11 @@ export default function TableAbstract(props: Props) {
                 {el.id && <TableCell>{el.id}</TableCell>}
                 {el.name && <TableCell>{el.name}</TableCell>}
                 {el.description && <TableCell>{el.description}</TableCell>}
+                {el.categoryId && <TableCell>{el.categoryId}</TableCell>}
+                {el.basePrice && <TableCell>{el.basePrice}</TableCell>}
+                {(el.image === "" || el.image) && (
+                  <TableCell>{el.image}</TableCell>
+                )}
                 {el.createdAt && (
                   <TableCell>{el.createdAt.toString()}</TableCell>
                 )}
@@ -138,7 +164,12 @@ export default function TableAbstract(props: Props) {
                 <TableCell>
                   <div className="flex flex-col gap-4">
                     <button onClick={() => handleEdit(el.id)}>edit</button>
-                    <button onClick={() => props.deleteAction(el.id)}>
+                    <button
+                      onClick={async () => {
+                        const del = await props.deleteAction(el.id);
+                        del && setDelState(del);
+                      }}
+                    >
                       delete
                     </button>
                   </div>

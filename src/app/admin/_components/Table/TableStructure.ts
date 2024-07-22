@@ -9,3 +9,14 @@ export const categoryHead = [
 export const colorHead = ["id", "name", "createdAt", "updatedAt"];
 
 export const sizeHead = ["id", "name", "createdAt", "updatedAt"];
+
+export const productHead = [
+  "id",
+  "name",
+  "description",
+  "categoryId",
+  "basePrice",
+  "image",
+  "createdAt",
+  "updatedAt",
+];

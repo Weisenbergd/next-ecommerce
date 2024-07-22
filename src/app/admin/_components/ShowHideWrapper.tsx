@@ -18,10 +18,6 @@ export default function ShowHideWrapper({
   const searchParams = useSearchParams();
   const search = searchParams.get("items");
 
-  useEffect(() => {
-    console.log(showChildren);
-  }, [search]);
-
   // have to render only one at a time
   // otherwise multiple form state overwrite each other
 

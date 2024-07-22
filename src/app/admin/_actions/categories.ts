@@ -18,7 +18,7 @@ export async function addCategories(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
   const result = categorySchema.safeParse(formValues);
 
-  if (!result.success) return schemaCheck();
+  if (!result.success) return schemaCheck(result);
 
   const { name, description } = result.data;
 
@@ -30,12 +30,12 @@ export async function addCategories(prevState: any, formData: FormData) {
       },
     });
     revalidatePath("/");
-    return { status: "success", message: `Added category ${name}` };
+    return { status: "success", message: [`Added category ${name}`] };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);
     }
-    return { status: "error", message: "not Prisma error" };
+    return { status: "error", message: ["not Prisma error"] };
   }
 }
 
@@ -47,21 +47,21 @@ export async function deleteCategories(id: number) {
       },
     });
     revalidatePath("/");
-    return { status: "success", message: `Deleted category ${id}` };
+    return { status: "success", message: [`Deleted category ${id}`] };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);
     }
-    return { status: "error", message: "not Prisma error" };
+    return { status: "error", message: ["not Prisma error"] };
   }
 }
 
 export async function editCategories(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
   const result = categorySchema.safeParse(formValues);
-  if (!result.success) return schemaCheck();
+  if (!result.success) return schemaCheck(result);
   const { name, description, id } = result.data;
-  if (!id) return schemaCheck();
+  if (!id) return schemaCheck(result);
   try {
     const updateCategory = await prisma.category.update({
       where: {
@@ -73,11 +73,11 @@ export async function editCategories(prevState: any, formData: FormData) {
       },
     });
     revalidatePath("/");
-    return { status: "success", message: `Updated Category ${name}` };
+    return { status: "success", message: [`Updated Category ${name}`] };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);
     }
-    return { status: "error", message: "not Prisma error" };
+    return { status: "error", message: ["not Prisma error"] };
   }
 }

@@ -1,31 +1,32 @@
 "use server";
-import { z } from "zod";
-import { errorHandler, schemaCheck } from "./_errorHandler";
+
 import prisma from "@/lib/prisma";
+import { errorHandler, schemaCheck } from "./_errorHandler";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
-const colorSchema = z.object({
+const sizeSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, { message: "Color Name is required" }),
 });
 
-export async function addColor(prevState: any, formData: FormData) {
+export async function addSize(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
-  const result = colorSchema.safeParse(formValues);
+  const result = sizeSchema.safeParse(formValues);
 
   if (!result.success) return schemaCheck(result);
 
   const { name } = result.data;
 
   try {
-    const newColor = await prisma.color.create({
+    const newColor = await prisma.size.create({
       data: {
         name: name,
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Added color ${name}`] };
+    return { status: "success", message: [`Added Size ${name}`] };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);
@@ -34,15 +35,15 @@ export async function addColor(prevState: any, formData: FormData) {
   }
 }
 
-export async function deleteColor(id: number) {
+export async function deleteSize(id: number) {
   try {
-    const dbItem = await prisma.color.delete({
+    const dbItem = await prisma.size.delete({
       where: {
         id: id,
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Deleted color ${id}`] };
+    return { status: "success", message: [`Deleted Size ${id}`] };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);
@@ -51,14 +52,14 @@ export async function deleteColor(id: number) {
   }
 }
 
-export async function editColor(prevState: any, formData: FormData) {
+export async function editSize(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
-  const result = colorSchema.safeParse(formValues);
+  const result = sizeSchema.safeParse(formValues);
   if (!result.success) return schemaCheck(result);
   const { name, id } = result.data;
   if (!id) return schemaCheck(result);
   try {
-    const updateCategory = await prisma.color.update({
+    const updateSize = await prisma.size.update({
       where: {
         id: parseInt(id),
       },
@@ -67,7 +68,7 @@ export async function editColor(prevState: any, formData: FormData) {
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Updated Color ${name}`] };
+    return { status: "success", message: [`Updated Size ${name}`] };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);

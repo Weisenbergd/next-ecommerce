@@ -17,3 +17,27 @@ export async function getColors() {
     },
   });
 }
+
+export async function getSizes() {
+  return await prisma.size.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
+}
+
+export async function getProducts() {
+  return await prisma.product.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
+}
+
+export async function getVariants() {
+  return await prisma.variant.findMany({
+    orderBy: {
+      productId: "asc",
+    },
+  });
+}
