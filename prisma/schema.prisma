@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,79 +7,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ClothingItem {
-  id          Int         @id @default(autoincrement())
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  carts     Cart[]
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
   name        String
   description String
-  price       Float
-  sizes       Size[]
-  attributes  Attribute[]
-  stocks      Stock[]
-  reviews     Review[]
-  OrderItem   OrderItem[]
+  basePrice   Float
+  image       String
+  categoryId  Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    Category  @relation(fields: [categoryId], references: [id])
+  variants    Variant[]
+}
+
+model Variant {
+  id            Int        @id @default(autoincrement())
+  productId     Int
+  sizeId        Int
+  colorId       Int
+  detailedColor String
+  price         Float
+  stock         Int
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  product       Product    @relation(fields: [productId], references: [id])
+  size          Size       @relation(fields: [sizeId], references: [id])
+  color         Color      @relation(fields: [colorId], references: [id])
+  cartItems     CartItem[]
 }
 
 model Size {
-  id             Int          @id @default(autoincrement())
-  value          String
-  clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-  stocks         Stock[]
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  variants  Variant[]
 }
 
-model Attribute {
-  id             Int          @id @default(autoincrement())
-  key            String
-  value          String
-  clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-  stocks         Stock[]
+model Color {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  variants  Variant[]
 }
 
-model Stock {
-  id             Int          @id @default(autoincrement())
-  quantity       Int
-  clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-  sizeId         Int
-  size           Size         @relation(fields: [sizeId], references: [id])
-  attributeId    Int
-  attribute      Attribute    @relation(fields: [attributeId], references: [id])
-}
-
-model Order {
-  id          Int         @id @default(autoincrement())
-  createdAt   DateTime    @default(now())
-  totalAmount Float
-  items       OrderItem[]
-  // Add more fields as needed (e.g., customer, shipping address, status)
-}
-
-model OrderItem {
-  id             Int          @id @default(autoincrement())
-  quantity       Int
-  price          Float
-  orderId        Int
-  order          Order        @relation(fields: [orderId], references: [id])
-  clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-}
-
-model Review {
-  id             Int          @id @default(autoincrement())
-  content        String
-  rating         Int
-  createdAt      DateTime     @default(now())
-  clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-}
-
-model Discount {
-  id          Int      @id @default(autoincrement())
-  code        String   @unique
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
   description String
-  amount      Float
-  validFrom   DateTime
-  validUntil  DateTime
-  // Add more fields as needed (e.g., minimum order amount, usage limit)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  variantId Int
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  variant   Variant  @relation(fields: [variantId], references: [id])
 }
