@@ -95,11 +95,11 @@ export default async function page() {
       </div>
       <div>
         <ShowHideWrapper x="Variants">
-          <FormAbstract
+          {/* <FormAbstract
             formStructure={variantForm}
             action={addVariant}
             selections={{ colorId: colors, sizeId: sizes, productId: products }}
-          />
+          /> */}
           <TableAbstract
             deleteAction={deleteProduct}
             editAction={editProduct}

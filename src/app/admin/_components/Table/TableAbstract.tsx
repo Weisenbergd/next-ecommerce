@@ -25,6 +25,7 @@ interface Row {
   image?: string;
   basePrice?: number;
   categoryId?: number;
+  [key: string]: string | undefined | number | Date;
 }
 
 interface Props {
@@ -76,8 +77,8 @@ export default function TableAbstract(props: Props) {
       <Table>
         <TableHeader>
           <TableRow>
-            {props.head.map((el: string, i) => {
-              return <TableHead key={el + i}>{el}</TableHead>;
+            {Object.keys(props.rows[0]).map((el: string, i) => {
+              return <TableHead key={i + props.name}>{el}</TableHead>;
             })}
           </TableRow>
         </TableHeader>
@@ -86,7 +87,7 @@ export default function TableAbstract(props: Props) {
             return edit.edit == true &&
               edit.id === el.id &&
               el.id === edit.id ? (
-              <TableRow key={el.id + i}>
+              <TableRow key={i + el.id + props.name}>
                 {el.id && (
                   <TableCell className="font-extrabold">{el.id}</TableCell>
                 )}
@@ -163,15 +164,35 @@ export default function TableAbstract(props: Props) {
                 </TableCell>
               </TableRow>
             ) : (
-              <TableRow key={el.id + i}>
-                {el.id && <TableCell>{el.id}</TableCell>}
+              <TableRow key={i + el.id + props.name}>
+                {Object.keys(el).map((cell, i) => {
+                  if (el[cell]) {
+                    return (
+                      <TableCell key={el.id + cell + i + props.name}>
+                        {el[cell].toString()}
+                      </TableCell>
+                    );
+                  } else return;
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </>
+  );
+}
+
+{
+  /* {el.id && <TableCell>{el.id}</TableCell>}
 
                 {el.productId && <TableCell>{el.productId}</TableCell>}
-                {el.price && <TableCell>{el.price}</TableCell>}
-                {el.stock && <TableCell>{el.stock}</TableCell>}
                 {el.name && <TableCell>{el.name}</TableCell>}
                 {el.description && <TableCell>{el.description}</TableCell>}
                 {el.categoryId && <TableCell>{el.categoryId}</TableCell>}
+                {el.detailedColor && <TableCell>{el.detailedColor}</TableCell>}
+                {el.price && <TableCell>{el.price}</TableCell>}
+                {el.stock && <TableCell>{el.stock}</TableCell>}
                 {el.basePrice && <TableCell>{el.basePrice}</TableCell>}
                 {(el.image === "" || el.image) && (
                   <TableCell>{el.image}</TableCell>
@@ -184,7 +205,6 @@ export default function TableAbstract(props: Props) {
                 )}
                 {el.colorId && <TableCell>{el.colorId}</TableCell>}
                 {el.sizeId && <TableCell>{el.sizeId}</TableCell>}
-                {el.detailedColor && <TableCell>{el.detailedColor}</TableCell>}
                 <TableCell>
                   <div className="flex flex-col gap-4">
                     <button onClick={() => handleEdit(el.id)}>edit</button>
@@ -197,12 +217,5 @@ export default function TableAbstract(props: Props) {
                       delete
                     </button>
                   </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </>
-  );
+                </TableCell> */
 }
