@@ -10,9 +10,26 @@ import {
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 
+interface Row {
+  id: number;
+  name?: string;
+  description?: string;
+  productId?: number;
+  sizeId?: number;
+  colorId?: number;
+  detailedColor?: string;
+  price?: number;
+  stock?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  image?: string;
+  basePrice?: number;
+  categoryId?: number;
+}
+
 interface Props {
   head: string[];
-  rows: any;
+  rows: Row[];
   deleteAction: (id: number) => Promise<{ status: string; message: string[] }>;
   editAction: (
     prevState: any,
@@ -59,13 +76,13 @@ export default function TableAbstract(props: Props) {
       <Table>
         <TableHeader>
           <TableRow>
-            {props.head.map((el: any, i) => {
+            {props.head.map((el: string, i) => {
               return <TableHead key={el + i}>{el}</TableHead>;
             })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {props.rows.map((el: any, i: number) => {
+          {props.rows.map((el: Row, i: number) => {
             return edit.edit == true &&
               edit.id === el.id &&
               el.id === edit.id ? (
@@ -148,6 +165,10 @@ export default function TableAbstract(props: Props) {
             ) : (
               <TableRow key={el.id + i}>
                 {el.id && <TableCell>{el.id}</TableCell>}
+
+                {el.productId && <TableCell>{el.productId}</TableCell>}
+                {el.price && <TableCell>{el.price}</TableCell>}
+                {el.stock && <TableCell>{el.stock}</TableCell>}
                 {el.name && <TableCell>{el.name}</TableCell>}
                 {el.description && <TableCell>{el.description}</TableCell>}
                 {el.categoryId && <TableCell>{el.categoryId}</TableCell>}
@@ -161,6 +182,9 @@ export default function TableAbstract(props: Props) {
                 {el.updatedAt && (
                   <TableCell>{el.updatedAt.toString()}</TableCell>
                 )}
+                {el.colorId && <TableCell>{el.colorId}</TableCell>}
+                {el.sizeId && <TableCell>{el.sizeId}</TableCell>}
+                {el.detailedColor && <TableCell>{el.detailedColor}</TableCell>}
                 <TableCell>
                   <div className="flex flex-col gap-4">
                     <button onClick={() => handleEdit(el.id)}>edit</button>

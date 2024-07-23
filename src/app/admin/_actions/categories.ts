@@ -23,7 +23,7 @@ export async function addCategories(prevState: any, formData: FormData) {
   const { name, description } = result.data;
 
   try {
-    const newCategory = await prisma.category.create({
+    await prisma.category.create({
       data: {
         name: name,
         description: description,
@@ -41,7 +41,7 @@ export async function addCategories(prevState: any, formData: FormData) {
 
 export async function deleteCategories(id: number) {
   try {
-    const dbItem = await prisma.category.delete({
+    await prisma.category.delete({
       where: {
         id: id,
       },
@@ -63,7 +63,7 @@ export async function editCategories(prevState: any, formData: FormData) {
   const { name, description, id } = result.data;
   if (!id) return schemaCheck(result);
   try {
-    const updateCategory = await prisma.category.update({
+    await prisma.category.update({
       where: {
         id: parseInt(id),
       },

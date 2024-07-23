@@ -20,3 +20,15 @@ export const productHead = [
   "createdAt",
   "updatedAt",
 ];
+
+export const variantHead = [
+  "id",
+  "productId",
+  "price",
+  "stock",
+  "createdAt",
+  "updatedAt",
+  "colorId",
+  "sizeId",
+  "detailedColor",
+];

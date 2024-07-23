@@ -20,7 +20,7 @@ export async function addSize(prevState: any, formData: FormData) {
   const { name } = result.data;
 
   try {
-    const newColor = await prisma.size.create({
+    await prisma.size.create({
       data: {
         name: name,
       },
@@ -37,7 +37,7 @@ export async function addSize(prevState: any, formData: FormData) {
 
 export async function deleteSize(id: number) {
   try {
-    const dbItem = await prisma.size.delete({
+    await prisma.size.delete({
       where: {
         id: id,
       },
@@ -59,7 +59,7 @@ export async function editSize(prevState: any, formData: FormData) {
   const { name, id } = result.data;
   if (!id) return schemaCheck(result);
   try {
-    const updateSize = await prisma.size.update({
+    await prisma.size.update({
       where: {
         id: parseInt(id),
       },

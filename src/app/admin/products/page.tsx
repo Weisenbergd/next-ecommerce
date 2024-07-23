@@ -12,6 +12,7 @@ import {
   colorForm,
   productForm,
   sizeForm,
+  variantForm,
 } from "../_components/Form/FormStructure";
 import TableAbstract from "../_components/Table/TableAbstract";
 import {
@@ -19,6 +20,7 @@ import {
   colorHead,
   productHead,
   sizeHead,
+  variantHead,
 } from "../_components/Table/TableStructure";
 import {
   addCategories,
@@ -28,9 +30,10 @@ import {
 import { addColor, deleteColor, editColor } from "../_actions/colors";
 import { addSize, deleteSize, editSize } from "../_actions/size";
 import { addProduct, deleteProduct, editProduct } from "../_actions/products";
+import { addVariant } from "../_actions/variants";
 
 export default async function page() {
-  const categories = await getCategories();
+  const categoryId = await getCategories();
   const colors = await getColors();
   const sizes = await getSizes();
   const products = await getProducts();
@@ -45,7 +48,7 @@ export default async function page() {
             deleteAction={deleteCategories}
             editAction={editCategories}
             head={categoryHead}
-            rows={categories}
+            rows={categoryId}
             name="categories"
           />
         </ShowHideWrapper>
@@ -79,7 +82,7 @@ export default async function page() {
           <FormAbstract
             formStructure={productForm}
             action={addProduct}
-            selection={categories}
+            selections={{ categoryId: categoryId }}
           />
           <TableAbstract
             deleteAction={deleteProduct}
@@ -87,6 +90,22 @@ export default async function page() {
             head={productHead}
             rows={products}
             name="products"
+          />
+        </ShowHideWrapper>
+      </div>
+      <div>
+        <ShowHideWrapper x="Variants">
+          <FormAbstract
+            formStructure={variantForm}
+            action={addVariant}
+            selections={{ colorId: colors, sizeId: sizes, productId: products }}
+          />
+          <TableAbstract
+            deleteAction={deleteProduct}
+            editAction={editProduct}
+            head={variantHead}
+            rows={variants}
+            name="variants"
           />
         </ShowHideWrapper>
       </div>

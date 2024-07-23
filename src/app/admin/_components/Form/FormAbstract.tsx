@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRef } from "react";
+import { Key, useRef } from "react";
 import { useFormState } from "react-dom";
 import SubmitButton from "../SubmitButton";
 import {
@@ -23,11 +23,15 @@ interface props {
     input: string;
     required: boolean;
   }[];
-  selection?: {
-    id: number;
-    name: string;
-    description: string;
-  }[];
+  selections?: {
+    [key: string]: {
+      id: number;
+      name: string;
+      description?: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }[];
+  };
 }
 
 export default function FormAbstract(props: props) {
@@ -61,13 +65,16 @@ export default function FormAbstract(props: props) {
                   <SelectValue placeholder={el.label} />
                 </SelectTrigger>
                 <SelectContent>
-                  {props.selection?.map((el) => {
-                    return (
-                      <SelectItem key={el.name} value={el.id.toString()}>
-                        {el.name}
-                      </SelectItem>
-                    );
-                  })}
+                  {props.selections &&
+                    Object.keys(props.selections).includes(el.name) &&
+                    props.selections[el.name] &&
+                    props.selections[el.name].map((el) => {
+                      return (
+                        <SelectItem key={el.name} value={el.id.toString()}>
+                          {el.name}
+                        </SelectItem>
+                      );
+                    })}
                 </SelectContent>
               </Select>
             )}

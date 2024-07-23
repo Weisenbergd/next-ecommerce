@@ -16,3 +16,22 @@ export const productForm = [
   { label: "Base Price", name: "basePrice", input: "number", required: true },
   { label: "Category", name: "categoryId", input: "selection", required: true },
 ];
+
+export const variantForm = [
+  {
+    label: "Product",
+    name: "productId",
+    input: "selection",
+    required: true,
+  },
+  { label: "Stock", name: "stock", input: "number", required: true },
+  { label: "Price", name: "price", input: "number", required: true },
+  { label: "Color", name: "colorId", input: "selection", required: true },
+  { label: "Size", name: "sizeId", input: "selection", required: true },
+  {
+    label: "Detailed Color",
+    name: "detailedColor",
+    input: "text",
+    required: false,
+  },
+];

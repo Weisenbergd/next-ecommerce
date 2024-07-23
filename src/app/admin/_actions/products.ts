@@ -8,10 +8,10 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const productSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(0.01, { message: "Product Name is required" }),
+  name: z.string().min(1, { message: "Product Name is required" }),
   description: z.string().min(1, { message: "description required" }),
   image: z.string(),
-  basePrice: z.string().min(1, { message: "Price must be greater than 0" }),
+  basePrice: z.string().min(0.01, { message: "Price must be greater than 0" }),
   categoryId: z.string().min(1, { message: "categoryId required" }),
 });
 
