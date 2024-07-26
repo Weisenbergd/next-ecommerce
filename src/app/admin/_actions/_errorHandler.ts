@@ -6,12 +6,12 @@ export function schemaCheck(error: unknown) {
   let errorArray: string[] = [];
   if (error instanceof ZodError) {
     for (let i = 0; i < error.issues.length; i++) {
-      errorArray.push(error.issues[i].message);
+      errorArray.push(error.issues[i].path + " " + error.issues[i].message);
     }
     return { status: "error", message: errorArray };
   }
 
-  return { status: "error", message: ["did not pass schema test"] };
+  return { status: "programming error", message: ["did not pass schema test"] };
 }
 
 export function errorHandler(error: PrismaClientKnownRequestError) {
@@ -30,5 +30,11 @@ export function errorHandler(error: PrismaClientKnownRequestError) {
       ],
     };
   }
-  return { status: "error", message: ["bad"] };
+  if (error.code === "P2025") {
+    return {
+      status: "error",
+      message: ["record to delete does not exist"],
+    };
+  }
+  return { status: "programming error", message: ["this error not handled"] };
 }

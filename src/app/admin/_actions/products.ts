@@ -11,12 +11,18 @@ const productSchema = z.object({
   name: z.string().min(1, { message: "Product Name is required" }),
   description: z.string().min(1, { message: "description required" }),
   image: z.string(),
-  basePrice: z.string().min(0.01, { message: "Price must be greater than 0" }),
+  basePrice: z.preprocess(
+    (a) => parseFloat(a as string),
+    z.number().gte(0.01, { message: "price must be at least 0.01" })
+  ),
   categoryId: z.string().min(1, { message: "categoryId required" }),
 });
 
 export async function addProduct(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
+
+  console.log("--------", formValues);
+
   const result = productSchema.safeParse(formValues);
 
   if (!result.success) return schemaCheck(result.error);
@@ -28,7 +34,7 @@ export async function addProduct(prevState: any, formData: FormData) {
       data: {
         name,
         description,
-        basePrice: parseInt(basePrice),
+        basePrice,
         image,
         categoryId: parseInt(categoryId),
       },
@@ -75,7 +81,7 @@ export async function editProduct(prevState: any, formData: FormData) {
         name,
         description,
         image,
-        basePrice: parseInt(basePrice),
+        basePrice,
         categoryId: parseInt(categoryId),
       },
     });

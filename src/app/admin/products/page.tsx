@@ -30,7 +30,7 @@ import {
 import { addColor, deleteColor, editColor } from "../_actions/colors";
 import { addSize, deleteSize, editSize } from "../_actions/size";
 import { addProduct, deleteProduct, editProduct } from "../_actions/products";
-import { addVariant } from "../_actions/variants";
+import { addVariant, deleteVariant, editVariant } from "../_actions/variants";
 
 export default async function page() {
   const categoryId = await getCategories();
@@ -38,6 +38,12 @@ export default async function page() {
   const sizes = await getSizes();
   const products = await getProducts();
   const variants = await getVariants();
+
+  console.log(variants);
+  console.log(products);
+  // for (let product of products) {
+  //   console.log(product.variants);
+  // }
 
   return (
     <div>
@@ -90,22 +96,24 @@ export default async function page() {
             head={productHead}
             rows={products}
             name="products"
+            selections={{ categoryId: categoryId }}
           />
         </ShowHideWrapper>
       </div>
       <div>
         <ShowHideWrapper x="Variants">
-          {/* <FormAbstract
+          <FormAbstract
             formStructure={variantForm}
             action={addVariant}
             selections={{ colorId: colors, sizeId: sizes, productId: products }}
-          /> */}
+          />
           <TableAbstract
-            deleteAction={deleteProduct}
-            editAction={editProduct}
+            deleteAction={deleteVariant}
+            editAction={editVariant}
             head={variantHead}
             rows={variants}
             name="variants"
+            selections={{ colorId: colors, sizeId: sizes, productId: products }}
           />
         </ShowHideWrapper>
       </div>

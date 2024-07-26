@@ -36,8 +36,13 @@ export async function getProducts() {
 
 export async function getVariants() {
   return await prisma.variant.findMany({
-    orderBy: {
-      productId: "asc",
-    },
+    orderBy: [
+      {
+        productId: "asc",
+      },
+      {
+        id: "asc",
+      },
+    ],
   });
 }
