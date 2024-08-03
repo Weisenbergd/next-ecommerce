@@ -31,6 +31,9 @@ export async function getProducts() {
     orderBy: {
       id: "asc",
     },
+    include: {
+      variants: true,
+    },
   });
 }
 

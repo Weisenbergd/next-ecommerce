@@ -14,10 +14,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 
 interface Row {
+  [key: string]:
+    | string
+    | undefined
+    | number
+    | Date
+    | {
+        id: number;
+        productId: number;
+        sizeId: number;
+        colorId: number;
+        detailedColor: string;
+        price: number;
+        stock: number;
+        createdAt: Date;
+        updatedAt: Date;
+      }[];
   id: number;
   name?: string;
   description?: string;
@@ -32,7 +48,7 @@ interface Row {
   image?: string;
   basePrice?: number;
   categoryId?: number;
-  [key: string]: string | undefined | number | Date;
+  variants?: any;
 }
 
 interface Props {
@@ -56,7 +72,15 @@ interface Props {
 }
 
 export default function TableAbstract(props: Props) {
+  const initialState = {
+    status: "",
+    message: [""],
+  };
+
   const [edit, setEdit] = useState({ edit: false, id: -1 });
+  const [showVariants, setShowVariants] = useState({ show: false, id: -1 });
+  const [state, formAction] = useFormState(props.editAction, initialState);
+  const [delState, setDelState] = useState(initialState);
 
   const handleEdit = (id: number) => {
     if (edit.edit === true) {
@@ -67,12 +91,14 @@ export default function TableAbstract(props: Props) {
     setEdit({ id, edit: true });
   };
 
-  const initialState = {
-    status: "",
-    message: [""],
+  const handleShowVariant = (id: number) => {
+    if (showVariants.show === true) {
+      if (showVariants.id === id) {
+        return setShowVariants({ id: -1, show: false });
+      }
+    }
+    setShowVariants({ id, show: true });
   };
-  const [state, formAction] = useFormState(props.editAction, initialState);
-  const [delState, setDelState] = useState(initialState);
 
   function trimDate(x: Date) {
     const date = x.getDate();
@@ -116,36 +142,41 @@ export default function TableAbstract(props: Props) {
       setEdit({ edit: false, id: -1 });
     }
     if (state && state.status != "success" && state.status != "") {
-      console.log(state);
+      console.error(state);
     }
 
     if (delState && delState.status != "success" && delState.status != "") {
-      console.log(delState);
+      console.error(delState);
     }
   }, [state, delState]);
 
   if (props.rows.length < 1) return <p>no {props.name}</p>;
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {Object.keys(props.rows[0]).map((el: string, i) => {
-            return <TableHead key={i + props.name}>{el}</TableHead>;
-          })}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {props.rows.map((row: Row, i: number) => {
-          return edit.edit == true &&
-            edit.id === row.id &&
-            row.id === edit.id ? (
-            <TableRow id="rows-editing" key={i + props.name}>
-              {Object.keys(row).map((cell) => {
-                let j = -1;
-                if (cell.endsWith("Id")) {
-                  j++;
-                  return (
+    <>
+      <Table className="">
+        <TableHeader className="">
+          <TableRow>
+            {Object.keys(props.rows[0]).map((el: string, i) => {
+              return (
+                <TableHead className="" key={i + props.name}>
+                  {el}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {props.rows.map((row: Row, i: number) => {
+            // if editing:
+
+            return edit.edit === true && edit.id === row.id ? (
+              <TableRow id="rows-editing" key={i + props.name}>
+                {Object.keys(row).map((cell) => {
+                  let j = -1;
+
+                  // if cell ends with Id (is editable and uses selection)
+                  return cell.endsWith("Id") ? (
                     <TableCell
                       className="relative"
                       key={row.id + cell + i + props.name}
@@ -204,97 +235,161 @@ export default function TableAbstract(props: Props) {
                         </Select>
                       </form>
                     </TableCell>
-                  );
-                } else {
-                  if (
-                    (row[cell] || row[cell] === "") &&
-                    !["id", "createdAt", "updatedAt"].includes(cell)
-                  ) {
-                    return (
+                  ) : // editing and editable cell doesn't end in id (doesn't use selection)
+
+                  (row[cell] || row[cell] === "") &&
+                    !["id", "createdAt", "updatedAt", "variants"].includes(
+                      cell
+                    ) ? (
+                    <TableCell key={row.id + cell + i + props.name}>
+                      <input
+                        className="text-black placeholder:text-black max-w-32"
+                        type={
+                          cell === "price" ||
+                          cell === "stock" ||
+                          cell === "basePrice"
+                            ? "number"
+                            : "text"
+                        }
+                        form="editForm"
+                        name={cell}
+                        defaultValue={row[cell].toString()}
+                        step={
+                          cell === "price" || cell === "basePrice" ? 0.01 : 1
+                        }
+                      />
+                    </TableCell>
+                  ) : (
+                    // editing and is 'id', 'createdat', 'updatedat' (non-editable)
+
+                    cell != "variants" && (
                       <TableCell key={row.id + cell + i + props.name}>
-                        <input
-                          className="text-black placeholder:text-black max-w-32"
-                          type={
-                            cell === "price" ||
-                            cell === "stock" ||
-                            cell === "basePrice"
-                              ? "number"
-                              : "text"
-                          }
-                          form="editForm"
-                          name={cell}
-                          defaultValue={row[cell].toString()}
-                          step={
-                            cell === "price" || cell === "basePrice" ? 0.01 : 1
-                          }
-                        />
-                      </TableCell>
-                    );
-                  } else
-                    return (
-                      <TableCell key={row.id + cell + i + props.name}>
-                        {typeof row[cell] === "object"
+                        {row[cell] instanceof Date
                           ? trimDate(row[cell])
                           : row[cell]!.toString()}
                       </TableCell>
-                    );
-                }
-              })}
-              <TableCell>
-                <form hidden id="editForm" action={formAction}>
-                  <input type="hidden" name="id" defaultValue={row.id} />
-                </form>
-                <div className="flex flex-col gap-4">
-                  <button onClick={() => handleEdit(row.id)}>cancel</button>
-                  <button form="editForm">submit</button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ) : (
-            <TableRow id="rows-not-editing" key={i + props.name}>
-              {Object.keys(row).map((cell, j) => {
-                if (row[cell] || row[cell] === "") {
-                  return (
-                    <TableCell
-                      key={row.id.toString() + cell + j.toString() + props.name}
-                    >
-                      {typeof row[cell] === "object"
-                        ? trimDate(row[cell])
-                        : row[cell].toString()}
-                    </TableCell>
+                    )
                   );
-                }
-              })}
-              <TableCell>
-                <div className="flex flex-col gap-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleEdit(row.id);
-                      setSelectionState({
-                        productId: props.rows[i].productId || -1,
-                        sizeId: props.rows[i].sizeId || -1,
-                        colorId: props.rows[i].colorId || -1,
-                        categoryId: props.rows[i].categoryId || -1,
-                      });
-                    }}
-                  >
-                    edit
-                  </button>
-                  <button
-                    onClick={async () => {
-                      const del = await props.deleteAction(row.id);
-                      del && setDelState(del);
-                    }}
-                  >
-                    delete
-                  </button>
-                </div>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                })}
+                <TableCell>
+                  <form hidden id="editForm" action={formAction}>
+                    <input type="hidden" name="id" defaultValue={row.id} />
+                  </form>
+                  <div className="flex flex-col gap-4">
+                    <button onClick={() => handleEdit(row.id)}>cancel</button>
+                    <button form="editForm">submit</button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              // if not editing:
+              <Fragment key={i + props.name}>
+                <TableRow
+                  className=""
+                  id="rows-not-editing"
+                  key={i + props.name}
+                >
+                  {Object.keys(row).map((cell, j) => {
+                    // return empty space if nothing (else will mess up table)
+                    // also don't return variants
+
+                    return row[cell] || row[cell] === ""
+                      ? cell != "variants" && (
+                          <TableCell
+                            className=""
+                            key={
+                              row.id.toString() +
+                              cell +
+                              j.toString() +
+                              props.name
+                            }
+                          >
+                            {row[cell] instanceof Date
+                              ? trimDate(row[cell])
+                              : row[cell].toString()}
+                          </TableCell>
+                        )
+                      : null;
+                  })}
+
+                  {row["variants"] && (
+                    <TableCell
+                      className="cursor-pointer relative"
+                      onClick={() => handleShowVariant(row.id)}
+                    >
+                      <p>{row["variants"].length}...</p>
+                      {showVariants.show && row.id === showVariants.id && (
+                        <p>x</p>
+                      )}
+                    </TableCell>
+                  )}
+                  <TableCell className="">
+                    <div className="flex flex-col gap-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleEdit(row.id);
+                          setSelectionState({
+                            productId: props.rows[i].productId || -1,
+                            sizeId: props.rows[i].sizeId || -1,
+                            colorId: props.rows[i].colorId || -1,
+                            categoryId: props.rows[i].categoryId || -1,
+                          });
+                        }}
+                      >
+                        edit
+                      </button>
+                      <button
+                        onClick={async () => {
+                          const del = await props.deleteAction(row.id);
+                          del && setDelState(del);
+                        }}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+                {showVariants.show &&
+                  row.id === showVariants.id &&
+                  row.variants.length > 0 && (
+                    <TableRow>
+                      <TableCell colSpan={99}>
+                        <h3>{row.name} variants</h3>
+                        <Table className="bg-slate-600">
+                          <TableHeader>
+                            <TableRow>
+                              {Object.keys(row.variants[0]).map((el, i) => {
+                                return <TableHead key={el + i}>{el}</TableHead>;
+                              })}
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {row.variants.map((row: any, i: number) => {
+                              return (
+                                <TableRow key={row.id}>
+                                  {Object.keys(row).map((cell, j) => {
+                                    return (
+                                      <TableCell key={cell}>
+                                        {row[cell] instanceof Date
+                                          ? trimDate(row[cell])
+                                          : row[cell].toString()}
+                                      </TableCell>
+                                    );
+                                  })}
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableCell>
+                    </TableRow>
+                  )}
+              </Fragment>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </>
   );
 }

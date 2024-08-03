@@ -12,7 +12,7 @@ export const sizeForm = [
 export const productForm = [
   { label: "Name", name: "name", input: "text", required: true },
   { label: "Description", name: "description", input: "text", required: true },
-  { label: "Image", name: "image", input: "text", required: false },
+  { label: "Image", name: "image", input: "file", required: false },
   { label: "Base Price", name: "basePrice", input: "number", required: true },
   { label: "Category", name: "categoryId", input: "selection", required: true },
 ];

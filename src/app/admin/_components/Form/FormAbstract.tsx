@@ -48,14 +48,15 @@ export default function FormAbstract(props: props) {
   }, [state]);
 
   return (
-    <form ref={ref} action={formAction}>
+    <form ref={ref} action={formAction} className="flex flex-col gap-4">
       {props.formStructure.map((el, i) => {
         return (
-          <div key={el.label + i}>
+          <div key={el.label + i} className="flex flex-col gap-2">
             {el.input != "selection" && (
               <>
                 <Label htmlFor={el.label}>{el.label}</Label>
                 <Input
+                  className="text-sm text-red-400"
                   type={el.input}
                   name={el.name}
                   id={el.label}

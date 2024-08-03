@@ -39,12 +39,6 @@ export default async function page() {
   const products = await getProducts();
   const variants = await getVariants();
 
-  console.log(variants);
-  console.log(products);
-  // for (let product of products) {
-  //   console.log(product.variants);
-  // }
-
   return (
     <div>
       <div>
