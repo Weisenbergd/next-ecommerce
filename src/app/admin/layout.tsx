@@ -15,7 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
           })}
         </div>
       </nav>
-      <main className="xl:w-[1200px] w-screen text-2xl lg:text-4xl px-4 md:px-10 lg:w-[1200px] py-24 ml-auto mr-auto bg-background">
+      <main className="xl:w-[1300px] w-screen text-2xl lg:text-4xl px-4 md:px-10 lg:w-[1000px] py-24 ml-auto mr-auto bg-background">
         {children}
       </main>
     </>
@@ -25,6 +25,7 @@ const Layout = ({ children }: LayoutProps) => {
 const navItem = [
   { name: "Dashboard", link: "/admin" },
   { name: "Products", link: "/admin/products" },
+  { name: "Test", link: "/admin/test" },
   { name: "Orders", link: "/admin/orders" },
   { name: "Stock", link: "/admin/stock" },
 ];

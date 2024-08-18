@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Fragment, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
+import Image from "next/image";
 
 interface Row {
   [key: string]:
@@ -304,9 +305,21 @@ export default function TableAbstract(props: Props) {
                               props.name
                             }
                           >
-                            {row[cell] instanceof Date
-                              ? trimDate(row[cell])
-                              : row[cell].toString()}
+                            {row[cell] instanceof Date ? (
+                              trimDate(row[cell])
+                            ) : cell === "image" ? (
+                              // <a target="_blank" href={row[cell].toString()}>
+                              //   {row[cell].toString()}
+                              // </a>
+                              <Image
+                                src={row[cell].toString()}
+                                alt="product image"
+                                width={400}
+                                height={400}
+                              />
+                            ) : (
+                              row[cell].toString()
+                            )}
                           </TableCell>
                         )
                       : null;

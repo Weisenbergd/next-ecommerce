@@ -56,7 +56,7 @@ export default function FormAbstract(props: props) {
               <>
                 <Label htmlFor={el.label}>{el.label}</Label>
                 <Input
-                  className="text-sm text-red-400"
+                  className="text-sm"
                   type={el.input}
                   name={el.name}
                   id={el.label}
