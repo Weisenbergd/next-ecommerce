@@ -6,8 +6,6 @@ interface Props {
 }
 
 export default function page(props: Props) {
-  console.log(props);
-
   return (
     <div>
       <h1>{props.params.id}</h1>

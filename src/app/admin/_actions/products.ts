@@ -46,7 +46,7 @@ export async function addProduct(prevState: any, formData: FormData) {
 
   const fbResult = await postFireBase(image);
   if (fbResult!.error != null)
-    return { satus: "error", message: [fbResult?.error] };
+    return { status: "error", message: [fbResult!.error] };
   if (fbResult!.url == null)
     return { status: "error", message: ["something went wrong saving pic"] };
 

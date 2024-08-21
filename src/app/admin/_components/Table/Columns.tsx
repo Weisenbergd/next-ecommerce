@@ -11,11 +11,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { formatDateTime } from "@/lib/functions";
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
+import { formatDateTime, getPath } from "@/lib/functions";
+import { deleteProduct } from "../../_actions/products";
+import Link from "next/link";
 
 export const productHead = [
   "id",
@@ -87,7 +85,7 @@ export const columns: ColumnDef<Product>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="flex items-center text-left text-sm" // Center text vertically and align left
       >
-        Category ID
+        Category
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -100,7 +98,7 @@ export const columns: ColumnDef<Product>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="flex items-center text-left text-sm" // Center text vertically and align left
       >
-        Base Price
+        Price
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -133,7 +131,7 @@ export const columns: ColumnDef<Product>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="flex items-center text-left text-sm"
       >
-        Created At
+        Created
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -157,7 +155,7 @@ export const columns: ColumnDef<Product>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="flex items-center text-left text-sm"
       >
-        Updated At
+        Updated
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -173,88 +171,36 @@ export const columns: ColumnDef<Product>[] = [
       );
     },
   },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const payment = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem>
+              <Link href={`../product/${row.original.id}`}>View in store</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`${getPath()}/${row.original.id}`}>Edit product</Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => {}}>Deactivate</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => deleteProduct(row.original.id)}>
+              Delete Item
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
 ];
-
-// export const columns: ColumnDef<Payment>[] = [
-//   {
-//     id: "select",
-//     header: ({ table }) => (
-//       <Checkbox
-//         checked={
-//           table.getIsAllPageRowsSelected() ||
-//           (table.getIsSomePageRowsSelected() && "indeterminate")
-//         }
-//         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-//         aria-label="Select all"
-//       />
-//     ),
-//     cell: ({ row }) => (
-//       <Checkbox
-//         checked={row.getIsSelected()}
-//         onCheckedChange={(value) => row.toggleSelected(!!value)}
-//         aria-label="Select row"
-//       />
-//     ),
-//     enableSorting: false,
-//     enableHiding: false,
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Status",
-//   },
-// {
-//   accessorKey: "email",
-//   header: ({ column }) => {
-//     return (
-//       <Button
-//         variant="ghost"
-//         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-//       >
-//         Email
-//         <ArrowUpDown className="ml-2 h-4 w-4" />
-//       </Button>
-//     );
-//   },
-// },
-//   {
-//     accessorKey: "amount",
-//     header: () => <div className="text-right">Amount</div>,
-//     cell: ({ row }) => {
-//       const amount = parseFloat(row.getValue("amount"));
-//       const formatted = new Intl.NumberFormat("en-US", {
-//         style: "currency",
-//         currency: "USD",
-//       }).format(amount);
-
-//       return <div className="text-right font-medium">{formatted}</div>;
-//     },
-//   },
-//   {
-//     id: "actions",
-//     cell: ({ row }) => {
-//       const payment = row.original;
-
-//       return (
-//         <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button variant="ghost" className="h-8 w-8 p-0">
-//               <span className="sr-only">Open menu</span>
-//               <MoreHorizontal className="h-4 w-4" />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="end">
-//             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-//             <DropdownMenuItem
-//               onClick={() => navigator.clipboard.writeText(payment.id)}
-//             >
-//               Copy payment ID
-//             </DropdownMenuItem>
-//             <DropdownMenuSeparator />
-//             <DropdownMenuItem>View customer</DropdownMenuItem>
-//             <DropdownMenuItem>View payment details</DropdownMenuItem>
-//           </DropdownMenuContent>
-//         </DropdownMenu>
-//       );
-//     },
-//   },
-// ];

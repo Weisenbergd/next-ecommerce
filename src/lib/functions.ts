@@ -1,3 +1,5 @@
+import { usePathname } from "next/navigation";
+
 export const formatDateTime = (date: Date) => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -10,4 +12,9 @@ export const formatDateTime = (date: Date) => {
   const formattedTime = `${hours}:${minutes}:${seconds}`;
 
   return { formattedDate, formattedTime };
+};
+
+export const getPath = () => {
+  const path = usePathname();
+  return path;
 };

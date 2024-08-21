@@ -22,8 +22,9 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { Product } from "./Columns.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Product } from "./Columns";
+import { getPath } from "@/lib/functions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -61,40 +62,14 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        {/* <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+        <Input
+          placeholder="Filter names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
       </div>
       <div className="flex-1 text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -105,10 +80,10 @@ export function DataTable<TData, TValue>({
           <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {/* Add an empty header for the new column */}
-                <TableHead className=""></TableHead>
+                {/* Add an empty header for link cell */}
+                <TableHead className="absolute"></TableHead>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -128,14 +103,13 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                   className="relative group"
                 >
-                  {/* Add a cell with a Next.js Link for every row */}
-                  <TableCell className="absolute w-full h-full opacity-10">
+                  <TableCell className="absolute w-[92%] h-full z-10">
                     <Link
-                      href={`./product/${(row.original as Product).id}`}
+                      // href={`./${(row.original as Product).id}`}
+                      href={`${getPath()}/${(row.original as Product).id}`}
                       className="absolute inset-0 h-full w-full"
                       aria-label={`Go to product ${row.id}`}
                     >
-                      {/* Empty span for clickable area */}
                       <span className="absolute h-full w-full"></span>
                     </Link>
                   </TableCell>
