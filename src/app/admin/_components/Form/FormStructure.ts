@@ -15,6 +15,41 @@ export const productForm = [
   { label: "Image", name: "image", input: "file", required: false },
   { label: "Base Price", name: "basePrice", input: "number", required: true },
   { label: "Category", name: "categoryId", input: "selection", required: true },
+  {
+    label: "Stock",
+    name: "stock",
+    input: "number",
+    required: true,
+    variant: true,
+  },
+  {
+    label: "Price",
+    name: "price",
+    input: "number",
+    required: true,
+    variant: true,
+  },
+  {
+    label: "Color",
+    name: "colorId",
+    input: "selection",
+    required: false,
+    variant: true,
+  },
+  {
+    label: "Size",
+    name: "sizeId",
+    input: "selection",
+    required: false,
+    variant: true,
+  },
+  {
+    label: "Detailed Color",
+    name: "detailedColor",
+    input: "text",
+    required: false,
+    variant: true,
+  },
 ];
 
 export const variantForm = [
@@ -23,20 +58,5 @@ export const variantForm = [
     name: "productId",
     input: "selection",
     required: true,
-  },
-  {
-    label: "Stock",
-    name: "stock",
-    input: "number",
-    required: true,
-  },
-  { label: "Price", name: "price", input: "number", required: true },
-  { label: "Color", name: "colorId", input: "selection", required: true },
-  { label: "Size", name: "sizeId", input: "selection", required: true },
-  {
-    label: "Detailed Color",
-    name: "detailedColor",
-    input: "text",
-    required: false,
   },
 ];

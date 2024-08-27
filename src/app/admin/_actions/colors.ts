@@ -11,6 +11,8 @@ const colorSchema = z.object({
 });
 
 export async function addColor(prevState: any, formData: FormData) {
+  console.log("test");
+
   const formValues = Object.fromEntries(formData.entries());
   const result = colorSchema.safeParse(formValues);
 

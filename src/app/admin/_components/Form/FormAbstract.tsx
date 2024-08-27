@@ -1,23 +1,25 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Key, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButton from "../SubmitButton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { addCategories } from "../../_actions/categories";
-import Modal from "../Modal/Modal";
-import { categoryForm } from "./FormStructure";
-import ModalForm from "./ModalForm";
 
-interface props {
+import Modal from "../Modal/Modal";
+import ModalForm from "./ModalForm";
+import LabelInput from "./LabelInput";
+import LabelSelection from "./LabelSelection";
+import { Button } from "@/components/ui/button";
+import { variantForm } from "./FormStructure";
+
+export interface Selection {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+[];
+
+interface Props {
   action: (
     prevState: any,
     formData: FormData
@@ -27,21 +29,31 @@ interface props {
     name: string;
     input: string;
     required: boolean;
+    variant?: boolean;
   }[];
-  selections?: {
-    [key: string]: {
-      id: number;
-      name: string;
-      description?: string;
-      createdAt: Date;
-      updatedAt: Date;
-    }[];
-  };
+  category: {
+    id: number;
+    name: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
+  size: {
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
+  color: {
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
   name: string;
-  light: boolean;
 }
 
-export default function FormAbstract(props: props) {
+export default function FormAbstract(props: Props) {
   const initialState = {
     status: "",
     message: [""],
@@ -51,9 +63,7 @@ export default function FormAbstract(props: props) {
 
   const ref = useRef<HTMLFormElement>(null);
 
-  const [category, setCategory] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [hasVariants, setHasVariants] = useState(false);
 
   useEffect(() => {
     if (state && state.status === "error") {
@@ -64,11 +74,26 @@ export default function FormAbstract(props: props) {
     }
   }, [state]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectionTarget, setSelectionTarget] = useState("");
+
+  function pickSelection(label: string) {
+    if (label === "Category") return props.category;
+    if (label === "Color") return props.color;
+    if (label === "Size") return props.size;
+    else throw Error("programmer error -- problem with selection passing");
+  }
+
   return (
     <>
       {isModalOpen && (
         <Modal isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
-          <ModalForm closeModal={() => setIsModalOpen(false)} />
+          <ModalForm
+            selectionTarget={selectionTarget}
+            setSelectionTarget={setSelectionTarget}
+            closeModal={() => setIsModalOpen(false)}
+          />
         </Modal>
       )}
       <h2 className="capitalize mb-6">Add {props.name}</h2>
@@ -76,83 +101,57 @@ export default function FormAbstract(props: props) {
         {props.formStructure.map((el, i) => {
           return (
             <div key={el.label + i} className="flex flex-col gap-2">
-              {el.input != "selection" && (
-                <>
-                  <Label
-                    className="dark:text-primary text-primary-foreground"
-                    htmlFor={el.label}
-                  >
-                    {el.label}
-                  </Label>
-                  <Input
-                    className="text-sm dark:text-primary text-primary-foreground"
-                    type={el.input}
-                    name={el.name}
-                    id={el.label}
-                    required={el.required}
-                    step={el.name === "price" ? 0.01 : 1}
-                  ></Input>
-                </>
+              {el.input !== "selection" && !el.variant && (
+                <LabelInput el={el} />
               )}
-              {el.input === "selection" && (
-                <>
-                  <Label>{el.label}</Label>
-                  <Select
-                    open={isDropdownOpen} // Assuming `open` controls the visibility
-                    onOpenChange={setIsDropdownOpen} // Hook to change visibility
-                    name={el.name}
-                  >
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={
-                          props.selections &&
-                          props.selections[el.name] &&
-                          props.selections[el.name].length > 0
-                            ? el.label
-                            : `No Items! Please add an item to the ${el.label} table for selection!`
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {props.selections &&
-                        Object.keys(props.selections).includes(el.name) &&
-                        props.selections[el.name] &&
-                        props.selections[el.name].map((el, j) => {
-                          return (
-                            <SelectItem
-                              key={el.name + j}
-                              value={el.id.toString()}
-                            >
-                              {el.name}
-                            </SelectItem>
-                          );
-                        })}
-                      <Button
-                        onClick={(e) => {
-                          setIsModalOpen(true);
-                          setIsDropdownOpen(false);
-                        }}
-                        variant="ghost"
-                        size="sm"
-                      >
-                        Add new category
-                      </Button>
-                    </SelectContent>
-                  </Select>
-                </>
+              {el.input === "selection" && !el.variant && (
+                <LabelSelection
+                  setIsModalOpen={setIsModalOpen}
+                  el={el}
+                  selection={pickSelection(el.label)}
+                  setSelectionTarget={setSelectionTarget}
+                />
               )}
             </div>
           );
         })}
-
-        {props.name === "product" && (
+        <>
+          <h2>Will this product have different variants?</h2>
           <div>
-            <p>test</p>
+            <Button type="button" onClick={() => setHasVariants(true)}>
+              Yes
+            </Button>
+            <Button type="button" onClick={() => setHasVariants(false)}>
+              No
+            </Button>
           </div>
-        )}
-
+          {!hasVariants &&
+            props.formStructure.map((el, i) => {
+              return (
+                <div key={el.label + i} className="flex flex-col gap-2">
+                  {el.input != "selection" && el.variant && (
+                    <LabelInput el={el} />
+                  )}
+                  {el.input === "selection" && el.variant && (
+                    <LabelSelection
+                      setIsModalOpen={setIsModalOpen}
+                      el={el}
+                      selection={pickSelection(el.label)}
+                      setSelectionTarget={setSelectionTarget}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          {hasVariants && (
+            <div>
+              <p>variants</p>
+            </div>
+          )}
+        </>
         <SubmitButton />
       </form>
+      {/* <form name="variantForm" id="variantForm" hidden></form> */}
     </>
   );
 }
