@@ -1,5 +1,12 @@
 import { storage } from "@/lib/firebase";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  list,
+  listAll,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 
 export async function postFireBase(image: File) {
   if (!image) return null;
@@ -20,4 +27,10 @@ export async function postFireBase(image: File) {
     console.error("_postFireBase error, Error uploading image:", error);
     return { url: null, error: (error as Error).message };
   }
+}
+export async function getFireBase() {
+  // console.log("test");
+  // const storage = getStorage();
+  // const storageRef = ref(storage, "images");
+  // console.log(storageRef);
 }

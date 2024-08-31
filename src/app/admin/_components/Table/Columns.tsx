@@ -32,9 +32,11 @@ export type Product = {
   description: string;
   categoryId: number;
   basePrice: number;
-  image: string;
   createdAt: Date;
   updatedAt: Date;
+  Image: {
+    url: string;
+  }[];
 };
 
 export const columns: ColumnDef<Product>[] = [
@@ -115,13 +117,13 @@ export const columns: ColumnDef<Product>[] = [
     header: () => (
       <div className="flex items-center px-4 text-left text-sm">Image</div>
     ),
-    cell: ({ row }) => (
-      <img
-        src={row.getValue<string>("image")}
-        alt="Product"
-        className="w-16 h-16 object-cover"
-      />
-    ),
+    cell: ({ row }) => {
+      const imageUrl = row.original.Image?.[0]?.url || "fallback-image-url"; // Replace "fallback-image-url" with a default image URL if needed
+
+      return (
+        <img src={imageUrl} alt="Product" className="w-16 h-16 object-cover" />
+      );
+    },
   },
   {
     accessorKey: "createdAt",

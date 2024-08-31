@@ -43,13 +43,13 @@ export const productForm = [
     required: false,
     variant: true,
   },
-  {
-    label: "Detailed Color",
-    name: "detailedColor",
-    input: "text",
-    required: false,
-    variant: true,
-  },
+  // {
+  //   label: "Detailed Color",
+  //   name: "detailedColor",
+  //   input: "text",
+  //   required: false,
+  //   variant: true,
+  // },
 ];
 
 export const variantForm = [

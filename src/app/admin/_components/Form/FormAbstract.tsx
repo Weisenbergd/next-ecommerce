@@ -9,6 +9,9 @@ import LabelInput from "./LabelInput";
 import LabelSelection from "./LabelSelection";
 import { Button } from "@/components/ui/button";
 import { variantForm } from "./FormStructure";
+import { addProduct } from "../../_actions/products";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export interface Selection {
   id: number;
@@ -23,7 +26,7 @@ interface Props {
   action: (
     prevState: any,
     formData: FormData
-  ) => Promise<{ status: string; message: string[] }>;
+  ) => Promise<{ status: string; message: (string | number)[] }>;
   formStructure: {
     label: string;
     name: string;
@@ -58,25 +61,26 @@ export default function FormAbstract(props: Props) {
     status: "",
     message: [""],
   };
-
-  const [state, formAction] = useFormState(props.action, initialState);
+  const [state, formAction] = useFormState(addProduct, initialState);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasVariants, setHasVariants] = useState(0);
+  const [selectionTarget, setSelectionTarget] = useState("");
 
   const ref = useRef<HTMLFormElement>(null);
-
-  const [hasVariants, setHasVariants] = useState(false);
 
   useEffect(() => {
     if (state && state.status === "error") {
       console.log(state);
     }
     if (state && state.status === "success") {
+      if (ref.current) ref.current.reset();
+      setSelectionTarget("");
       console.log(state);
+      if (state.message.length > 1) {
+        redirect(`./${state.message[1]}`);
+      }
     }
   }, [state]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [selectionTarget, setSelectionTarget] = useState("");
 
   function pickSelection(label: string) {
     if (label === "Category") return props.category;
@@ -97,7 +101,13 @@ export default function FormAbstract(props: Props) {
         </Modal>
       )}
       <h2 className="capitalize mb-6">Add {props.name}</h2>
-      <form ref={ref} action={formAction} className="flex flex-col gap-4">
+      <form
+        ref={ref}
+        id="productForm"
+        action={formAction}
+        className="flex flex-col gap-4"
+      >
+        <input type="hidden" name="variant" value={hasVariants} />
         {props.formStructure.map((el, i) => {
           return (
             <div key={el.label + i} className="flex flex-col gap-2">
@@ -118,10 +128,10 @@ export default function FormAbstract(props: Props) {
         <>
           <h2>Will this product have different variants?</h2>
           <div>
-            <Button type="button" onClick={() => setHasVariants(true)}>
+            <Button type="button" onClick={() => setHasVariants(1)}>
               Yes
             </Button>
-            <Button type="button" onClick={() => setHasVariants(false)}>
+            <Button type="button" onClick={() => setHasVariants(0)}>
               No
             </Button>
           </div>

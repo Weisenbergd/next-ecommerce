@@ -19,7 +19,7 @@ const variantSchema = z.object({
   ),
   colorId: z.string().min(1, { message: "color required" }),
   sizeId: z.string().min(1, { message: "size required" }),
-  detailedColor: z.string(),
+  // detailedColor: z.string(),
 });
 
 export async function addVariant(prevState: any, formData: FormData) {
@@ -29,8 +29,7 @@ export async function addVariant(prevState: any, formData: FormData) {
 
   if (!result.success) return schemaCheck(result.error);
 
-  const { productId, price, stock, colorId, sizeId, detailedColor } =
-    result.data;
+  const { productId, price, stock, colorId, sizeId } = result.data;
 
   try {
     await prisma.variant.create({
@@ -40,7 +39,6 @@ export async function addVariant(prevState: any, formData: FormData) {
         stock: stock,
         colorId: parseInt(colorId),
         sizeId: parseInt(sizeId),
-        detailedColor,
       },
     });
     revalidatePath("/");
@@ -76,8 +74,7 @@ export async function editVariant(prevState: any, formData: FormData) {
   const result = variantSchema.safeParse(formValues);
   console.log(result);
   if (!result.success) return schemaCheck(result.error);
-  const { id, productId, price, stock, colorId, sizeId, detailedColor } =
-    result.data;
+  const { id, productId, price, stock, colorId, sizeId } = result.data;
 
   if (!id) return schemaCheck(result.error);
   try {
@@ -92,7 +89,6 @@ export async function editVariant(prevState: any, formData: FormData) {
         stock,
         colorId: parseInt(colorId),
         sizeId: parseInt(sizeId),
-        detailedColor,
       },
     });
     revalidatePath("/");

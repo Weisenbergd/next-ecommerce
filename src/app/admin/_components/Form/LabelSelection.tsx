@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
 import { Selection } from "./FormAbstract";
@@ -47,6 +47,21 @@ export default function LabelSelection({
       [name]: !prev[name],
     }));
   };
+
+  const ref = useRef<HTMLSelectElement>(null);
+
+  // let name = "";
+  // useEffect(() => {
+  //   if (success && success == "success") {
+  //     name = "test";
+  //   }
+  // });
+
+  const [state, setState] = useState({ category: "", color: "", size: "" });
+
+  // function handleState(target: string, e) {
+  //   console.log(el);
+  // }
 
   return (
     <>

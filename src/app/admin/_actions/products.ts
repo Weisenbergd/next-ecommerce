@@ -18,6 +18,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const productSchema = z.object({
+  variant: z.preprocess((a) => parseInt(a as string), z.number().gte(0).lte(1)),
   id: z.string().optional(),
   name: z.string().min(1, { message: "Product Name is required" }),
   description: z.string().min(1, { message: "description required" }),
@@ -33,41 +34,90 @@ const productSchema = z.object({
     z.number().gte(0.01, { message: "price must be at least 0.01" })
   ),
   categoryId: z.string().min(1, { message: "categoryId required" }),
+  stock: z.preprocess(
+    (a) => parseFloat(a as string),
+    z.number().gte(0, { message: "Stock must be at least 0" })
+  ),
+  price: z.preprocess(
+    (a) => parseFloat(a as string),
+    z.number().gte(0.01, { message: "price must be at least 0.01" })
+  ),
+  colorId: z.string().min(1, { message: "colorId required" }),
+  sizeId: z.string().min(1, { message: "sizeId required" }),
 });
 
 export async function addProduct(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
 
+  if (!formValues.variant) productSchema.safeParse(formValues);
+  if (formValues.variant) productSchema.safeParse(formValues);
   const result = productSchema.safeParse(formValues);
 
   if (!result.success) return schemaCheck(result.error);
+  let productId: number = -1;
 
-  const { name, description, image, basePrice, categoryId } = result.data;
+  if (result.data.variant == 0) {
+    const {
+      name,
+      description,
+      image,
+      basePrice,
+      categoryId,
+      stock,
+      price,
+      colorId,
+      sizeId,
+    } = result.data;
 
-  const fbResult = await postFireBase(image);
-  if (fbResult!.error != null)
-    return { status: "error", message: [fbResult!.error] };
-  if (fbResult!.url == null)
-    return { status: "error", message: ["something went wrong saving pic"] };
+    const fbResult = await postFireBase(image);
+    if (fbResult!.error != null)
+      return { status: "error", message: [fbResult!.error] };
+    if (fbResult!.url == null)
+      return { status: "error", message: ["something went wrong saving pic"] };
 
-  try {
-    await prisma.product.create({
-      data: {
-        name,
-        description,
-        basePrice,
-        image: fbResult!.url,
-        categoryId: parseInt(categoryId),
-      },
-    });
-    revalidatePath("/");
-    return { status: "success", message: [`Added Product ${name}`] };
-  } catch (error: unknown) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      return errorHandler(error);
+    try {
+      const newProduct = await prisma.product.create({
+        data: {
+          name,
+          description,
+          basePrice,
+          categoryId: parseInt(categoryId),
+        },
+      });
+      productId = newProduct.id;
+
+      await prisma.image.create({
+        data: {
+          url: fbResult!.url,
+          isUsed: true,
+          productId,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        return errorHandler(error);
+      }
     }
-    return { status: "error", message: ["not Prisma error"] };
+
+    try {
+      await prisma.variant.create({
+        data: {
+          productId,
+          price: price,
+          stock: stock,
+          colorId: parseInt(colorId),
+          sizeId: parseInt(sizeId),
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        return errorHandler(error);
+      }
+    }
   }
+  revalidatePath("/");
+
+  return { status: "success", message: [`Added New Product!`, productId] };
 }
 
 export async function deleteProduct(id: number) {
@@ -101,7 +151,6 @@ export async function editProduct(prevState: any, formData: FormData) {
       data: {
         name,
         description,
-        image,
         basePrice,
         categoryId: parseInt(categoryId),
       },

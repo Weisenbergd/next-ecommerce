@@ -28,6 +28,7 @@ const navItem = [
   { name: "Test", link: "/admin/test" },
   { name: "Orders", link: "/admin/orders" },
   { name: "Stock", link: "/admin/stock" },
+  { name: "Database", link: "/admin/database" },
 ];
 
 export default Layout;

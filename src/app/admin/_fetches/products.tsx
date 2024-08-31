@@ -31,6 +31,13 @@ export async function getProducts() {
     orderBy: {
       id: "asc",
     },
+    include: {
+      Image: {
+        select: {
+          url: true,
+        },
+      },
+    },
   });
 }
 
