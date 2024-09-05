@@ -14,6 +14,10 @@ import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { formatDateTime, getPath } from "@/lib/functions";
 import { deleteProduct } from "../../_actions/products";
 import Link from "next/link";
+import Image from "next/image";
+import { revalidatePath } from "next/cache";
+import { useEffect } from "react";
+import revalidate from "../../_actions/revalidates";
 
 export const productHead = [
   "id",
@@ -34,9 +38,10 @@ export type Product = {
   basePrice: number;
   createdAt: Date;
   updatedAt: Date;
-  Image: {
+  image: {
     url: string;
   }[];
+  hasVariants: boolean;
 };
 
 export const columns: ColumnDef<Product>[] = [
@@ -118,11 +123,25 @@ export const columns: ColumnDef<Product>[] = [
       <div className="flex items-center px-4 text-left text-sm">Image</div>
     ),
     cell: ({ row }) => {
-      const imageUrl = row.original.Image?.[0]?.url || "fallback-image-url"; // Replace "fallback-image-url" with a default image URL if needed
+      const imageUrl = row.original.image?.[0]?.url || "fallback-image-url"; // Replace "fallback-image-url" with a default image URL if needed
 
-      return (
-        <img src={imageUrl} alt="Product" className="w-16 h-16 object-cover" />
-      );
+      return <Image src={imageUrl} alt="Product" width={70} height={70} />;
+    },
+  },
+  {
+    accessorKey: "hasvariants",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="flex items-center text-left text-sm" // Center text vertically and align left
+      >
+        Variants?
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      return row.original.hasVariants.toString();
     },
   },
   {
@@ -197,7 +216,12 @@ export const columns: ColumnDef<Product>[] = [
 
             <DropdownMenuItem onClick={() => {}}>Deactivate</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => deleteProduct(row.original.id)}>
+            <DropdownMenuItem
+              onClick={async () => {
+                await deleteProduct(row.original.id);
+                revalidate();
+              }}
+            >
               Delete Item
             </DropdownMenuItem>
           </DropdownMenuContent>

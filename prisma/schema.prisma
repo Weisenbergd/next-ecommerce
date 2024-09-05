@@ -27,7 +27,8 @@ model Product {
   categoryId  Int
   category    Category  @relation(fields: [categoryId], references: [id])
   variants    Variant[]
-  Image       Image[]
+  image       Image[]
+  hasVariants Boolean   @default(false)
 }
 
 model Variant {
@@ -41,9 +42,9 @@ model Variant {
   sizeId    Int
   cartItems CartItem[]
   color     Color      @relation(fields: [colorId], references: [id])
-  product   Product    @relation(fields: [productId], references: [id])
+  product   Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
   size      Size       @relation(fields: [sizeId], references: [id])
-  Image     Image[]
+  image     Image[]
 }
 
 model Image {
@@ -54,8 +55,8 @@ model Image {
   variantId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  product   Product? @relation(fields: [productId], references: [id])
-  variant   Variant? @relation(fields: [variantId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
 }
 
 model Size {

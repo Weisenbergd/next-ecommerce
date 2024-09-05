@@ -14,6 +14,8 @@ import { productForm, variantForm } from "../_components/Form/FormStructure.ts";
 import { addVariant } from "../_actions/variants.ts";
 import ShowHideWrapper from "../_components/ShowHideWrapper.tsx";
 import prisma from "@/lib/prisma.ts";
+import Link from "next/link";
+import { revalidatePath } from "next/cache";
 
 export default async function page() {
   // await prisma.variant.deleteMany({});
@@ -21,6 +23,8 @@ export default async function page() {
   // await prisma.color.deleteMany({});
   // await prisma.category.deleteMany({});
   // await prisma.size.deleteMany({});
+  // await prisma.image.deleteMany({});
+  // revalidatePath("/");
 
   const products: Product[] = await getProducts();
 
@@ -28,6 +32,7 @@ export default async function page() {
 
   return (
     <div>
+      <Link href="./products/add-product">Add Product &gt;</Link>
       <DataTable columns={columns} data={products} />
     </div>
   );

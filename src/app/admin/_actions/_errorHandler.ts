@@ -33,7 +33,7 @@ export function errorHandler(error: PrismaClientKnownRequestError) {
   if (error.code === "P2025") {
     return {
       status: "error",
-      message: ["record to delete does not exist"],
+      message: ["record does not exist"],
     };
   }
   return { status: "programming error", message: ["this error not handled"] };

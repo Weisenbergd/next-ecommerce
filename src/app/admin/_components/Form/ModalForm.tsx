@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { addColor } from "../../_actions/colors";
 import { addSize } from "../../_actions/size";
-import { getCategories, getColors } from "../../_fetches/products";
 
 interface Props {
   closeModal: () => void;
@@ -52,7 +51,7 @@ const ModalForm = ({
   useEffect(() => {
     if (selectionTarget === "Size") state = stateSize;
     if (selectionTarget === "Color") state = stateColor;
-    if (selectionTarget === "Cateogyr") state = stateCategory;
+    if (selectionTarget === "Category") state = stateCategory;
 
     if (state && state.status === "error") {
       console.log(state);

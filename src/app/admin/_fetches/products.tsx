@@ -32,7 +32,7 @@ export async function getProducts() {
       id: "asc",
     },
     include: {
-      Image: {
+      image: {
         select: {
           url: true,
         },
@@ -41,15 +41,50 @@ export async function getProducts() {
   });
 }
 
-export async function getVariants() {
+export async function getSingleProduct(id: number) {
+  return await prisma.product.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      image: {
+        select: {
+          url: true,
+        },
+      },
+      variants: {
+        select: {
+          id: true,
+          stock: true,
+          price: true,
+          color: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          size: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getVariants(id: number) {
   return await prisma.variant.findMany({
-    orderBy: [
-      {
-        productId: "asc",
-      },
-      {
-        id: "asc",
-      },
-    ],
+    where: {
+      productId: id,
+    },
   });
 }

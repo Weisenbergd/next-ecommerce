@@ -8,7 +8,7 @@ export const formatDateTime = (date: Date) => {
   const minutes = date.getMinutes().toString().padStart(2, "0");
   const seconds = date.getSeconds().toString().padStart(2, "0");
 
-  const formattedDate = `${day}/${month}/${year}`;
+  const formattedDate = `${month}/${day}/${year}`;
   const formattedTime = `${hours}:${minutes}:${seconds}`;
 
   return { formattedDate, formattedTime };

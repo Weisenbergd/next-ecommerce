@@ -1,3 +1,10 @@
+import { formatDateTime } from "@/lib/functions";
+import { getCategories, getSingleProduct } from "../../_fetches/products";
+import ProductView from "./ProductView";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import Link from "next/link";
+
 interface Props {
   params: {
     id: string;
@@ -5,10 +12,20 @@ interface Props {
   setSearchParams: () => {};
 }
 
-export default function page(props: Props) {
+export default async function page(props: Props) {
+  let product;
+  try {
+    product = await getSingleProduct(parseInt(props.params.id));
+  } catch (error) {
+    // console.log(error);
+  }
+
+  if (!product) return <p>product doesn't exist</p>;
+
   return (
     <div>
-      <h1>{props.params.id}</h1>
+      <Link href={`./${product.id}/edit`}>Edit</Link>
+      <ProductView product={product} />
     </div>
   );
 }

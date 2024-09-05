@@ -22,7 +22,39 @@ export interface Selection {
 }
 [];
 
+type Placeholders = {
+  name: string;
+  description: string;
+  baseprice: number;
+  stock: number;
+  price: number;
+};
+
+export type SelectPlaceholders = {
+  image: string;
+  category: number;
+  color: number;
+  size: number;
+};
+
 interface Props {
+  edit?: {
+    edit: string;
+    id: number;
+    variants?: {
+      id: number;
+      stock: number;
+      color: {
+        name: string;
+      };
+      size: {
+        name: string;
+      };
+    }[];
+  };
+  hasVariants?: boolean;
+  placeholders?: Placeholders;
+  selectPlaceholders?: SelectPlaceholders;
   action: (
     prevState: any,
     formData: FormData
@@ -53,7 +85,7 @@ interface Props {
     createdAt: Date;
     updatedAt: Date;
   }[];
-  name: string;
+  name?: string;
 }
 
 export default function FormAbstract(props: Props) {
@@ -61,7 +93,7 @@ export default function FormAbstract(props: Props) {
     status: "",
     message: [""],
   };
-  const [state, formAction] = useFormState(addProduct, initialState);
+  const [state, formAction] = useFormState(props.action, initialState);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasVariants, setHasVariants] = useState(0);
   const [selectionTarget, setSelectionTarget] = useState("");
@@ -100,26 +132,51 @@ export default function FormAbstract(props: Props) {
           />
         </Modal>
       )}
-      <h2 className="capitalize mb-6">Add {props.name}</h2>
+      {!props.edit && <h2 className="capitalize mb-6">Add {props.name}</h2>}
       <form
         ref={ref}
         id="productForm"
         action={formAction}
         className="flex flex-col gap-4"
       >
+        {props.edit && <input type="hidden" name="id" value={props.edit.id} />}
+        {props.edit && props.edit.variants?.length === 1 && (
+          <input
+            type="hidden"
+            name="variantId"
+            value={props.edit.variants[0].id}
+          />
+        )}
         <input type="hidden" name="variant" value={hasVariants} />
         {props.formStructure.map((el, i) => {
+          const key: keyof Placeholders = el.label
+            .toLowerCase()
+            .replace(/\s/g, "") as keyof Placeholders;
+          const keySelect: keyof SelectPlaceholders = el.label
+            .toLowerCase()
+            .replace(/\s/g, "") as keyof SelectPlaceholders;
+
+          // console.log(props.selectPlaceholders[keySelect]);
           return (
             <div key={el.label + i} className="flex flex-col gap-2">
-              {el.input !== "selection" && !el.variant && (
-                <LabelInput el={el} />
-              )}
+              {el.input !== "selection" &&
+                !el.variant &&
+                !(props.edit && el.label === "Image") && (
+                  <LabelInput
+                    el={el}
+                    placeholder={props.placeholders && props.placeholders[key]}
+                  />
+                )}
               {el.input === "selection" && !el.variant && (
                 <LabelSelection
                   setIsModalOpen={setIsModalOpen}
                   el={el}
                   selection={pickSelection(el.label)}
                   setSelectionTarget={setSelectionTarget}
+                  placeholder={
+                    props.selectPlaceholders &&
+                    props.selectPlaceholders[keySelect]
+                  }
                 />
               )}
             </div>
@@ -137,10 +194,21 @@ export default function FormAbstract(props: Props) {
           </div>
           {!hasVariants &&
             props.formStructure.map((el, i) => {
+              const key: keyof Placeholders = el.label
+                .toLowerCase()
+                .replace(/\s/g, "") as keyof Placeholders;
+              const keySelect: keyof SelectPlaceholders = el.label
+                .toLowerCase()
+                .replace(/\s/g, "") as keyof SelectPlaceholders;
               return (
                 <div key={el.label + i} className="flex flex-col gap-2">
                   {el.input != "selection" && el.variant && (
-                    <LabelInput el={el} />
+                    <LabelInput
+                      el={el}
+                      placeholder={
+                        props.placeholders && props.placeholders[key]
+                      }
+                    />
                   )}
                   {el.input === "selection" && el.variant && (
                     <LabelSelection
@@ -148,6 +216,10 @@ export default function FormAbstract(props: Props) {
                       el={el}
                       selection={pickSelection(el.label)}
                       setSelectionTarget={setSelectionTarget}
+                      placeholder={
+                        props.selectPlaceholders &&
+                        props.selectPlaceholders[keySelect]
+                      }
                     />
                   )}
                 </div>

@@ -1,5 +1,6 @@
 import { storage } from "@/lib/firebase";
 import {
+  deleteObject,
   getDownloadURL,
   getStorage,
   list,
@@ -28,9 +29,15 @@ export async function postFireBase(image: File) {
     return { url: null, error: (error as Error).message };
   }
 }
-export async function getFireBase() {
-  // console.log("test");
-  // const storage = getStorage();
-  // const storageRef = ref(storage, "images");
-  // console.log(storageRef);
+
+export async function deleteFireBase(imagePath: string) {
+  const imageRef = ref(storage, imagePath);
+  if (!imageRef) return;
+
+  try {
+    await deleteObject(imageRef);
+    console.log(`image at ${imagePath} deleted`);
+  } catch (error) {
+    console.log(error);
+  }
 }

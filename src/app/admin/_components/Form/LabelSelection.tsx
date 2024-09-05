@@ -10,7 +10,7 @@ import {
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
-import { Selection } from "./FormAbstract";
+import { Selection, SelectPlaceholders } from "./FormAbstract";
 
 interface Props {
   el: {
@@ -20,16 +20,16 @@ interface Props {
     required: boolean;
     variant?: boolean;
   };
-  selection:
-    | {
-        id: number;
-        name: string;
-        description?: string;
-        createdAt: Date;
-        updatedAt: Date;
-      }[];
+  selection: {
+    id: number;
+    name: string;
+    description?: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   setSelectionTarget: Dispatch<SetStateAction<string>>;
+  placeholder?: number | string | undefined;
 }
 
 export default function LabelSelection({
@@ -37,6 +37,7 @@ export default function LabelSelection({
   selection,
   setIsModalOpen,
   setSelectionTarget,
+  placeholder,
 }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>(
     {}
@@ -57,35 +58,25 @@ export default function LabelSelection({
   //   }
   // });
 
-  const [state, setState] = useState({ category: "", color: "", size: "" });
-
   // function handleState(target: string, e) {
   //   console.log(el);
   // }
+  // console.log(el);
 
   return (
     <>
       <Label>{el.label}</Label>
       <Select
-        open={dropdownOpen[el.name] || false} // Check the state of this specific dropdown
-        onOpenChange={() => toggleDropdown(el.name)} // Toggle the state of this dropdown
+        // open={dropdownOpen[el.name] || false} // Check the state of this specific dropdown
+        // onOpenChange={() => toggleDropdown(el.name)} // Toggle the state of this dropdown
         name={el.name}
+        defaultValue={placeholder?.toString()}
+        // value="cat"
       >
         <SelectTrigger>
-          <SelectValue placeholder={el.label} />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {/* {selections &&
-            Object.keys(selections).includes(el.name) &&
-            selections[el.name] &&
-            selections[el.name].map((el: any, j: number) => {
-              return (
-                <SelectItem key={el.name + j} value={el.id.toString()}>
-                  {el.name}
-                </SelectItem>
-              );
-            })} */}
-
           {selection &&
             selection.map((el: any, j: number) => {
               return (
