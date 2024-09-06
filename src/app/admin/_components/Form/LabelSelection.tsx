@@ -67,8 +67,8 @@ export default function LabelSelection({
     <>
       <Label>{el.label}</Label>
       <Select
-        // open={dropdownOpen[el.name] || false} // Check the state of this specific dropdown
-        // onOpenChange={() => toggleDropdown(el.name)} // Toggle the state of this dropdown
+        open={dropdownOpen[el.name] || false} // Check the state of this specific dropdown
+        onOpenChange={() => toggleDropdown(el.name)} // Toggle the state of this dropdown
         name={el.name}
         defaultValue={placeholder?.toString()}
         // value="cat"

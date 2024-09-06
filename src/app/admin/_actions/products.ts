@@ -25,12 +25,17 @@ const productSchema = z.object({
   name: z.string().min(1, { message: "Product Name is required" }),
   description: z.string().min(1, { message: "description required" }),
   image: z
-
-    .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    .array(
+      z
+        .object({
+          size: z.number(),
+          type: z.string(),
+        })
+        .refine((file) => file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+        .refine(
+          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+          "Only .jpg, .jpeg, .png, and .webp formats are supported."
+        )
     )
     .optional(),
   basePrice: z.preprocess(
@@ -50,27 +55,39 @@ const productSchema = z.object({
   sizeId: z.string().min(1, { message: "sizeId required" }),
 });
 
-const productWithVariantsSchema = z.object({
-  variant: z.preprocess((a) => parseInt(a as string), z.number().gte(0).lte(1)),
-  id: z.string().optional(),
-  name: z.string().min(1, { message: "Product Name is required" }),
-  description: z.string().min(1, { message: "description required" }),
-  image: z
-    .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    ),
-  basePrice: z.preprocess(
-    (a) => parseFloat(a as string),
-    z.number().gte(0.01, { message: "price must be at least 0.01" })
-  ),
-  categoryId: z.string().min(1, { message: "categoryId required" }),
-});
+// const productWithVariantsSchema = z.object({
+//   variant: z.preprocess((a) => parseInt(a as string), z.number().gte(0).lte(1)),
+//   id: z.string().optional(),
+//   name: z.string().min(1, { message: "Product Name is required" }),
+//   description: z.string().min(1, { message: "description required" }),
+//   image: z
+//     .any()
+//     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+//     .refine(
+//       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+//       "Only .jpg, .jpeg, .png and .webp formats are supported."
+//     ),
+//   basePrice: z.preprocess(
+//     (a) => parseFloat(a as string),
+//     z.number().gte(0.01, { message: "price must be at least 0.01" })
+//   ),
+//   categoryId: z.string().min(1, { message: "categoryId required" }),
+// });
+
+function fileListToArray(fileList: FileList | null): File[] {
+  return fileList ? Array.from(fileList) : [];
+}
 
 export async function addProduct(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
+
+  // @ts-ignore
+  const files = fileListToArray(formData.getAll("image") as FileList | null);
+  // @ts-ignore
+  formValues.image = files.map((file) => ({
+    size: file.size,
+    type: file.type,
+  }));
 
   let result;
   if (formValues.variant === "0") result = productSchema.safeParse(formValues);
@@ -88,7 +105,6 @@ export async function addProduct(prevState: any, formData: FormData) {
     const {
       name,
       description,
-      image,
       basePrice,
       categoryId,
       stock,
@@ -98,12 +114,20 @@ export async function addProduct(prevState: any, formData: FormData) {
       variant,
     } = result.data;
 
-    const fbResult = await postFireBase(image);
-    if (fbResult!.error != null)
-      return { status: "error", message: [fbResult!.error] };
-    if (fbResult!.url == null)
-      return { status: "error", message: ["something went wrong saving pic"] };
+    const fbResult = [];
+    for (const file of files) {
+      const result = await postFireBase(file);
+      if (result?.error != null)
+        return { status: "error", message: [result!.error] };
+      if (result?.url == null)
+        return {
+          status: "error",
+          message: ["something went wrong saving pic"],
+        };
+      else fbResult.push(result.url);
+    }
 
+    console.log("-------", fbResult);
     try {
       const newProduct = await prisma.product.create({
         data: {
@@ -116,13 +140,15 @@ export async function addProduct(prevState: any, formData: FormData) {
       });
       productId = newProduct.id;
 
-      await prisma.image.create({
-        data: {
-          url: fbResult!.url,
-          isUsed: true,
-          productId,
-        },
-      });
+      for (const image of fbResult) {
+        await prisma.image.create({
+          data: {
+            url: image,
+            isUsed: true,
+            productId,
+          },
+        });
+      }
       await prisma.variant.create({
         data: {
           productId,
@@ -133,7 +159,9 @@ export async function addProduct(prevState: any, formData: FormData) {
         },
       });
     } catch (error: unknown) {
-      fbResult && deleteFireBase(fbResult.url);
+      for (const image of fbResult) {
+        deleteFireBase(image);
+      }
       if (error instanceof PrismaClientKnownRequestError) {
         return errorHandler(error);
       }

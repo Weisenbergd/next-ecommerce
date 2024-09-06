@@ -7,6 +7,9 @@ import { useState } from "react";
 import FormAbstract from "../../_components/Form/FormAbstract";
 import { productForm } from "../../_components/Form/FormStructure";
 import { editProduct } from "../../_actions/products";
+import Link from "next/link";
+import { getURL } from "next/dist/shared/lib/utils";
+import { useSearchParams } from "next/navigation";
 
 interface Props {
   product: {
@@ -44,6 +47,8 @@ export default function ProductView({ product }: Props) {
 
   const [edit, setEdit] = useState(false);
 
+  const url = getURL();
+
   return (
     <>
       <div>
@@ -73,6 +78,9 @@ export default function ProductView({ product }: Props) {
                 />
               );
             })}
+          <Link href={`./${product.id}/images?variants=${product.hasVariants}`}>
+            Edit Add Images
+          </Link>
           {!product.image[0].url && <p>no images</p>}
         </div>
         {product.hasVariants === false ? (

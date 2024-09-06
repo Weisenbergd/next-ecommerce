@@ -18,13 +18,13 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 
 export default async function page() {
-  // await prisma.variant.deleteMany({});
-  // await prisma.product.deleteMany({});
-  // await prisma.color.deleteMany({});
-  // await prisma.category.deleteMany({});
-  // await prisma.size.deleteMany({});
-  // await prisma.image.deleteMany({});
-  // revalidatePath("/");
+  await prisma.variant.deleteMany({});
+  await prisma.product.deleteMany({});
+  await prisma.color.deleteMany({});
+  await prisma.category.deleteMany({});
+  await prisma.size.deleteMany({});
+  await prisma.image.deleteMany({});
+  revalidatePath("/");
 
   const products: Product[] = await getProducts();
 

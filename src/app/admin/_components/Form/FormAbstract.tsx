@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButton from "../SubmitButton";
+import React from "react";
+import Dropzone from "react-dropzone";
 
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
@@ -237,25 +239,3 @@ export default function FormAbstract(props: Props) {
     </>
   );
 }
-
-// {category && (
-//   <div>
-//     <Label form="category">name</Label>
-//     <Input
-//       className="text-sm"
-//       name="name"
-//       id="name"
-//       required={true}
-//       form="category"
-//     />
-//     <Label form="category">description</Label>
-//     <Input
-//       className="text-sm"
-//       name="description"
-//       id="description"
-//       required={true}
-//       form="category"
-//     />
-//     <button form="category">submit</button>
-//   </div>
-// )}

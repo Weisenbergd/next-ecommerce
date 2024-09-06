@@ -1,10 +1,8 @@
-import Image from "next/image";
-import { getFireBase } from "../../_actions/_postFireBase";
-import { getImages } from "../../_actions/images";
+import { getAllImages } from "../../_actions/images";
 import ImageList from "./imagelist";
 
 export default async function page() {
-  const images = await getImages();
+  const images = await getAllImages();
   // console.log(images);
 
   return !images ? (
