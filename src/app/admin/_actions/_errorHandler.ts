@@ -36,5 +36,8 @@ export function errorHandler(error: PrismaClientKnownRequestError) {
       message: ["record does not exist"],
     };
   }
-  return { status: "programming error", message: ["this error not handled"] };
+  return {
+    status: "error",
+    message: ["programming error, this error not handled"],
+  };
 }

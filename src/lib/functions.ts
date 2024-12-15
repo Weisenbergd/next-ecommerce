@@ -1,4 +1,6 @@
-import { usePathname } from "next/navigation";
+"use client";
+
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const formatDateTime = (date: Date) => {
   const day = date.getDate().toString().padStart(2, "0");
@@ -18,3 +20,8 @@ export const getPath = () => {
   const path = usePathname();
   return path;
 };
+
+export function getParams() {
+  const searchParams = useSearchParams();
+  return searchParams;
+}

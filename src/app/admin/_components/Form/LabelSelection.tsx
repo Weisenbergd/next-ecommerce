@@ -10,7 +10,7 @@ import {
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
-import { Selection, SelectPlaceholders } from "./FormAbstract";
+import { Selection, SelectPlaceholders } from "./FormAbstract.old";
 
 interface Props {
   el: {
@@ -30,6 +30,7 @@ interface Props {
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   setSelectionTarget: Dispatch<SetStateAction<string>>;
   placeholder?: number | string | undefined;
+  name?: string;
 }
 
 export default function LabelSelection({
@@ -38,6 +39,7 @@ export default function LabelSelection({
   setIsModalOpen,
   setSelectionTarget,
   placeholder,
+  name,
 }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>(
     {}
@@ -65,16 +67,16 @@ export default function LabelSelection({
 
   return (
     <>
-      <Label>{el.label}</Label>
+      <Label htmlFor={el.name}>{el.label}</Label>
       <Select
         open={dropdownOpen[el.name] || false} // Check the state of this specific dropdown
         onOpenChange={() => toggleDropdown(el.name)} // Toggle the state of this dropdown
-        name={el.name}
+        name={name ? name : el.name}
         defaultValue={placeholder?.toString()}
         // value="cat"
       >
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue placeholder="lkjasdf" />
         </SelectTrigger>
         <SelectContent>
           {selection &&

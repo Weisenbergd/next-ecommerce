@@ -11,9 +11,16 @@ interface Props {
     variant?: boolean;
   };
   placeholder?: string | number;
+  name?: string;
+  setProductName?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function LabelInput({ el, placeholder }: Props) {
+export default function LabelInput({
+  el,
+  placeholder,
+  name,
+  setProductName,
+}: Props) {
   const [state, setState] = useState(placeholder);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -22,7 +29,6 @@ export default function LabelInput({ el, placeholder }: Props) {
     if (files) {
       // Convert FileList to File[] and update the state
       setFiles(Array.from(files));
-      console.log(Array.from(files));
     }
   };
 
@@ -34,11 +40,11 @@ export default function LabelInput({ el, placeholder }: Props) {
       >
         {el.label}
       </Label>
-      {el.name != "image" && (
+      {el.name != "images" && el.name != "variantImages" && (
         <Input
           className="text-sm dark:text-primary text-primary-foreground"
           type={el.input}
-          name={el.name}
+          name={name ? name : el.name}
           id={el.label}
           required={el.required}
           step={el.name === "price" ? 0.01 : 1}
@@ -46,15 +52,16 @@ export default function LabelInput({ el, placeholder }: Props) {
           value={placeholder && state}
           onChange={(e) => {
             placeholder && setState(e.target.value);
+            setProductName && setProductName(e.target.value);
           }}
-          multiple={el.name === "image" ? true : false}
+          // multiple={el.name === "images" ? true : false}
         />
       )}
-      {el.name === "image" && (
+      {["images", "variantImages"].includes(el.name) && (
         <Input
           className="text-sm dark:text-primary text-primary-foreground"
           type="file"
-          name={el.name}
+          name={name ? name : el.name}
           id={el.label}
           required={el.required}
           multiple

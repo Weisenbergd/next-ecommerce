@@ -1,5 +1,4 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,39 +11,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { formatDateTime, getPath } from "@/lib/functions";
-import { deleteProduct } from "../../_actions/products";
 import Link from "next/link";
-import Image from "next/image";
+import { LightProduct } from "@/lib/types";
 import { revalidatePath } from "next/cache";
-import { useEffect } from "react";
-import revalidate from "../../_actions/revalidates";
 
 export const productHead = [
   "id",
   "name",
   "description",
   "categoryId",
-  "basePrice",
-  "image",
   "createdAt",
   "updatedAt",
 ];
 
-export type Product = {
-  id: number;
-  name: string;
-  description: string;
-  categoryId: number;
-  basePrice: number;
-  createdAt: Date;
-  updatedAt: Date;
-  image: {
-    url: string;
-  }[];
-  hasVariants: boolean;
-};
-
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<LightProduct>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -96,53 +76,6 @@ export const columns: ColumnDef<Product>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-  },
-  {
-    accessorKey: "basePrice",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center text-left text-sm" // Center text vertically and align left
-      >
-        Price
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const price = row.getValue<number>("basePrice");
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price);
-    },
-  },
-  {
-    accessorKey: "image",
-    header: () => (
-      <div className="flex items-center px-4 text-left text-sm">Image</div>
-    ),
-    cell: ({ row }) => {
-      const imageUrl = row.original.image?.[0]?.url || "fallback-image-url"; // Replace "fallback-image-url" with a default image URL if needed
-
-      return <Image src={imageUrl} alt="Product" width={70} height={70} />;
-    },
-  },
-  {
-    accessorKey: "hasvariants",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center text-left text-sm" // Center text vertically and align left
-      >
-        Variants?
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      return row.original.hasVariants.toString();
-    },
   },
   {
     accessorKey: "createdAt",
@@ -218,11 +151,11 @@ export const columns: ColumnDef<Product>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {
-                await deleteProduct(row.original.id);
-                revalidate();
+                await console.log("delete");
+                revalidatePath("/");
               }}
             >
-              Delete Item
+              Delete Item -- not working
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

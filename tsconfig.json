@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noErrorTruncation": true,
     "allowImportingTsExtensions": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -28,7 +29,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/admin/_components/.Form.tsx",
-    "src/app/admin/_components/Table/TableAbstract.old.tsx"
+    "src/app/admin/_components/Table/TableAbstract.old.tsx",
+    "src/app/admin/products/[id]/Image/ImageList.tsx.old",
+    "src/app/admin/_components/Form/FormAbstract.old"
   ],
   "exclude": ["node_modules"]
 }

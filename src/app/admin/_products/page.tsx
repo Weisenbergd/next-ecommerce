@@ -6,7 +6,7 @@ import {
   getVariants,
 } from "../_fetches/products";
 import ShowHideWrapper from "../_components/ShowHideWrapper";
-import FormAbstract from "../_components/Form/FormAbstract";
+import FormAbstract from "../_components/Form/FormAbstract.old";
 import {
   categoryForm,
   colorForm,
@@ -29,8 +29,12 @@ import {
 } from "../_actions/categories";
 import { addColor, deleteColor, editColor } from "../_actions/colors";
 import { addSize, deleteSize, editSize } from "../_actions/size";
-import { addProduct, deleteProduct, editProduct } from "../_actions/products";
-import { addVariant, deleteVariant, editVariant } from "../_actions/variants";
+import { addProduct, deleteProduct, editProduct } from "../_actions/productAdd";
+import {
+  addVariant,
+  deleteVariant,
+  editVariant,
+} from "../_actions/Variants/variants";
 
 export default async function page() {
   const categoryId = await getCategories();

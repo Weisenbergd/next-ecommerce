@@ -18,45 +18,52 @@ model User {
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  basePrice   Float
-  categoryId  Int
-  category    Category  @relation(fields: [categoryId], references: [id])
-  variants    Variant[]
-  image       Image[]
-  hasVariants Boolean   @default(false)
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  categoryId    Int
+  category      Category       @relation(fields: [categoryId], references: [id])
+  variantGroups VariantGroup[]
+  variants      Variant[]
+}
+
+model VariantGroup {
+  id        Int       @id @default(autoincrement())
+  productId Int
+  colorId   Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  color     Color     @relation(fields: [colorId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images    Image[]
+  variants  Variant[]
 }
 
 model Variant {
-  id        Int        @id @default(autoincrement())
-  productId Int
-  price     Float
-  stock     Int
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  colorId   Int
-  sizeId    Int
-  cartItems CartItem[]
-  color     Color      @relation(fields: [colorId], references: [id])
-  product   Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
-  size      Size       @relation(fields: [sizeId], references: [id])
-  image     Image[]
+  id             Int          @id @default(autoincrement())
+  variantGroupId Int
+  sizeId         Int
+  stock          Int
+  price          Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  variantGroup   VariantGroup @relation(fields: [variantGroupId], references: [id], onDelete: Cascade)
+  size           Size         @relation(fields: [sizeId], references: [id])
+  product        Product      @relation(fields: [productId], references: [id])
+  productId      Int
+  cartItem       CartItem[]
 }
 
 model Image {
-  id        Int      @id @default(autoincrement())
-  url       String
-  isUsed    Boolean  @default(false)
-  productId Int?
-  variantId Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
-  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  id             Int          @id @default(autoincrement())
+  url            String
+  productId      Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  variantGroupId Int
+  variantGroup   VariantGroup @relation(fields: [variantGroupId], references: [id], onDelete: Cascade)
 }
 
 model Size {
@@ -68,11 +75,11 @@ model Size {
 }
 
 model Color {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  variants  Variant[]
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  variantGroups VariantGroup[]
 }
 
 model Category {

@@ -1,4 +1,4 @@
-import { getAllImages } from "../../_actions/images";
+import { getAllImages } from "../../_actions/imagesDelete";
 import ImageList from "./imagelist";
 
 export default async function page() {

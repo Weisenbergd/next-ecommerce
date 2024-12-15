@@ -1,5 +1,4 @@
 "use server";
-
 import prisma from "@/lib/prisma";
 
 export async function getCategories() {
@@ -31,17 +30,13 @@ export async function getProducts() {
     orderBy: {
       id: "asc",
     },
-    include: {
-      image: {
-        select: {
-          url: true,
-        },
-      },
-    },
   });
 }
 
 export async function getSingleProduct(id: number) {
+  // throws a bunch of consoles error otherwise
+  if (!id) return;
+
   return await prisma.product.findUnique({
     where: {
       id: id,
@@ -53,26 +48,36 @@ export async function getSingleProduct(id: number) {
           name: true,
         },
       },
-      image: {
-        select: {
-          url: true,
+      variantGroups: {
+        orderBy: {
+          id: "asc",
         },
-      },
-      variants: {
-        select: {
-          id: true,
-          stock: true,
-          price: true,
+        include: {
+          images: {
+            select: {
+              url: true,
+            },
+            orderBy: {
+              id: "asc",
+            },
+          },
           color: {
             select: {
               id: true,
               name: true,
             },
           },
-          size: {
-            select: {
-              id: true,
-              name: true,
+          variants: {
+            orderBy: {
+              id: "asc",
+            },
+            include: {
+              size: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
             },
           },
         },
@@ -85,6 +90,9 @@ export async function getVariants(id: number) {
   return await prisma.variant.findMany({
     where: {
       productId: id,
+    },
+    orderBy: {
+      variantGroupId: "asc",
     },
   });
 }

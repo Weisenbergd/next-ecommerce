@@ -9,8 +9,17 @@ import {
   uploadBytes,
 } from "firebase/storage";
 
-export async function postFireBase(image: File) {
+interface Image {
+  size: Number;
+  type: String;
+  name: String;
+  lastModified?: Number;
+}
+
+export async function postFireBase(image: any) {
   if (!image) return null;
+
+  // const fileData = new Blob([""], { type: image.type });
 
   try {
     const uniqueName = `${Date.now()}_${image.name}`;
@@ -23,10 +32,10 @@ export async function postFireBase(image: File) {
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     console.log("_postFireBase success", downloadURL);
-    return { url: downloadURL, error: null };
+    return { url: downloadURL, status: "success" };
   } catch (error) {
     console.error("_postFireBase error, Error uploading image:", error);
-    return { url: null, error: (error as Error).message };
+    return { url: "", status: (error as Error).message };
   }
 }
 
