@@ -19,13 +19,12 @@ export default function ImageList({
 }: Props) {
   return (
     <div>
-      {editting.category === "image" &&
-        editting.target === groupIndex.toString() && (
-          <input
-            onChange={(e) => imageCheckFunction(e, el.url)}
-            type="checkbox"
-          />
-        )}
+      {editting.category === "images" && editting.target === groupIndex && (
+        <input
+          onChange={(e) => imageCheckFunction(e, el.url)}
+          type="checkbox"
+        />
+      )}
       <ImageWithFallback
         key={imageIndex + el.url}
         alt={`${product.name} picture`}

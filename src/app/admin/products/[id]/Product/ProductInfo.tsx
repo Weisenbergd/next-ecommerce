@@ -1,11 +1,11 @@
 import { formatDateTime } from "@/lib/functions";
 import { useFormState } from "react-dom";
 import { useEffect, useState } from "react";
-import InputSelection from "@/app/admin/_components/Form/InputSelection";
-import InputEdit from "@/app/admin/_components/Form/InputEdit";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
 import { editProduct } from "@/app/admin/_actions/Products/editProduct";
+import InputEdit from "@/app/admin/_components/Form/InputEdit";
+import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
 
 interface Props {
   editting: any;
@@ -64,8 +64,8 @@ export default function ProductInfo({
                   placeholder={product.name}
                 />
               ) : (
-                <InputSelection
-                  inputName={name + "Id"}
+                <LabelSelection
+                  name={name + "Id"}
                   placeholder={
                     product[productFormat[productFormat.indexOf(name)]].name
                   }

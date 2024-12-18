@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button";
 import { variantForm } from "./FormStructure";
 import { redirect } from "next/navigation";
 import VariantTable from "../Table/VariantTable";
+import ButtonModal from "../Modal/ButtonModal";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export interface Selection {
   id: number;
@@ -95,7 +98,6 @@ export default function FormAbstract(props: Props) {
   };
   const [state, formAction] = useFormState(props.action, initialState);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasVariants, setHasVariants] = useState(0);
   const [selectionTarget, setSelectionTarget] = useState("");
   const [variantNumber, setVariantNumber] = useState<number[]>([]);
@@ -176,15 +178,6 @@ export default function FormAbstract(props: Props) {
 
   return (
     <>
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
-          <ModalForm
-            selectionTarget={selectionTarget}
-            setSelectionTarget={setSelectionTarget}
-            closeModal={() => setIsModalOpen(false)}
-          />
-        </Modal>
-      )}
       {!props.edit && <h2 className="capitalize mb-6">Add {props.name}</h2>}
       <form
         ref={ref}
@@ -222,8 +215,8 @@ export default function FormAbstract(props: Props) {
                 )}
               {el.input === "selection" && !el.variant && (
                 <LabelSelection
-                  setIsModalOpen={setIsModalOpen}
-                  el={el}
+                  name={el.name}
+                  label={el.label}
                   selection={pickSelection(el.label)}
                   setSelectionTarget={setSelectionTarget}
                   placeholder={
@@ -256,39 +249,53 @@ export default function FormAbstract(props: Props) {
             </>
           )}
 
-          {!hasVariants &&
-            props.formStructure.map((el, i) => {
-              const key: keyof Placeholders = el.label
-                .toLowerCase()
-                .replace(/\s/g, "") as keyof Placeholders;
-              const keySelect: keyof SelectPlaceholders = el.label
-                .toLowerCase()
-                .replace(/\s/g, "") as keyof SelectPlaceholders;
-              return (
-                <div key={el.label + i} className="flex flex-col gap-2">
-                  {el.input != "selection" && el.variant && (
-                    <LabelInput
-                      el={el}
-                      placeholder={
-                        props.placeholders && props.placeholders[key]
-                      }
-                    />
-                  )}
-                  {el.input === "selection" && el.variant && (
-                    <LabelSelection
-                      setIsModalOpen={setIsModalOpen}
-                      el={el}
-                      selection={pickSelection(el.label)}
-                      setSelectionTarget={setSelectionTarget}
-                      placeholder={
-                        props.selectPlaceholders &&
-                        props.selectPlaceholders[keySelect]
-                      }
-                    />
-                  )}
-                </div>
-              );
-            })}
+          {!hasVariants && (
+            <>
+              <div>
+                <Label>Image</Label>
+                <Input
+                  type="file"
+                  multiple
+                  name={"images"}
+                  form="productForm"
+                />
+              </div>
+              {props.formStructure.map((el, i) => {
+                const key: keyof Placeholders = el.label
+                  .toLowerCase()
+                  .replace(/\s/g, "") as keyof Placeholders;
+                const keySelect: keyof SelectPlaceholders = el.label
+                  .toLowerCase()
+                  .replace(/\s/g, "") as keyof SelectPlaceholders;
+
+                return (
+                  <div key={el.label + i} className="flex flex-col gap-2">
+                    {el.input !== "selection" && el.variant && (
+                      <LabelInput
+                        el={el}
+                        placeholder={
+                          props.placeholders && props.placeholders[key]
+                        }
+                      />
+                    )}
+                    {el.input === "selection" && el.variant && (
+                      <LabelSelection
+                        name={el.name}
+                        label={el.label}
+                        selection={pickSelection(el.label)}
+                        setSelectionTarget={setSelectionTarget}
+                        placeholder={
+                          props.selectPlaceholders &&
+                          props.selectPlaceholders[keySelect]
+                        }
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          )}
+
           {hasVariants && (
             <div>
               {variantForm.map((variant) => {
@@ -303,7 +310,6 @@ export default function FormAbstract(props: Props) {
                     <h2>{variant.label}s</h2>
                     <Button
                       onClick={(e) => {
-                        setIsModalOpen(true);
                         // setDropdownOpen({});
                         setSelectionTarget(variant.label);
                       }}

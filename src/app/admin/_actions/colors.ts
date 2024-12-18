@@ -11,8 +11,6 @@ const colorSchema = z.object({
 });
 
 export async function addColor(prevState: any, formData: FormData) {
-  console.log("test");
-
   const formValues = Object.fromEntries(formData.entries());
   const result = colorSchema.safeParse(formValues);
 
@@ -27,7 +25,10 @@ export async function addColor(prevState: any, formData: FormData) {
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Added color ${name}`] };
+    return {
+      status: "success",
+      message: [`Added color ${name}`, "color", newColor.name, newColor.id],
+    };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);

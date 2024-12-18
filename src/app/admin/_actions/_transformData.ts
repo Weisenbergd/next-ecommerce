@@ -1,3 +1,5 @@
+// make this better + typescript
+
 export function transformData(props: any) {
   interface VariantType {
     sizeId: string;
@@ -13,6 +15,23 @@ export function transformData(props: any) {
   }
   [];
 
+  if (parseInt(props.varNum) === 0) {
+    const images = props.images ? [props.images] : [];
+    const variants = [
+      { inventory: props.stock, price: props.price, sizeId: props.sizeId },
+    ];
+    const variantGroups = [{ images, colorId: props.colorId, variants }];
+
+    const product = {
+      name: props.name,
+      description: props.description,
+      categoryId: props.categoryId,
+      variantGroups,
+    };
+
+    return product;
+  }
+
   // // if no image -- change to empty array
   // if (props.images.size === 0) props.images = [];
   // // if only one image -- put into an array
@@ -26,70 +45,71 @@ export function transformData(props: any) {
   };
 
   let allVariants = [];
-  for (let i = 0; i < props.varNum; i++) {
-    let singleVariant = [];
-    const keys = Object.keys(props);
-    for (let key of keys) {
-      if (key.startsWith(i.toString())) {
-        singleVariant.push(key);
-      }
-    }
-    allVariants.push(singleVariant);
-  }
-
   let arrayOfGroupObjects: GroupType[] = [];
 
-  for (let variantGroup of allVariants) {
-    // !! the image files come in as an array if more than one
-    // but just as a file if single
-    // transform to [] if no image
-    if (props[variantGroup[0]].size === 0) {
-      props[variantGroup[0]] = [];
+  if (parseInt(props.varNum) > 0) {
+    for (let i = 0; i < props.varNum; i++) {
+      let singleVariant = [];
+      const keys = Object.keys(props);
+      for (let key of keys) {
+        if (key.startsWith(i.toString())) {
+          singleVariant.push(key);
+        }
+      }
+      allVariants.push(singleVariant);
     }
 
-    let groupObject: GroupType = {
-      images: props[variantGroup[0]].size
-        ? [props[variantGroup[0]]]
-        : props[variantGroup[0]],
-      description: props[variantGroup[1]] || null,
-      colorId: props[variantGroup[4]],
-      variants: <VariantType[]>[],
-    };
-
-    // removes image and description (in group)
-    variantGroup.shift();
-    variantGroup.shift();
-
-    // change this whenever number of inputs changes
-    // current logic: aadd; sizeId; colordId; price; inventory;
-    const variantInputs = 5;
-    const chunk = variantGroup.length / variantInputs;
-
-    for (let i = 0; i < chunk; i++) {
-      let sizeVariantArray = [];
-
-      for (let j = 0; j < variantInputs; j++) {
-        sizeVariantArray.push(variantGroup[i * variantInputs + j]);
+    for (let variantGroup of allVariants) {
+      // !! the image files come in as an array if more than one
+      // but just as a file if single
+      // transform to [] if no image
+      if (props[variantGroup[0]].size === 0) {
+        props[variantGroup[0]] = [];
       }
 
-      // if added propert === 0, then skips that variant
-      if (props[sizeVariantArray[0]] === "0") continue;
-      else if (props[sizeVariantArray[0]] === "1") {
-        groupObject.variants.push({
-          sizeId: props[sizeVariantArray[1]],
-          // colorId does not go in var but group
-          // colorId: props[sizeVariantArray[2]],
-          price: props[sizeVariantArray[3]],
-          inventory: props[sizeVariantArray[4]],
-        });
+      let groupObject: GroupType = {
+        images: props[variantGroup[0]].size
+          ? [props[variantGroup[0]]]
+          : props[variantGroup[0]],
+        description: props[variantGroup[1]] || null,
+        colorId: props[variantGroup[4]],
+        variants: <VariantType[]>[],
+      };
+
+      // removes image and description (in group)
+      variantGroup.shift();
+      variantGroup.shift();
+
+      // change this whenever number of inputs changes
+      // current logic: aadd; sizeId; colordId; price; inventory;
+      const variantInputs = 5;
+      const chunk = variantGroup.length / variantInputs;
+
+      for (let i = 0; i < chunk; i++) {
+        let sizeVariantArray = [];
+
+        for (let j = 0; j < variantInputs; j++) {
+          sizeVariantArray.push(variantGroup[i * variantInputs + j]);
+        }
+
+        // if added propert === 0, then skips that variant
+        if (props[sizeVariantArray[0]] === "0") continue;
+        else if (props[sizeVariantArray[0]] === "1") {
+          groupObject.variants.push({
+            sizeId: props[sizeVariantArray[1]],
+            // colorId does not go in var but group
+            // colorId: props[sizeVariantArray[2]],
+            price: props[sizeVariantArray[3]],
+            inventory: props[sizeVariantArray[4]],
+          });
+        }
       }
+      arrayOfGroupObjects.push(groupObject);
     }
-    arrayOfGroupObjects.push(groupObject);
+    transformedObject.variantGroups = arrayOfGroupObjects;
+
+    return transformedObject;
   }
-
-  transformedObject.variantGroups = arrayOfGroupObjects;
-
-  return transformedObject;
 }
 
 // example output

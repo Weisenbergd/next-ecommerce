@@ -12,16 +12,21 @@ import { addSize } from "../../_actions/size";
 
 interface Props {
   closeModal: () => void;
-  setSelectionTarget: Dispatch<SetStateAction<string>>;
   selectionTarget: string;
+  modalFormState: any;
+  setModalFormState: any;
 }
 
 const ModalForm = ({
   closeModal,
   selectionTarget,
-  setSelectionTarget,
+  modalFormState,
+  setModalFormState,
 }: Props) => {
-  const initialState = {
+  const initialState: {
+    status: string;
+    message: (string | number)[];
+  } = {
     status: "",
     message: [""],
   };
@@ -58,10 +63,11 @@ const ModalForm = ({
     }
 
     if (state && state.status === "success") {
+      setModalFormState(state);
       closeModal();
       console.log(state);
     }
-  }, [state, closeModal]);
+  }, [state, closeModal, setModalFormState]);
 
   return (
     <>

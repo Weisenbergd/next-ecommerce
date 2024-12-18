@@ -23,14 +23,22 @@ export async function addCategories(prevState: any, formData: FormData) {
   const { name, description } = result.data;
 
   try {
-    await prisma.category.create({
+    const newCategory = await prisma.category.create({
       data: {
         name: name,
         description: description,
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Added category ${name}`] };
+    return {
+      status: "success",
+      message: [
+        `Added category ${newCategory.name}`,
+        "category",
+        newCategory.name,
+        newCategory.id,
+      ],
+    };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);
@@ -73,7 +81,10 @@ export async function editCategories(prevState: any, formData: FormData) {
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Updated Category ${name}`] };
+    return {
+      status: "success",
+      message: [`Updated Category ${name}`, "category"],
+    };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);

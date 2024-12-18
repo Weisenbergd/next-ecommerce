@@ -10,7 +10,6 @@ import {
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
-import { Selection, SelectPlaceholders } from "./FormAbstract.old";
 import { Category, Color, IDNAMEDESC, Size } from "@/lib/types";
 
 interface Props {

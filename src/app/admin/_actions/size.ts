@@ -20,13 +20,16 @@ export async function addSize(prevState: any, formData: FormData) {
   const { name } = result.data;
 
   try {
-    await prisma.size.create({
+    const newSize = await prisma.size.create({
       data: {
         name: name,
       },
     });
     revalidatePath("/");
-    return { status: "success", message: [`Added Size ${name}`] };
+    return {
+      status: "success",
+      message: [`Added Size ${newSize.name}`, "size", newSize.name, newSize.id],
+    };
   } catch (error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
       return errorHandler(error);

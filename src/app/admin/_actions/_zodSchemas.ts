@@ -67,7 +67,7 @@ export const productSchema = z.object({
       colorId: z.string().min(1, { message: "colorId required" }),
       // images: imageShema.optional(),
       images: z.array(imageSchema),
-      description: z.string(),
+      description: z.string().optional(),
       variants: z.array(
         z.object({
           // variantName: z.string(),

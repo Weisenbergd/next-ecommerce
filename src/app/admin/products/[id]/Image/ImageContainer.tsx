@@ -3,9 +3,9 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import ImageList from "./ImageList";
 import ImageForms from "./ImageForms";
-import EditImageButton from "./EditImageButton";
 import { deleteImages } from "@/app/admin/_actions/Images/imagesDelete";
 import { addImages } from "@/app/admin/_actions/Images/imagesAdd";
+import EditButton from "../EditButton";
 
 interface Props {
   variantGroup: any;
@@ -83,12 +83,14 @@ export default function ImageContainer({
           deleteImagesArray={deleteImagesArray}
         />
       )}
-      <EditImageButton
+      <EditButton
         editting={editting}
-        setDeleteImagesArray={setDeleteImagesArray}
         setEditting={setEditting}
-        groupIndex={groupIndex}
-      />
+        category="images"
+        target={groupIndex}
+      >
+        edit images
+      </EditButton>
     </div>
   );
 }

@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
-
-import InputSelection from "@/app/admin/_components/Form/InputSelection";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
 import { deleteGroup } from "@/app/admin/_actions/Groups/deleteGroup";
 import { editGroup } from "@/app/admin/_actions/Groups/editGroup";
+import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
 interface Props {
   variantGroup: any;
   colors: any;
@@ -42,8 +41,8 @@ export default function GroupInfo({
     <div>
       {editting.category === "group" && editting.target === variantGroup.id ? (
         <div>
-          <InputSelection
-            inputName="colorId"
+          <LabelSelection
+            name="colorId"
             placeholder={variantGroup.color?.name!}
             id={variantGroup.colorId!}
             selection={colors}

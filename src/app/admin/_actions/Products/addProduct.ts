@@ -11,6 +11,7 @@ import { transformFormValues } from "../_transformFormValues";
 export async function addProduct(prevState: any, formData: FormData) {
   const formValues = transformFormValues(formData);
   const transformedData = transformData(formValues);
+
   if (!transformedData)
     return {
       status: "error",

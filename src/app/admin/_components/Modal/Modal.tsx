@@ -1,6 +1,7 @@
 "use client";
 
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,6 +11,8 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ isOpen, setIsModalOpen, children }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  console.log("test");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,8 +37,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, setIsModalOpen, children }) => {
 
   if (!isOpen) return null;
 
-  return (
-    <>
+  return ReactDOM.createPortal(
+    <div>
       <div
         className="fixed inset-0 bg-black bg-opacity-90 z-40"
         onClick={() => setIsModalOpen(false)}
@@ -43,12 +46,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, setIsModalOpen, children }) => {
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div
           ref={modalRef}
-          className="p-8 rounded-lg shadow-lg w-full max-w-md bg-primary-foreground text-primary"
+          className="absolute h-100 p-8 rounded-lg shadow-lg w-full max-w-md bg-primary-foreground text-primary"
         >
           {children}
         </div>
       </div>
-    </>
+    </div>,
+    document.getElementById("modal-root")!
   );
 };
 

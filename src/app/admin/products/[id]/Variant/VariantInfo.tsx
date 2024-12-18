@@ -1,11 +1,11 @@
 import { deleteVariant } from "@/app/admin/_actions/Variants/deleteVariant";
-import InputEdit from "@/app/admin/_components/Form/InputEdit";
-import InputSelection from "@/app/admin/_components/Form/InputSelection";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
 import { editVariant } from "@/app/admin/_actions/Variants/editVariant";
+import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
+import InputEdit from "@/app/admin/_components/Form/InputEdit";
 
 interface Props {
   variant: any;
@@ -46,8 +46,8 @@ export default function VariantInfo({
         return (
           <div key={name}>
             {name === "size" ? (
-              <InputSelection
-                inputName={name + "Id"}
+              <LabelSelection
+                name={name + "Id"}
                 placeholder={
                   variant[variantFormat[variantFormat.indexOf(name)]].name
                 }
