@@ -1,12 +1,25 @@
+import { TypeSize, TypeVariant } from "@/lib/types.ts";
 import VariantInfo from "./VariantInfo.tsx";
+import { Dispatch, SetStateAction } from "react";
 
-interface Props {
-  variant: any;
-  sizes: any;
-  editting: any;
-  setEditting: any;
-  initialState: any;
-}
+type Props = {
+  sizes: TypeSize[];
+  setEditting: Dispatch<
+    SetStateAction<{
+      category: string;
+      target: number;
+    }>
+  >;
+  editting: {
+    category: string;
+    target: number;
+  };
+  initialState: {
+    status: string;
+    message: (string | number)[];
+  };
+  variant: TypeVariant;
+};
 
 export default function VariantContainer({
   variant,

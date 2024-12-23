@@ -51,14 +51,16 @@ export async function deleteGroup(prevState: any, formData: FormData) {
         await deleteFireBase(image.url);
       }
     } catch (err) {
-      return (imageError = "problem deleting images from cloud");
+      console.log(err);
+      imageError = "problem deleting images from cloud";
+      return;
     }
     revalidatePath("/");
     return {
       status: "success",
       message: [
         `group ${variantGroupId} deleted`,
-        imageError.length > 0 ? imageError : null,
+        imageError.length > 0 ? imageError : "no errors deleting images",
       ],
     };
   } catch (error: unknown) {

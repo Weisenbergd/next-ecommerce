@@ -1,45 +1,27 @@
 "use client";
-import { ChangeEvent, Key, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButton from "../SubmitButton";
 import React from "react";
-import Modal from "../Modal/Modal";
-import ModalForm from "./ModalForm";
 import LabelInput from "./LabelInput";
 import LabelSelection from "./LabelSelection";
 import { Button } from "@/components/ui/button";
 import { variantForm } from "./FormStructure";
 import { redirect } from "next/navigation";
 import VariantTable from "../Table/VariantTable";
-import ButtonModal from "../Modal/ButtonModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  TypeAction,
+  TypeCategory,
+  TypeColor,
+  TypeFormStructure,
+  TypeInputPlaceholders,
+  TypeSelectPlaceholders,
+  TypeSize,
+} from "@/lib/types";
 
-export interface Selection {
-  id: number;
-  name: string;
-  description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-[];
-
-type Placeholders = {
-  name: string;
-  description: string;
-  baseprice: number;
-  stock: number;
-  price: number;
-};
-
-export type SelectPlaceholders = {
-  image: string;
-  category: number;
-  color: number;
-  size: number;
-};
-
-interface Props {
+type Props = {
   edit?: {
     edit: string;
     id: number;
@@ -54,49 +36,39 @@ interface Props {
       };
     }[];
   };
-  hasVariants?: boolean;
-  placeholders?: Placeholders;
-  selectPlaceholders?: SelectPlaceholders;
-  action: (
-    prevState: any,
-    formData: FormData
-  ) => Promise<{ status: string; message: (string | number)[] }>;
-  formStructure: {
-    label: string;
-    name: string;
-    input: string;
-    required: boolean;
-    variant?: boolean;
-  }[];
-  category: {
-    id: number;
-    name: string;
-    description: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  size: {
-    id: number;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  color: {
-    id: number;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
+  // hasVariants?: boolean;
+  placeholders?: TypeInputPlaceholders;
+  selectPlaceholders?: TypeSelectPlaceholders;
+  action: TypeAction;
+  formStructure: TypeFormStructure;
+  categories: TypeCategory[];
+  sizes: TypeSize[];
+  colors: TypeColor[];
   name?: string;
-  [key: string]: any; // Index signature for string keys
-}
+  [key: string]: any;
+};
 
-export default function FormAbstract(props: Props) {
+// important -- this form no longer used for editting
+// can refactor
+
+// important -- current code assumes only 2 properties for variants table: colors and sizes
+
+export default function FormAbstract({
+  placeholders,
+  selectPlaceholders,
+  action,
+  formStructure,
+  categories,
+  sizes,
+  colors,
+  name,
+  edit,
+}: Props) {
   const initialState = {
     status: "",
     message: [""],
   };
-  const [state, formAction] = useFormState(props.action, initialState);
+  const [state, formAction] = useFormState(action, initialState);
 
   const [hasVariants, setHasVariants] = useState(0);
   const [selectionTarget, setSelectionTarget] = useState("");
@@ -150,7 +122,7 @@ export default function FormAbstract(props: Props) {
   }, [variantNumber]);
 
   useEffect(() => {
-    if (props.hasVariants) {
+    if (hasVariants) {
       setHasVariants(1);
     }
   }, []);
@@ -168,9 +140,9 @@ export default function FormAbstract(props: Props) {
   }, [state]);
 
   function pickSelection(label: string) {
-    if (label === "Category") return props.category;
-    if (label === "Color") return props.color;
-    if (label === "Size") return props.size;
+    if (label === "Category") return categories;
+    if (label === "Color") return colors;
+    if (label === "Size") return sizes;
     else throw Error("programmer error -- problem with selection passing");
   }
 
@@ -178,39 +150,36 @@ export default function FormAbstract(props: Props) {
 
   return (
     <>
-      {!props.edit && <h2 className="capitalize mb-6">Add {props.name}</h2>}
+      {!edit && <h2 className="capitalize mb-6">Add {name}</h2>}
       <form
+        name="test"
         ref={ref}
         id="productForm"
         action={formAction}
         className="flex flex-col gap-4"
       >
-        {props.edit && <input type="hidden" name="id" value={props.edit.id} />}
-        {props.edit && props.edit.variants?.length === 1 && (
-          <input
-            type="hidden"
-            name="variantId"
-            value={props.edit.variants[0].id}
-          />
+        {edit && <input type="hidden" name="id" value={edit.id} />}
+        {edit && edit.variants?.length === 1 && (
+          <input type="hidden" name="variantId" value={edit.variants[0].id} />
         )}
         <input type="hidden" name="variant" value={hasVariants} />
-        {props.formStructure.map((el, i) => {
-          const key: keyof Placeholders = el.label
+        {formStructure.map((el, i) => {
+          const key: keyof TypeInputPlaceholders = el.label
             .toLowerCase()
-            .replace(/\s/g, "") as keyof Placeholders;
-          const keySelect: keyof SelectPlaceholders = el.label
+            .replace(/\s/g, "") as keyof TypeInputPlaceholders;
+          const keySelect: keyof TypeSelectPlaceholders = el.label
             .toLowerCase()
-            .replace(/\s/g, "") as keyof SelectPlaceholders;
+            .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
 
           return (
             <div key={el.label + i} className="flex flex-col gap-2">
               {el.input !== "selection" &&
                 !el.variant &&
-                !(props.edit && el.label === "Images") && (
+                !(edit && el.label === "Images") && (
                   <LabelInput
                     setProductName={setProductName}
                     el={el}
-                    placeholder={props.placeholders && props.placeholders[key]}
+                    placeholder={placeholders && placeholders[key]}
                   />
                 )}
               {el.input === "selection" && !el.variant && (
@@ -220,16 +189,16 @@ export default function FormAbstract(props: Props) {
                   selection={pickSelection(el.label)}
                   setSelectionTarget={setSelectionTarget}
                   placeholder={
-                    props.selectPlaceholders &&
-                    props.selectPlaceholders[keySelect]
+                    selectPlaceholders && selectPlaceholders[keySelect]
                   }
+                  form="addProduct"
                 />
               )}
             </div>
           );
         })}
         <>
-          {!props.edit && (
+          {!edit && (
             <>
               <h2>Will this product have different variants?</h2>
               <div>
@@ -260,34 +229,31 @@ export default function FormAbstract(props: Props) {
                   form="productForm"
                 />
               </div>
-              {props.formStructure.map((el, i) => {
-                const key: keyof Placeholders = el.label
+              {formStructure.map((el, i) => {
+                const key: keyof TypeInputPlaceholders = el.label
                   .toLowerCase()
-                  .replace(/\s/g, "") as keyof Placeholders;
-                const keySelect: keyof SelectPlaceholders = el.label
+                  .replace(/\s/g, "") as keyof TypeInputPlaceholders;
+                const keySelect: keyof TypeSelectPlaceholders = el.label
                   .toLowerCase()
-                  .replace(/\s/g, "") as keyof SelectPlaceholders;
+                  .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
 
                 return (
                   <div key={el.label + i} className="flex flex-col gap-2">
                     {el.input !== "selection" && el.variant && (
                       <LabelInput
                         el={el}
-                        placeholder={
-                          props.placeholders && props.placeholders[key]
-                        }
+                        placeholder={placeholders && placeholders[key]}
                       />
                     )}
                     {el.input === "selection" && el.variant && (
                       <LabelSelection
+                        placeholder=""
+                        editting={true}
                         name={el.name}
                         label={el.label}
                         selection={pickSelection(el.label)}
                         setSelectionTarget={setSelectionTarget}
-                        placeholder={
-                          props.selectPlaceholders &&
-                          props.selectPlaceholders[keySelect]
-                        }
+                        form="addProduct"
                       />
                     )}
                   </div>
@@ -302,6 +268,7 @@ export default function FormAbstract(props: Props) {
                 if (variant.name != "colorId" && variant.name != "sizeId")
                   return null;
                 let x = variant.label.toLowerCase();
+                let mapVar = variant.label === "Size" ? sizes : colors;
                 return (
                   <div
                     className="bg-slate-800 flex flex-col gap-6 mb-10"
@@ -320,19 +287,18 @@ export default function FormAbstract(props: Props) {
                     >
                       Add new {variant.label}
                     </Button>
-                    {(
-                      props[x] as Array<{ id: number; [key: string]: any }>
-                    ).map((el, i) => {
+
+                    {mapVar.map((z) => {
                       return (
-                        <div key={el.id}>
-                          <label htmlFor={el.name}>{el.name}</label>
+                        <div key={`1.${z.id}`}>
+                          <label htmlFor={z.name}>{z.name}</label>
                           <input
                             form="variantForm"
-                            name={el.name}
-                            id={el.name}
+                            name={z.name}
+                            id={z.name}
                             type="checkbox"
                             onChange={(e) =>
-                              handleVariant(e, variant.name, el.id.toString())
+                              handleVariant(e, variant.name, z.id.toString())
                             }
                           />
                         </div>

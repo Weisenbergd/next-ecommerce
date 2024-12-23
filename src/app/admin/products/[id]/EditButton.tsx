@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
+import { TypeEditting, TypeSetEditting } from "@/lib/types";
+import { ReactNode } from "react";
 
-interface Props {
-  children: any;
-  editting: any;
-  setEditting: any;
+type Props = {
+  children: ReactNode;
+  editting: TypeEditting;
+  setEditting: TypeSetEditting;
   category: string;
   target: number;
-}
+};
 
 export default function EditButton({
   children,
@@ -15,8 +17,6 @@ export default function EditButton({
   category,
   target,
 }: Props) {
-  // works for product, group,
-
   return (
     <Button
       onClick={() => {

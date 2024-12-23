@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-interface Props {
+type Props = {
   el: {
     id: number;
     url: string;
@@ -11,7 +11,7 @@ interface Props {
     createdAt: Date;
     updatedAt: Date;
   };
-}
+};
 
 export default function ImageList({ el }: Props) {
   return (

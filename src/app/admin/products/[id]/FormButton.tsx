@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
+import { TypeActionForm } from "@/lib/types";
 import { ReactNode } from "react";
 
-interface Props {
+type Props = {
   children: ReactNode;
   form: string;
-  action: any;
+  action: TypeActionForm;
   hiddenInputNames: string;
   hiddenInputValues: number;
-}
+};
 
 export default function FormButton({
   children,

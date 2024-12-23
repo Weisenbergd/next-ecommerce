@@ -7,39 +7,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
-import { Selection, SelectPlaceholders } from "./FormAbstract";
+import {
+  TypeCategory,
+  TypeColor,
+  TypeInitialState,
+  TypeSize,
+} from "@/lib/types";
 
-interface Props {
+type Props = {
   name: string;
-  id?: string;
   label: string;
-  selection: {
-    id: number;
-    name: string;
-    description?: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
+  selection: TypeCategory[] | TypeColor[] | TypeSize[];
   setSelectionTarget?: Dispatch<SetStateAction<string>>;
   placeholder?: number | string | undefined;
-  form?: any;
-  editting?: any;
-  // name?: string;
-}
+  editting?: boolean;
+  form: string;
+  defaultValueId?: number;
+};
 
 export default function LabelSelection({
   name,
-  id,
   label,
   selection,
   setSelectionTarget,
   placeholder,
-  form,
   editting,
+  form,
+  defaultValueId,
 }: Props) {
+  // selected is the id of whats selected
+  const [selected, setSelected] = useState<string | undefined>(
+    defaultValueId?.toString()
+  );
+  ////
+  // Modal Stuff -- for embedded modal forms
+  // for these message: [message, name of category, id#]
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalFormState, setModalFormState] = useState<TypeInitialState>({
+    status: "",
+    message: [""],
+  });
+
+  ////
+  // Drop Down Stuff -- this component
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -50,13 +63,8 @@ export default function LabelSelection({
     }));
   };
 
-  const [modalFormState, setModalFormState] = useState({
-    status: "",
-    message: "",
-  });
-
-  if (editting === undefined) editting = true;
-
+  ////
+  // Controlled State so that placeholder updates to the most recent modalForm submission
   const [placeHolderAfterSubmit, setPlaceHolderAfterSubmit] = useState<
     Record<string, string>
   >({
@@ -65,33 +73,30 @@ export default function LabelSelection({
     size: "",
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   useEffect(() => {
     if (modalFormState.status === "success") {
-      const key = modalFormState.message[1];
-      const value = modalFormState.message[2];
+      const key: string = modalFormState.message[1].toString();
+      const value: string = modalFormState.message[2].toString();
       setPlaceHolderAfterSubmit((prevState) => ({
         ...prevState,
         [key]: value,
       }));
-      setSelected(modalFormState.message[3]);
+      setSelected(modalFormState.message[3].toString());
       setIsModalOpen(false);
-    }
+    } else console.log(modalFormState);
   }, [modalFormState.message, modalFormState.status]);
 
-  const [selected, setSelected] = useState<string>();
-
-  useEffect(() => {
-    console.log(selected);
-  }, [selected]);
+  // do i need this?
+  if (editting === undefined) editting = true;
 
   return (
     <>
+      {form != "addProduct" && (
+        <input hidden form={form} name={name} value={selected} readOnly />
+      )}
       {isModalOpen && (
         <Modal isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
           <ModalForm
-            modalFormState={modalFormState}
             setModalFormState={setModalFormState}
             selectionTarget={label}
             closeModal={() => setIsModalOpen(false)}
@@ -106,11 +111,11 @@ export default function LabelSelection({
         <>
           <Label htmlFor={name}>{label}</Label>
           <Select
-            // required
+            required
             open={dropdownOpen[name] || false}
             onOpenChange={() => toggleDropdown(name)}
             name={name}
-            defaultValue={modalFormState.message[3]}
+            defaultValue={modalFormState.message[3]?.toString() || ""}
             value={selected}
             onValueChange={(e) => {
               setSelected(e);
@@ -118,28 +123,29 @@ export default function LabelSelection({
           >
             <SelectTrigger value={"test"} defaultValue={"test"}>
               <SelectValue
-              // placeholder={
-              //   modalFormState.status === "success" &&
-              //   modalFormState.message[1] === label.toLowerCase()
-              //     ? placeHolderAfterSubmit[label.toLowerCase()]
-              //     : placeHolderAfterSubmit[label.toLowerCase()]
-              // }
-              />
+                placeholder={
+                  modalFormState.status === "success" &&
+                  modalFormState.message[1] === label.toLowerCase()
+                    ? placeHolderAfterSubmit[label.toLowerCase()]
+                    : placeholder
+                }
+              ></SelectValue>
             </SelectTrigger>
             <SelectContent>
               {selection &&
-                selection.map((el: any, j: number) => {
-                  return (
-                    <SelectItem key={el.name + j} value={el.id.toString()}>
-                      {el.name}
-                    </SelectItem>
-                  );
-                })}
+                selection.map(
+                  (el: TypeCategory | TypeSize | TypeColor, j: number) => {
+                    return (
+                      <SelectItem key={el.name + j} value={el.id.toString()}>
+                        {el.name}
+                      </SelectItem>
+                    );
+                  }
+                )}
               <Button
                 onClick={(e) => {
                   setIsModalOpen(true);
                   setDropdownOpen({});
-                  // setSelectionTarget(label);
                 }}
                 variant="ghost"
                 size="sm"

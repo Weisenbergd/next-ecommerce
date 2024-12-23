@@ -1,18 +1,36 @@
-import FormButton from "../FormButton.tsx";
+import {
+  TypeColor,
+  TypeDeepProduct,
+  TypeSize,
+  TypeVariant,
+  TypeVariantGroup,
+} from "@/lib/types.ts";
 import ImageContainer from "../Image/ImageContainer";
 import VariantContainer from "../Variant/VariantContainer";
 import GroupInfo from "./GroupInfo.tsx";
+import { Dispatch, SetStateAction } from "react";
 
-interface Props {
-  sizes: any;
-  setEditting: any;
-  groupIndex: any;
-  variantGroup: any;
-  product: any;
-  colors: any;
-  editting: any;
-  initialState: any;
-}
+type Props = {
+  sizes: TypeSize[];
+  setEditting: Dispatch<
+    SetStateAction<{
+      category: string;
+      target: number;
+    }>
+  >;
+  groupIndex: number;
+  variantGroup: TypeVariantGroup;
+  product: TypeDeepProduct;
+  colors: TypeColor[];
+  editting: {
+    category: string;
+    target: number;
+  };
+  initialState: {
+    status: string;
+    message: (string | number)[];
+  };
+};
 
 export default function GroupContainer({
   sizes,
@@ -25,7 +43,7 @@ export default function GroupContainer({
   initialState,
 }: Props) {
   return (
-    <div key={groupIndex}>
+    <>
       <GroupInfo
         variantGroup={variantGroup}
         colors={colors}
@@ -41,18 +59,20 @@ export default function GroupContainer({
         groupIndex={groupIndex}
         initialState={initialState}
       />
-      {variantGroup.variants.map((variant: any, variantIndex: number) => {
-        return (
-          <VariantContainer
-            key={variantIndex}
-            editting={editting}
-            setEditting={setEditting}
-            sizes={sizes}
-            variant={variant}
-            initialState={initialState}
-          />
-        );
-      })}
-    </div>
+      {variantGroup.variants.map(
+        (variant: TypeVariant, variantIndex: number) => {
+          return (
+            <VariantContainer
+              key={variantIndex}
+              editting={editting}
+              setEditting={setEditting}
+              sizes={sizes}
+              variant={variant}
+              initialState={initialState}
+            />
+          );
+        }
+      )}
+    </>
   );
 }

@@ -10,17 +10,20 @@ import { Input } from "@/components/ui/input";
 import { addColor } from "../../_actions/colors";
 import { addSize } from "../../_actions/size";
 
-interface Props {
+type Props = {
   closeModal: () => void;
   selectionTarget: string;
-  modalFormState: any;
-  setModalFormState: any;
-}
+  setModalFormState: Dispatch<
+    SetStateAction<{
+      status: string;
+      message: (string | number)[];
+    }>
+  >;
+};
 
 const ModalForm = ({
   closeModal,
   selectionTarget,
-  modalFormState,
   setModalFormState,
 }: Props) => {
   const initialState: {
@@ -39,24 +42,24 @@ const ModalForm = ({
   const [stateSize, formActionSize] = useFormState(addSize, initialState);
 
   function getAction(target: string) {
-    if (target === "Category") return formActionCategory;
-    if (target === "Color") return formActionColor;
-    if (target === "Size") return formActionSize;
+    if (target === "category") return formActionCategory;
+    if (target === "color") return formActionColor;
+    if (target === "size") return formActionSize;
   }
 
   const ref = useRef<HTMLFormElement>(null);
 
   let state = initialState;
   function getState(target: string) {
-    if (target === "Category") state = stateCategory;
-    if (target === "Color") state = stateColor;
-    if (target === "Size") state = stateSize;
+    if (target === "category") state = stateCategory;
+    if (target === "color") state = stateColor;
+    if (target === "size") state = stateSize;
   }
 
   useEffect(() => {
-    if (selectionTarget === "Size") state = stateSize;
-    if (selectionTarget === "Color") state = stateColor;
-    if (selectionTarget === "Category") state = stateCategory;
+    if (selectionTarget.toLowerCase() === "size") state = stateSize;
+    if (selectionTarget.toLowerCase() === "color") state = stateColor;
+    if (selectionTarget.toLowerCase() === "category") state = stateCategory;
 
     if (state && state.status === "error") {
       console.log(state);
@@ -65,7 +68,6 @@ const ModalForm = ({
     if (state && state.status === "success") {
       setModalFormState(state);
       closeModal();
-      console.log(state);
     }
   }, [state, closeModal, setModalFormState]);
 
@@ -73,17 +75,23 @@ const ModalForm = ({
     <>
       <h2 className="mb-4">Add New {selectionTarget}</h2>
       <form
+        id="modalForm"
         ref={ref}
         className="flex flex-col gap-4"
-        action={getAction(selectionTarget)}
+        action={getAction(selectionTarget.toLowerCase())}
       >
         <Label htmlFor="name">Name</Label>
-        <Input name="name" id="name" required />
+        <Input form="modalForm" name="name" id="name" required />
 
         <Label htmlFor="description">Description</Label>
-        <Input name="description" id="description" />
+        <Input form="modalForm" name="description" id="description" />
 
-        <SubmitButton onClick={() => getState(selectionTarget)} />
+        <SubmitButton
+          form="modalForm"
+          onClick={() => {
+            getState(selectionTarget.toLowerCase());
+          }}
+        />
       </form>
     </>
   );

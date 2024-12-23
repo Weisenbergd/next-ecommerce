@@ -1,13 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
-interface Props {
+type Props = {
   placeholder: string;
   inputName: string;
   editting: boolean;
   label: string;
   formName: string;
-}
+};
 
 export default function InputEdit({
   placeholder,

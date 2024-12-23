@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { TypeDeepProduct, TypeVariantGroup } from "@/lib/types";
 
-interface Props {
-  variantGroup: any;
-  product: any;
-  addImagesAction: any;
-  deleteImagesAction: any;
-  deleteImagesArray: any;
-}
+type Props = {
+  variantGroup: TypeVariantGroup;
+  product: TypeDeepProduct;
+  addImagesAction: (payload: FormData) => void;
+  deleteImagesAction: (payload: FormData) => void;
+  deleteImagesArray: string[];
+};
 
 export default function ImageForms({
   variantGroup,

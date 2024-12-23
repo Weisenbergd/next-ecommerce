@@ -25,7 +25,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input.tsx";
 import { getPath } from "@/lib/functions";
 import { revalidatePath } from "next/cache";
-import { LightProduct } from "@/lib/types";
+import { TypeLightProduct } from "@/lib/types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -107,7 +107,9 @@ export function DataTable<TData, TValue>({
                   <TableCell className="absolute w-[92%] h-full z-10">
                     <Link
                       // href={`./${(row.original as Product).id}`}
-                      href={`${getPath()}/${(row.original as LightProduct).id}`}
+                      href={`${getPath()}/${
+                        (row.original as TypeLightProduct).id
+                      }`}
                       className="absolute inset-0 h-full w-full"
                       aria-label={`Go to product ${row.id}`}
                     >

@@ -29,6 +29,10 @@ export function transformData(props: any) {
       variantGroups,
     };
 
+    if (product.variantGroups[0].images[0].size === 0) {
+      product.variantGroups[0].images = [];
+    }
+
     return product;
   }
 

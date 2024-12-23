@@ -1,13 +1,20 @@
 import ImageWithFallback from "@/app/admin/_components/ImageWithFallback";
+import { TypeDeepProduct } from "@/lib/types";
+import { ChangeEvent } from "react";
 
-interface Props {
+type Props = {
   imageIndex: number;
   groupIndex: number;
-  el: any;
-  editting: any;
-  imageCheckFunction: any;
-  product: any;
-}
+  el: {
+    url: string;
+  };
+  editting: {
+    category: string;
+    target: number;
+  };
+  imageCheckFunction(e: ChangeEvent<HTMLInputElement>, url: string): void;
+  product: TypeDeepProduct;
+};
 
 export default function ImageList({
   imageIndex,

@@ -10,13 +10,13 @@ import {
 } from "firebase/storage";
 
 interface Image {
-  size: Number;
-  type: String;
-  name: String;
-  lastModified?: Number;
+  size: number;
+  type: "image/jpeg" | "image/png" | "image/gif";
+  name: string;
+  lastModified?: number;
 }
 
-export async function postFireBase(image: any) {
+export async function postFireBase(image: File) {
   if (!image) return null;
 
   // const fileData = new Blob([""], { type: image.type });

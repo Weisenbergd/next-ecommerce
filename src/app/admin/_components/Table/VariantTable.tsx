@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { ChangeEvent, useEffect, useState } from "react";
 
-interface Props {
+type Props = {
   variantColors: {
     color: string;
     id: string;
@@ -20,7 +20,7 @@ interface Props {
     size: string;
     id: string;
   }[];
-}
+};
 
 function VariantTable({ variantColors, variantSizes }: Props) {
   // need state update to refresh when checkbox checked/unchecked

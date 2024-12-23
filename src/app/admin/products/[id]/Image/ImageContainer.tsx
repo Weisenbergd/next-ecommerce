@@ -1,20 +1,38 @@
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { useFormState } from "react-dom";
 import ImageList from "./ImageList";
 import ImageForms from "./ImageForms";
 import { deleteImages } from "@/app/admin/_actions/Images/imagesDelete";
 import { addImages } from "@/app/admin/_actions/Images/imagesAdd";
 import EditButton from "../EditButton";
+import { TypeDeepProduct, TypeVariantGroup } from "@/lib/types";
 
-interface Props {
-  variantGroup: any;
-  product: any;
-  setEditting: any;
-  editting: any;
+type Props = {
+  setEditting: Dispatch<
+    SetStateAction<{
+      category: string;
+      target: number;
+    }>
+  >;
   groupIndex: number;
-  initialState: any;
-}
+  variantGroup: TypeVariantGroup;
+  product: TypeDeepProduct;
+  editting: {
+    category: string;
+    target: number;
+  };
+  initialState: {
+    status: string;
+    message: (string | number)[];
+  };
+};
 
 export default function ImageContainer({
   variantGroup,
@@ -54,43 +72,52 @@ export default function ImageContainer({
     }
   }, [addImagesState]);
   return (
-    <div>
+    <ol>
       {variantGroup.images[0] &&
         variantGroup.images[0].url &&
-        variantGroup.images.map((el: any, imageIndex: number) => {
-          return (
-            <div key={imageIndex}>
-              <ImageList
-                imageIndex={imageIndex}
-                groupIndex={groupIndex}
-                el={el}
-                editting={editting}
-                product={product}
-                imageCheckFunction={imageCheckFunction}
-              />
-            </div>
-          );
-        })}
-      {editting.category === "images" && editting.target === groupIndex && (
-        <Button form="deleteImages">delete images</Button>
-      )}
-      {editting.category === "images" && editting.target === groupIndex && (
-        <ImageForms
-          product={product}
-          variantGroup={variantGroup}
-          addImagesAction={addImagesAction}
-          deleteImagesAction={deleteImagesAction}
-          deleteImagesArray={deleteImagesArray}
-        />
-      )}
-      <EditButton
-        editting={editting}
-        setEditting={setEditting}
-        category="images"
-        target={groupIndex}
-      >
-        edit images
-      </EditButton>
-    </div>
+        variantGroup.images.map(
+          (
+            el: {
+              url: string;
+            },
+            imageIndex: number
+          ) => {
+            return (
+              <li key={imageIndex}>
+                <ImageList
+                  imageIndex={imageIndex}
+                  groupIndex={groupIndex}
+                  el={el}
+                  editting={editting}
+                  product={product}
+                  imageCheckFunction={imageCheckFunction}
+                />
+              </li>
+            );
+          }
+        )}
+      <li>
+        {editting.category === "images" && editting.target === groupIndex && (
+          <Button form="deleteImages">delete images</Button>
+        )}
+        {editting.category === "images" && editting.target === groupIndex && (
+          <ImageForms
+            product={product}
+            variantGroup={variantGroup}
+            addImagesAction={addImagesAction}
+            deleteImagesAction={deleteImagesAction}
+            deleteImagesArray={deleteImagesArray}
+          />
+        )}
+        <EditButton
+          editting={editting}
+          setEditting={setEditting}
+          category="images"
+          target={groupIndex}
+        >
+          edit images
+        </EditButton>
+      </li>
+    </ol>
   );
 }

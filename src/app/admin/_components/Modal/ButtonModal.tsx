@@ -3,10 +3,10 @@ import { ReactNode, useState } from "react";
 import Modal from "./Modal";
 import ModalForm from "../Form/ModalForm";
 
-interface Props {
+type Props = {
   children: ReactNode;
   selectionTarget: string;
-}
+};
 
 export default function ButtonModal({ children, selectionTarget }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);

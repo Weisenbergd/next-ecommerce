@@ -49,7 +49,7 @@ export type SelectPlaceholders = {
   size: number;
 };
 
-interface Props {
+type Props = {
   edit?: {
     edit: string;
     id: number;

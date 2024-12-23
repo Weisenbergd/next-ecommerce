@@ -1,17 +1,29 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useFormState } from "react-dom";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
 import { deleteGroup } from "@/app/admin/_actions/Groups/deleteGroup";
 import { editGroup } from "@/app/admin/_actions/Groups/editGroup";
 import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
-interface Props {
-  variantGroup: any;
-  colors: any;
-  editting: any;
-  setEditting: any;
-  initialState: any;
-}
+import { TypeColor, TypeVariantGroup } from "@/lib/types";
+type Props = {
+  variantGroup: TypeVariantGroup;
+  colors: TypeColor[];
+  editting: {
+    category: string;
+    target: number;
+  };
+  initialState: {
+    status: string;
+    message: (string | number)[];
+  };
+  setEditting: Dispatch<
+    SetStateAction<{
+      category: string;
+      target: number;
+    }>
+  >;
+};
 
 export default function GroupInfo({
   variantGroup,
@@ -38,41 +50,42 @@ export default function GroupInfo({
   }, [editGroupState]);
 
   return (
-    <div>
+    <ol>
+      {variantGroup.id}.
       {editting.category === "group" && editting.target === variantGroup.id ? (
-        <div>
-          <LabelSelection
-            name="colorId"
-            placeholder={variantGroup.color?.name!}
-            id={variantGroup.colorId!}
-            selection={colors}
-            form="editVariantGroup"
-            label={`${variantGroup.id}`}
-            editting={true}
-          />
-          <FormButton
-            form="editVariantGroup"
-            action={editGroupAction}
-            hiddenInputNames="variantGroupId"
-            hiddenInputValues={variantGroup.id}
-          >
-            Submit
-          </FormButton>
-          <FormButton
-            form="deleteVariantGroup"
-            action={deleteGroupAction}
-            hiddenInputNames="variantGroupId"
-            hiddenInputValues={variantGroup.id}
-          >
-            Delete Group
-          </FormButton>
-        </div>
+        <>
+          <li>
+            <LabelSelection
+              name="colorId"
+              placeholder={variantGroup.color.name}
+              selection={colors}
+              label="color"
+              editting={true}
+              form="editVariantGroup"
+              defaultValueId={variantGroup.color.id}
+            />
+          </li>
+          <li>
+            <FormButton
+              form="editVariantGroup"
+              action={editGroupAction}
+              hiddenInputNames="variantGroupId"
+              hiddenInputValues={variantGroup.id}
+            >
+              Submit
+            </FormButton>
+            <FormButton
+              form="deleteVariantGroup"
+              action={deleteGroupAction}
+              hiddenInputNames="variantGroupId"
+              hiddenInputValues={variantGroup.id}
+            >
+              Delete Group
+            </FormButton>
+          </li>
+        </>
       ) : (
-        <h2>
-          {variantGroup.id}. Variant{" "}
-          {(variantGroup.color && variantGroup.color.name) ||
-            "error -- there should variant colors"}
-        </h2>
+        <li>color: {variantGroup.color.name}</li>
       )}
       <EditButton
         editting={editting}
@@ -82,6 +95,6 @@ export default function GroupInfo({
       >
         Edit Group
       </EditButton>
-    </div>
+    </ol>
   );
 }

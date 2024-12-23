@@ -6,41 +6,38 @@ import {
   getSingleProduct,
   getSizes,
 } from "../../_fetches/products";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { DeepProduct } from "@/lib/types";
+import {
+  TypeCategory,
+  TypeColor,
+  TypeDeepProduct,
+  TypeSize,
+} from "@/lib/types";
 import ProductContainer from "./Product/ProductContainer";
 
-interface Props {
+type Props = {
   params: {
     id: string;
   };
-  setSearchParams: () => {};
-}
+};
 
-export default async function page({ params, setSearchParams }: Props) {
+export default async function page({ params }: Props) {
   if (!params) return <p>loading...</p>;
 
-  const product: DeepProduct | undefined | null = await getSingleProduct(
+  const product: TypeDeepProduct | null | undefined = await getSingleProduct(
     parseInt(params.id)
   );
-  const sizes = await getSizes();
-  const categories = await getCategories();
-  const colors = await getColors();
+  const sizes: TypeSize[] = await getSizes();
+  const categories: TypeCategory[] = await getCategories();
+  const colors: TypeColor[] = await getColors();
 
   if (!product) return <p>product doesn't exist</p>;
 
   return (
-    <div>
-      {/* <Link href={`./${product.id}/edit`}>Edit</Link> */}
-      <ProductContainer
-        sizes={sizes}
-        categories={categories}
-        colors={colors}
-        product={product}
-      />
-    </div>
+    <ProductContainer
+      sizes={sizes}
+      categories={categories}
+      colors={colors}
+      product={product}
+    />
   );
 }

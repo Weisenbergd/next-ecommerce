@@ -15,6 +15,8 @@ export async function addSize(prevState: any, formData: FormData) {
   const formValues = Object.fromEntries(formData.entries());
   const result = sizeSchema.safeParse(formValues);
 
+  console.log("lasjkdf;ljaksd;fljas;ldkfj;aklsdf;lasl;dflkasjdf");
+
   if (!result.success) return schemaCheck(result);
 
   const { name } = result.data;

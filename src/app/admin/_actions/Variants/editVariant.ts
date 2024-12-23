@@ -7,7 +7,6 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function editVariant(prevState: any, formData: FormData) {
   // status: complete
-
   const formValues = Object.fromEntries(formData.entries());
 
   const result = editVariantSchema.safeParse(formValues);

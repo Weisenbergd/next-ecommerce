@@ -12,7 +12,7 @@ import {
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { formatDateTime, getPath } from "@/lib/functions";
 import Link from "next/link";
-import { LightProduct } from "@/lib/types";
+import { TypeLightProduct } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 
 export const productHead = [
@@ -24,7 +24,7 @@ export const productHead = [
   "updatedAt",
 ];
 
-export const columns: ColumnDef<LightProduct>[] = [
+export const columns: ColumnDef<TypeLightProduct>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
