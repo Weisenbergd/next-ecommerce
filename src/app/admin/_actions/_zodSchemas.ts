@@ -12,6 +12,8 @@ const ACCEPTED_FILE_TYPES = ["image/png"];
 
 // important -- if no images must be empty array
 
+//// Images
+
 export const imageSchema = z
   .custom<File>((file) => file instanceof Blob, {
     message: "Invalid file type. Expected a browser-native File.",
@@ -31,6 +33,8 @@ export const addImageSchema = z.object({
   images: z.array(imageSchema),
 });
 
+//// Variants
+
 export const deleteVariantSchema = z.object({
   variantId: z.string().transform((str) => parseInt(str, 10)),
 });
@@ -48,6 +52,13 @@ export const editVariantSchema = z.object({
   sizeId: z.string().transform((str) => parseInt(str, 10)),
 });
 
+//// Groups
+
+export const addGroupSchema = z.object({
+  productId: z.string().transform((str) => parseInt(str, 10)),
+  colorId: z.string().transform((str) => parseInt(str, 10)),
+});
+
 export const deleteGroupSchema = z.object({
   variantGroupId: z.string().transform((str) => parseInt(str, 10)),
 });
@@ -56,6 +67,8 @@ export const editGroupSchema = z.object({
   variantGroupId: z.string().transform((str) => parseInt(str, 10)),
   colorId: z.string().transform((str) => parseInt(str, 10)),
 });
+
+///// Products
 
 export const productSchema = z.object({
   name: z.string().min(1, { message: "Product Name is required" }),

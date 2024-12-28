@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { TypeEditting, TypeSetEditting } from "@/lib/types";
+import { TypeColor, TypeEditting, TypeSetEditting } from "@/lib/types";
 import { ReactNode } from "react";
 
 type Props = {
@@ -27,7 +27,9 @@ export default function EditButton({
         }
       }}
     >
-      {children}
+      {editting.target === target && editting.category === category
+        ? `Cancel`
+        : children}
     </Button>
   );
 }

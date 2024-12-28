@@ -5,7 +5,9 @@ import FormButton from "../FormButton";
 import { deleteGroup } from "@/app/admin/_actions/Groups/deleteGroup";
 import { editGroup } from "@/app/admin/_actions/Groups/editGroup";
 import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
-import { TypeColor, TypeVariantGroup } from "@/lib/types";
+import { TypeColor, TypeDeepProduct, TypeVariantGroup } from "@/lib/types";
+import PreFormButton from "../PreFormButton";
+import { addGroup } from "@/app/admin/_actions/Groups/addGroup";
 type Props = {
   variantGroup: TypeVariantGroup;
   colors: TypeColor[];
@@ -23,6 +25,7 @@ type Props = {
       target: number;
     }>
   >;
+  product: TypeDeepProduct;
 };
 
 export default function GroupInfo({
@@ -31,6 +34,7 @@ export default function GroupInfo({
   editting,
   setEditting,
   initialState,
+  product,
 }: Props) {
   // status working
 
@@ -43,11 +47,21 @@ export default function GroupInfo({
     initialState
   );
 
+  const [addGroupState, addGroupAction] = useFormState(addGroup, initialState);
+
   useEffect(() => {
     if (editGroupState?.status === "success") {
       setEditting({ category: "", target: -1 });
     }
-  }, [editGroupState]);
+
+    if (addGroupState?.status === "success") {
+      setEditting({ category: "", target: -1 });
+    }
+
+    if (deleteGroupState?.status === "success") {
+      setEditting({ category: "", target: -1 });
+    }
+  }, [editGroupState, addGroupState, deleteGroupState]);
 
   return (
     <ol>
@@ -72,7 +86,7 @@ export default function GroupInfo({
               hiddenInputNames="variantGroupId"
               hiddenInputValues={variantGroup.id}
             >
-              Submit
+              Submit Change
             </FormButton>
             <FormButton
               form="deleteVariantGroup"
@@ -82,6 +96,18 @@ export default function GroupInfo({
             >
               Delete Group
             </FormButton>
+            <div>
+              <PreFormButton
+                label="color"
+                action={addGroupAction}
+                form="addGroup"
+                hiddenInputNames="productId"
+                hiddenInputValues={product.id}
+                selection={colors}
+              >
+                Add Group
+              </PreFormButton>
+            </div>
           </li>
         </>
       ) : (

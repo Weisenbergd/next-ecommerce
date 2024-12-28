@@ -92,14 +92,6 @@ export default function ProductInfo({
       </li>
       <li>
         <div>
-          <EditButton
-            editting={editting}
-            setEditting={setEditting}
-            category="product"
-            target={-1}
-          >
-            Edit Proudct
-          </EditButton>
           {editting.category === "product" && (
             <FormButton
               form="editProduct"
@@ -110,6 +102,14 @@ export default function ProductInfo({
               Submit Changes
             </FormButton>
           )}
+          <EditButton
+            editting={editting}
+            setEditting={setEditting}
+            category="product"
+            target={-1}
+          >
+            Edit Product
+          </EditButton>
         </div>
       </li>
     </>

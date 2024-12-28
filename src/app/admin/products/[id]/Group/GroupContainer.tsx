@@ -50,6 +50,7 @@ export default function GroupContainer({
         editting={editting}
         setEditting={setEditting}
         initialState={initialState}
+        product={product}
       />
       <ImageContainer
         editting={editting}
