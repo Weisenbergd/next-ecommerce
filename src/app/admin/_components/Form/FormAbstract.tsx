@@ -20,6 +20,8 @@ import {
   TypeSelectPlaceholders,
   TypeSize,
 } from "@/lib/types";
+import Modal from "../Modal/Modal";
+import { useModal } from "../Modal/ModalContext";
 
 type Props = {
   edit?: {
@@ -68,17 +70,24 @@ export default function FormAbstract({
     status: "",
     message: [""],
   };
+
+  // don't think im using this
+  // const [variantNumber, setVariantNumber] = useState<number[]>([]);
+
   const [state, formAction] = useFormState(action, initialState);
 
-  const [hasVariants, setHasVariants] = useState(0);
   const [selectionTarget, setSelectionTarget] = useState("");
-  const [variantNumber, setVariantNumber] = useState<number[]>([]);
+
   const [variantColors, setVariantColors] = useState<
     { color: string; id: string }[]
   >([]);
   const [variantSizes, setVariantSizes] = useState<
     { size: string; id: string }[]
   >([]);
+
+  // 1 == hasVariants (opens variantForm); 0 == no var
+  const [hasVariants, setHasVariants] = useState(0);
+  // 1 == variantTable set; 0 == variantTable not set
   const [variantTable, setVariantTable] = useState(0);
 
   const ref = useRef<HTMLFormElement>(null);
@@ -111,15 +120,15 @@ export default function FormAbstract({
     }
   }
 
-  useEffect(() => {
-    let x = 0;
-    for (const val of variantNumber) {
-      x += val;
-    }
-    if (x === 0) {
-      setHasVariants(0);
-    }
-  }, [variantNumber]);
+  // useEffect(() => {
+  //   let x = 0;
+  //   for (const val of variantNumber) {
+  //     x += val;
+  //   }
+  //   if (x === 0) {
+  //     setHasVariants(0);
+  //   }
+  // }, [variantNumber]);
 
   useEffect(() => {
     if (hasVariants) {
@@ -147,6 +156,9 @@ export default function FormAbstract({
   }
 
   const [productName, setProductName] = useState("");
+
+  const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
+    useModal();
 
   return (
     <>
@@ -263,6 +275,7 @@ export default function FormAbstract({
           )}
 
           {hasVariants && (
+            // this opens up the variantsForm
             <div>
               {variantForm.map((variant) => {
                 if (variant.name != "colorId" && variant.name != "sizeId")
@@ -308,6 +321,7 @@ export default function FormAbstract({
                 );
               })}
               <Button
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   setVariantTable(1);

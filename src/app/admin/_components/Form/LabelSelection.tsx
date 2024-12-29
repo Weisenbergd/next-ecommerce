@@ -16,6 +16,7 @@ import {
   TypeInitialState,
   TypeSize,
 } from "@/lib/types";
+import { useModal } from "../Modal/ModalContext";
 
 type Props = {
   name: string;
@@ -43,13 +44,9 @@ export default function LabelSelection({
     defaultValueId?.toString()
   );
   ////
-  // Modal Stuff -- for embedded modal forms
-  // for these message: [message, name of category, id#]
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalFormState, setModalFormState] = useState<TypeInitialState>({
-    status: "",
-    message: [""],
-  });
+
+  const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
+    useModal();
 
   ////
   // Drop Down Stuff -- this component
@@ -63,7 +60,7 @@ export default function LabelSelection({
     }));
   };
 
-  ////
+  //
   // Controlled State so that placeholder updates to the most recent modalForm submission
   const [placeHolderAfterSubmit, setPlaceHolderAfterSubmit] = useState<
     Record<string, string>
@@ -89,18 +86,25 @@ export default function LabelSelection({
   // do i need this?
   if (editting === undefined) editting = true;
 
+  useEffect(() => {
+    console.log(modalFormState);
+  });
+
+  // so that only one of the modals is open at a time
+  const [modalTarget, setModalTarget] = useState("");
+
+  useEffect(() => {
+    if (isModalOpen === false) setModalTarget("");
+  }, [isModalOpen]);
+
   return (
     <>
       {form != "addProduct" && (
         <input hidden form={form} name={name} value={selected} readOnly />
       )}
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
-          <ModalForm
-            setModalFormState={setModalFormState}
-            selectionTarget={label}
-            closeModal={() => setIsModalOpen(false)}
-          />
+      {isModalOpen && modalTarget === label && (
+        <Modal>
+          <ModalForm selectionTarget={label} />
         </Modal>
       )}
       {editting === false ? (
@@ -113,7 +117,10 @@ export default function LabelSelection({
           <Select
             required
             open={dropdownOpen[name] || false}
-            onOpenChange={() => toggleDropdown(name)}
+            onOpenChange={(e) => {
+              toggleDropdown(name);
+              e === true && setModalTarget(label);
+            }}
             name={name}
             defaultValue={modalFormState.message[3]?.toString() || ""}
             value={selected}

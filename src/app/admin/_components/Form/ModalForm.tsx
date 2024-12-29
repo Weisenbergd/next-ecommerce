@@ -9,23 +9,24 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { addColor } from "../../_actions/colors";
 import { addSize } from "../../_actions/size";
+import { useModal } from "../Modal/ModalContext";
 
 type Props = {
-  closeModal: () => void;
+  // closeModal: () => void;
   selectionTarget: string;
-  setModalFormState: Dispatch<
-    SetStateAction<{
-      status: string;
-      message: (string | number)[];
-    }>
-  >;
+  // setModalFormState: Dispatch<
+  //   SetStateAction<{
+  //     status: string;
+  //     message: (string | number)[];
+  //   }>
+  // >;
 };
 
 const ModalForm = ({
-  closeModal,
+  // closeModal,
   selectionTarget,
-  setModalFormState,
-}: Props) => {
+}: // setModalFormState,
+Props) => {
   const initialState: {
     status: string;
     message: (string | number)[];
@@ -47,7 +48,7 @@ const ModalForm = ({
     if (target === "size") return formActionSize;
   }
 
-  const ref = useRef<HTMLFormElement>(null);
+  const modalRef = useRef<HTMLFormElement>(null);
 
   let state = initialState;
   function getState(target: string) {
@@ -55,6 +56,9 @@ const ModalForm = ({
     if (target === "color") state = stateColor;
     if (target === "size") state = stateSize;
   }
+
+  const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
+    useModal();
 
   useEffect(() => {
     if (selectionTarget.toLowerCase() === "size") state = stateSize;
@@ -67,16 +71,16 @@ const ModalForm = ({
 
     if (state && state.status === "success") {
       setModalFormState(state);
-      closeModal();
+      setIsModalOpen(false);
     }
-  }, [state, closeModal, setModalFormState]);
+  }, [state, setIsModalOpen, setModalFormState]);
 
   return (
     <>
       <h2 className="mb-4">Add New {selectionTarget}</h2>
       <form
         id="modalForm"
-        ref={ref}
+        ref={modalRef}
         className="flex flex-col gap-4"
         action={getAction(selectionTarget.toLowerCase())}
       >
