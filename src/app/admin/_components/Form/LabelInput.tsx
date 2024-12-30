@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import clsx from "clsx";
 import { useState } from "react";
 
 type Props = {
@@ -12,15 +13,10 @@ type Props = {
   };
   placeholder?: string | number;
   name?: string;
-  setProductName?: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function LabelInput({
-  el,
-  placeholder,
-  name,
-  setProductName,
-}: Props) {
+export default function LabelInput({ el, placeholder, name }: Props) {
+  const [productName, setProductName] = useState("");
   const [state, setState] = useState(placeholder);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -42,7 +38,7 @@ export default function LabelInput({
       </Label>
       {el.name != "images" && el.name != "variantImages" && (
         <Input
-          className="text-sm dark:text-primary text-primary-foreground"
+          className={`dark:text-primary text-primary-foreground`}
           type={el.input}
           name={name ? name : el.name}
           id={el.label}
@@ -54,12 +50,11 @@ export default function LabelInput({
             placeholder && setState(e.target.value);
             setProductName && setProductName(e.target.value);
           }}
-          // multiple={el.name === "images" ? true : false}
         />
       )}
       {["images", "variantImages"].includes(el.name) && (
         <Input
-          className="text-sm dark:text-primary text-primary-foreground"
+          className={`dark:text-primary text-primary-foreground`}
           type="file"
           name={name ? name : el.name}
           id={el.label}

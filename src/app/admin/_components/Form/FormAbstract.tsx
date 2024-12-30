@@ -1,14 +1,11 @@
 "use client";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButton from "../SubmitButton";
 import React from "react";
 import LabelInput from "./LabelInput";
 import LabelSelection from "./LabelSelection";
-import { Button } from "@/components/ui/button";
-import { variantForm } from "./FormStructure";
 import { redirect } from "next/navigation";
-import VariantTable from "../Table/VariantTable";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,9 +17,8 @@ import {
   TypeSelectPlaceholders,
   TypeSize,
 } from "@/lib/types";
-import { useModal } from "../Modal/ModalContext";
-import VariantCheckbox from "./VariantCheckbox";
 import VariantCheckBoxTable from "./VariantCheckBoxTable";
+import { productFormBase, productFormVar } from "./FormStructure";
 
 type Props = {
   edit?: {
@@ -42,7 +38,7 @@ type Props = {
   placeholders?: TypeInputPlaceholders;
   selectPlaceholders?: TypeSelectPlaceholders;
   action: TypeAction;
-  formStructure: TypeFormStructure;
+  // formStructure: TypeFormStructure;
   categories: TypeCategory[];
   sizes: TypeSize[];
   colors: TypeColor[];
@@ -55,7 +51,7 @@ export default function FormAbstract({
   placeholders,
   selectPlaceholders,
   action,
-  formStructure,
+  // formStructure,
   categories,
   sizes,
   colors,
@@ -66,34 +62,14 @@ export default function FormAbstract({
     status: "",
     message: [""],
   };
-
-  // don't think im using this
-  // const [variantNumber, setVariantNumber] = useState<number[]>([]);
   const [state, formAction] = useFormState(action, initialState);
-
-  // 1 == hasVariants (opens variantForm); 0 == no var
-  // keep this here
   const [hasVariants, setHasVariants] = useState(0);
-  // 1 == variantTable set; 0 == variantTable not set
-
   const ref = useRef<HTMLFormElement>(null);
-
-  // useEffect(() => {
-  //   let x = 0;
-  //   for (const val of variantNumber) {
-  //     x += val;
-  //   }
-  //   if (x === 0) {
-  //     setHasVariants(0);
-  //   }
-  // }, [variantNumber]);
-
   useEffect(() => {
     if (hasVariants) {
       setHasVariants(1);
     }
   }, []);
-
   useEffect(() => {
     if (state && state.status === "error") {
       console.log(state);
@@ -104,7 +80,6 @@ export default function FormAbstract({
       redirect(`/admin/products/${state.message[1]}`);
     }
   }, [state]);
-
   function pickSelection(label: string) {
     if (label === "Category") return categories;
     if (label === "Color") return colors;
@@ -112,14 +87,9 @@ export default function FormAbstract({
     else throw Error("programmer error -- problem with selection passing");
   }
 
-  const [productName, setProductName] = useState("");
-
-  const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
-    useModal();
-
   return (
-    <>
-      {!edit && <h2 className="capitalize mb-6">Add {name}</h2>}
+    <div>
+      <h2 className="capitalize mb-6">Add {name}</h2>
       <form
         name="test"
         ref={ref}
@@ -127,31 +97,21 @@ export default function FormAbstract({
         action={formAction}
         className="flex flex-col gap-4"
       >
-        {edit && <input type="hidden" name="id" value={edit.id} />}
-        {edit && edit.variants?.length === 1 && (
-          <input type="hidden" name="variantId" value={edit.variants[0].id} />
-        )}
-        <input type="hidden" name="variant" value={hasVariants} />
-        {formStructure.map((el, i) => {
+        {productFormBase.map((el, i) => {
           const key: keyof TypeInputPlaceholders = el.label
             .toLowerCase()
             .replace(/\s/g, "") as keyof TypeInputPlaceholders;
           const keySelect: keyof TypeSelectPlaceholders = el.label
             .toLowerCase()
             .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
-
           return (
             <div key={el.label + i} className="flex flex-col gap-2">
-              {el.input !== "selection" &&
-                !el.variant &&
-                !(edit && el.label === "Images") && (
-                  <LabelInput
-                    setProductName={setProductName}
-                    el={el}
-                    placeholder={placeholders && placeholders[key]}
-                  />
-                )}
-              {el.input === "selection" && !el.variant && (
+              {el.input !== "selection" ? (
+                <LabelInput
+                  el={el}
+                  placeholder={placeholders && placeholders[key]}
+                />
+              ) : (
                 <LabelSelection
                   name={el.name}
                   label={el.label}
@@ -166,61 +126,52 @@ export default function FormAbstract({
             </div>
           );
         })}
-        <>
-          {!edit && (
-            <VariantCheckBoxTable
-              hasVariants={hasVariants}
-              colors={colors}
-              sizes={sizes}
-              setHasVariants={setHasVariants}
-            />
-          )}
-          {!hasVariants && (
-            <>
-              <div>
-                <Label>Image</Label>
-                <Input
-                  type="file"
-                  multiple
-                  name={"images"}
-                  form="productForm"
-                />
-              </div>
-              {formStructure.map((el, i) => {
-                const key: keyof TypeInputPlaceholders = el.label
-                  .toLowerCase()
-                  .replace(/\s/g, "") as keyof TypeInputPlaceholders;
-                const keySelect: keyof TypeSelectPlaceholders = el.label
-                  .toLowerCase()
-                  .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
+        <VariantCheckBoxTable
+          hasVariants={hasVariants}
+          colors={colors}
+          sizes={sizes}
+          setHasVariants={setHasVariants}
+        />
 
-                return (
-                  <div key={el.label + i} className="flex flex-col gap-2">
-                    {el.input !== "selection" && el.variant && (
-                      <LabelInput
-                        el={el}
-                        placeholder={placeholders && placeholders[key]}
-                      />
-                    )}
-                    {el.input === "selection" && el.variant && (
-                      <LabelSelection
-                        placeholder=""
-                        editting={true}
-                        name={el.name}
-                        label={el.label}
-                        selection={pickSelection(el.label)}
-                        form="addProduct"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </>
-          )}
-        </>
-        {/* <input type="hidden" name="varNum" value={variantColors.length} /> */}
+        {!hasVariants && (
+          <div>
+            {/* <div>
+              <Label>Image</Label>
+              <Input type="file" multiple name={"images"} form="productForm" />
+            </div> */}
+            {productFormVar.map((el, i) => {
+              const key: keyof TypeInputPlaceholders = el.label
+                .toLowerCase()
+                .replace(/\s/g, "") as keyof TypeInputPlaceholders;
+              const keySelect: keyof TypeSelectPlaceholders = el.label
+                .toLowerCase()
+                .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
+
+              return (
+                <div key={el.label + i} className="flex flex-col gap-2">
+                  {el.input !== "selection" && (
+                    <LabelInput
+                      el={el}
+                      placeholder={placeholders && placeholders[key]}
+                    />
+                  )}
+                  {el.input === "selection" && (
+                    <LabelSelection
+                      placeholder=""
+                      editting={true}
+                      name={el.name}
+                      label={el.label}
+                      selection={pickSelection(el.label)}
+                      form="addProduct"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
         <SubmitButton />
       </form>
-    </>
+    </div>
   );
 }

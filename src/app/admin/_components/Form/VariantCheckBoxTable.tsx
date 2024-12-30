@@ -33,11 +33,9 @@ export default function VariantCheckBoxTable({
   ) {
     if (checked === true) {
       if (name === "sizeId" || name === "size") {
-        console.log("this is in the sizeid");
         setVariantSizes([...variantSizes, { size: varName, id }]);
       }
       if (name === "colorId" || name === "color") {
-        console.log("this is in the colorid");
         setVariantColors([...variantColors, { color: varName, id }]);
       }
     } else {
@@ -55,7 +53,7 @@ export default function VariantCheckBoxTable({
   }
 
   return (
-    <>
+    <div>
       <div>
         <h2>Will this product have different variants?</h2>
         <div>
@@ -73,21 +71,23 @@ export default function VariantCheckBoxTable({
           </Button>
         </div>
       </div>
-      {hasVariants && (
+      {hasVariants ? (
+        // notes -- has variants is number (can't use && without output '0')
+        // todo -- change to boolean -- check backend
         <VariantCheckbox
           colors={colors}
           sizes={sizes}
           handleVariant={handleVariant}
           setVariantTable={setVariantTable}
         />
-      )}
-      {variantTable && (
+      ) : null}
+      {variantTable ? (
         <VariantTable
           variantColors={variantColors}
           variantSizes={variantSizes}
         />
-      )}
+      ) : null}
       <input type="hidden" name="varNum" value={variantColors.length} />
-    </>
+    </div>
   );
 }

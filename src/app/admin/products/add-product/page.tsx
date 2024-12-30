@@ -1,7 +1,6 @@
 import { TypeCategory, TypeColor, TypeSize } from "@/lib/types";
 import { addProduct } from "../../_actions/Products/addProduct";
 import FormAbstract from "../../_components/Form/FormAbstract";
-import { productForm } from "../../_components/Form/FormStructure";
 import ShowHideWrapper from "../../_components/ShowHideWrapper";
 import { getCategories, getColors, getSizes } from "../../_fetches/products";
 
@@ -12,7 +11,6 @@ export default async function page() {
 
   return (
     <FormAbstract
-      formStructure={productForm}
       action={addProduct}
       categories={category}
       sizes={size}

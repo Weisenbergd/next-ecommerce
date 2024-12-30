@@ -1,5 +1,5 @@
 import { TypeColor, TypeSize } from "@/lib/types";
-import { variantForm } from "./FormStructure";
+import { productFormVar } from "./FormStructure";
 import { Button } from "@/components/ui/button";
 import {
   ChangeEvent,
@@ -88,7 +88,7 @@ export default function VariantCheckbox({
           <ModalForm selectionTarget={selectionTarget} />
         </Modal>
       )}
-      {variantForm.map((variantOutline) => {
+      {productFormVar.map((variantOutline) => {
         if (variantOutline.name != "colorId" && variantOutline.name != "sizeId")
           return null;
         let x = variantOutline.label.toLowerCase();
