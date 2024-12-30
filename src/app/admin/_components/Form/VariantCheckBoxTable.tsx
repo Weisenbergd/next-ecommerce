@@ -26,29 +26,28 @@ export default function VariantCheckBoxTable({
   >([]);
 
   function handleVariant(
-    e: ChangeEvent<HTMLInputElement>,
-    name: string,
-    id: string
+    varName: string, // "cool blue"
+    name: string, // "color" or "colorId"
+    id: string, // 83984
+    checked: boolean
   ) {
-    if (e.target.checked === true) {
-      if (name === "sizeId") {
+    if (checked === true) {
+      if (name === "sizeId" || name === "size") {
         console.log("this is in the sizeid");
-        setVariantSizes([...variantSizes, { size: e.target.name, id }]);
+        setVariantSizes([...variantSizes, { size: varName, id }]);
       }
-      if (name === "colorId") {
+      if (name === "colorId" || name === "color") {
         console.log("this is in the colorid");
-        setVariantColors([...variantColors, { color: e.target.name, id }]);
+        setVariantColors([...variantColors, { color: varName, id }]);
       }
     } else {
-      if (name === "sizeId") {
-        const updatedSizes = variantSizes.filter(
-          (el) => el.size !== e.target.name
-        );
+      if (name === "sizeId" || name === "size") {
+        const updatedSizes = variantSizes.filter((el) => el.size !== varName);
         setVariantSizes(updatedSizes);
       }
-      if (name === "colorId") {
+      if (name === "colorId" || name === "color") {
         const updatedColors = variantColors.filter(
-          (el) => el.color !== e.target.name
+          (el) => el.color !== varName
         );
         setVariantColors(updatedColors);
       }
