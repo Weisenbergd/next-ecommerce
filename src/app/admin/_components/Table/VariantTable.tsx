@@ -25,39 +25,26 @@ type Props = {
 function VariantTable({ variantColors, variantSizes }: Props) {
   // need state update to refresh when checkbox checked/unchecked
   const [something, setSomething] = useState(0);
-  const [board, setBoard] = useState<number[][]>([[], []]);
+  const [board, setBoard] = useState<number[][]>([]);
 
+  // fixed so that now should be updating
   useEffect(() => {
-    let grid = [];
-    for (let color of variantColors) {
-      let axis = [];
-      for (let size of variantSizes) {
-        axis.push(1);
-      }
-      grid.push(axis);
-    }
+    // Initialize the board whenever variantColors or variantSizes changes
+    const grid = variantColors.map(() => {
+      return variantSizes.map(() => 1); // Set initial value to 1 (checked) for each combination of color and size
+    });
     setBoard(grid);
-  }, []);
+  }, [variantColors, variantSizes]);
 
-  useEffect(() => {
-    console.log(board);
-  });
-
+  // making checkboxes controlled so to update table
   function handleCheck(e: ChangeEvent<HTMLInputElement>, i: number, j: number) {
-    if (e.target.checked === true) {
-      let x = board;
-      x[i][j] = 1;
-      setBoard(x);
-    }
-
-    if (e.target.checked === false) {
-      let x = board;
-      x[i][j] = 0;
-      setBoard(x);
-    }
+    const newBoard = [...board];
+    newBoard[i][j] = e.target.checked ? 1 : 0;
+    setBoard(newBoard);
   }
 
-  // if (board[0] === undefined) return null;
+  // don't change any of the name properties !!!!! important !!!!
+  // reexamine this component -- why im using hidden inputs again ??
   return (
     <>
       <Table>
@@ -103,11 +90,8 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                               <Input
                                 className="min-w-3"
                                 type="checkbox"
-                                defaultChecked
-                                onChange={(e) => {
-                                  setSomething(something + 1);
-                                  handleCheck(e, i, j);
-                                }}
+                                checked={board[i]?.[j] === 1}
+                                onChange={(e) => handleCheck(e, i, j)}
                                 form="used to manage state for hidden input bellow"
                                 name={
                                   i +
@@ -121,12 +105,12 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                 }
                               />
                               <Input
-                                key={board[i][j]}
+                                key={board[i]?.[j]}
                                 className="min-w-3"
-                                defaultValue={
-                                  board[i][j] ? board[i][j].valueOf() : 0
-                                }
+                                defaultValue={board[i]?.[j] || 0}
                                 type="hidden"
+                                checked={board[i]?.[j] === 1 || true}
+                                onChange={(e) => handleCheck(e, i, j)}
                                 name={
                                   i +
                                   ":" +
@@ -175,8 +159,8 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                 type="number"
                                 defaultValue={0}
                                 step={0.01}
-                                required={board[i][j] === 1 ? true : false}
-                                min={board[i][j] === 1 ? 0.01 : 0}
+                                required={board[i]?.[j] === 1 ? true : false}
+                                min={board[i]?.[j] === 1 ? 0.01 : 0}
                                 name={
                                   i +
                                   ":" +

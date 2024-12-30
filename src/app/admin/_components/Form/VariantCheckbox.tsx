@@ -49,7 +49,7 @@ export default function VariantCheckbox({
     setCheckedState((prev) => ({ ...initialCheckedState, ...prev }));
   }, [sizes, colors]);
 
-  // Sync with modalFormState
+  // code to automatically check whatever color/size just added
   useEffect(() => {
     if (
       modalFormState &&
@@ -64,15 +64,7 @@ export default function VariantCheckbox({
         ...prev,
         [key]: true,
       }));
-      handleVariant(
-        // { target: { checked: true } } as ChangeEvent<HTMLInputElement>,
-        // name as string,
-        // id
-        varName,
-        name,
-        id,
-        true
-      );
+      handleVariant(varName, name, id, true);
     }
   }, [modalFormState]);
 
@@ -88,18 +80,6 @@ export default function VariantCheckbox({
     const [name, id] = key.split("-");
     handleVariant(e.target.name, name, id, e.target.checked);
   };
-  /*
-message: Array(4) [ "Added color asdfasdfcc", "color", "asdfasdfcc", … ]
-​​
-0: "Added color asdfasdfcc"
-​​
-1: "color"
-​​
-2: "asdfasdfcc"
-​​
-3: 80
-
-  */
 
   return (
     <div>
