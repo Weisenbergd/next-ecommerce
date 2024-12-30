@@ -20,8 +20,9 @@ import {
   TypeSelectPlaceholders,
   TypeSize,
 } from "@/lib/types";
-import Modal from "../Modal/Modal";
 import { useModal } from "../Modal/ModalContext";
+import VariantCheckbox from "./VariantCheckbox";
+import VariantCheckBoxTable from "./VariantCheckBoxTable";
 
 type Props = {
   edit?: {
@@ -38,7 +39,6 @@ type Props = {
       };
     }[];
   };
-  // hasVariants?: boolean;
   placeholders?: TypeInputPlaceholders;
   selectPlaceholders?: TypeSelectPlaceholders;
   action: TypeAction;
@@ -50,11 +50,7 @@ type Props = {
   [key: string]: any;
 };
 
-// important -- this form no longer used for editting
-// can refactor
-
 // important -- current code assumes only 2 properties for variants table: colors and sizes
-
 export default function FormAbstract({
   placeholders,
   selectPlaceholders,
@@ -73,52 +69,14 @@ export default function FormAbstract({
 
   // don't think im using this
   // const [variantNumber, setVariantNumber] = useState<number[]>([]);
-
   const [state, formAction] = useFormState(action, initialState);
 
-  const [selectionTarget, setSelectionTarget] = useState("");
-
-  const [variantColors, setVariantColors] = useState<
-    { color: string; id: string }[]
-  >([]);
-  const [variantSizes, setVariantSizes] = useState<
-    { size: string; id: string }[]
-  >([]);
-
   // 1 == hasVariants (opens variantForm); 0 == no var
+  // keep this here
   const [hasVariants, setHasVariants] = useState(0);
   // 1 == variantTable set; 0 == variantTable not set
-  const [variantTable, setVariantTable] = useState(0);
 
   const ref = useRef<HTMLFormElement>(null);
-
-  function handleVariant(
-    e: ChangeEvent<HTMLInputElement>,
-    name: string,
-    id: string
-  ) {
-    if (e.target.checked) {
-      if (name === "sizeId") {
-        setVariantSizes([...variantSizes, { size: e.target.name, id }]);
-      }
-      if (name === "colorId") {
-        setVariantColors([...variantColors, { color: e.target.name, id }]);
-      }
-    } else {
-      if (name === "sizeId") {
-        const updatedSizes = variantSizes.filter(
-          (el) => el.size !== e.target.name
-        );
-        setVariantSizes(updatedSizes);
-      }
-      if (name === "colorId") {
-        const updatedColors = variantColors.filter(
-          (el) => el.color !== e.target.name
-        );
-        setVariantColors(updatedColors);
-      }
-    }
-  }
 
   // useEffect(() => {
   //   let x = 0;
@@ -143,7 +101,6 @@ export default function FormAbstract({
     if (state && state.status === "success") {
       console.log(state);
       if (ref.current) ref.current.reset();
-      setSelectionTarget("");
       redirect(`/admin/products/${state.message[1]}`);
     }
   }, [state]);
@@ -199,11 +156,11 @@ export default function FormAbstract({
                   name={el.name}
                   label={el.label}
                   selection={pickSelection(el.label)}
-                  setSelectionTarget={setSelectionTarget}
                   placeholder={
                     selectPlaceholders && selectPlaceholders[keySelect]
                   }
                   form="addProduct"
+                  editting={true}
                 />
               )}
             </div>
@@ -211,25 +168,13 @@ export default function FormAbstract({
         })}
         <>
           {!edit && (
-            <>
-              <h2>Will this product have different variants?</h2>
-              <div>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    setHasVariants(1);
-                  }}
-                  disabled={hasVariants ? true : false}
-                >
-                  Yes
-                </Button>
-                <Button type="button" onClick={() => setHasVariants(0)}>
-                  No
-                </Button>
-              </div>
-            </>
+            <VariantCheckBoxTable
+              hasVariants={hasVariants}
+              colors={colors}
+              sizes={sizes}
+              setHasVariants={setHasVariants}
+            />
           )}
-
           {!hasVariants && (
             <>
               <div>
@@ -264,7 +209,6 @@ export default function FormAbstract({
                         name={el.name}
                         label={el.label}
                         selection={pickSelection(el.label)}
-                        setSelectionTarget={setSelectionTarget}
                         form="addProduct"
                       />
                     )}
@@ -273,72 +217,8 @@ export default function FormAbstract({
               })}
             </>
           )}
-
-          {hasVariants && (
-            // this opens up the variantsForm
-            <div>
-              {variantForm.map((variant) => {
-                if (variant.name != "colorId" && variant.name != "sizeId")
-                  return null;
-                let x = variant.label.toLowerCase();
-                let mapVar = variant.label === "Size" ? sizes : colors;
-                return (
-                  <div
-                    className="bg-slate-800 flex flex-col gap-6 mb-10"
-                    key={variant.name}
-                  >
-                    <h2>{variant.label}s</h2>
-                    <Button
-                      onClick={(e) => {
-                        // setDropdownOpen({});
-                        setSelectionTarget(variant.label);
-                      }}
-                      variant="ghost"
-                      size="sm"
-                      className="absolute left-64"
-                      type="button"
-                    >
-                      Add new {variant.label}
-                    </Button>
-
-                    {mapVar.map((z) => {
-                      return (
-                        <div key={`1.${z.id}`}>
-                          <label htmlFor={z.name}>{z.name}</label>
-                          <input
-                            form="variantForm"
-                            name={z.name}
-                            id={z.name}
-                            type="checkbox"
-                            onChange={(e) =>
-                              handleVariant(e, variant.name, z.id.toString())
-                            }
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-              <Button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setVariantTable(1);
-                }}
-              >
-                test
-              </Button>
-            </div>
-          )}
-          {variantTable && (
-            <VariantTable
-              variantColors={variantColors}
-              variantSizes={variantSizes}
-            />
-          )}
         </>
-        <input type="hidden" name="varNum" value={variantColors.length} />
+        {/* <input type="hidden" name="varNum" value={variantColors.length} /> */}
         <SubmitButton />
       </form>
     </>

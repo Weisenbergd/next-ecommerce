@@ -39,6 +39,10 @@ function VariantTable({ variantColors, variantSizes }: Props) {
     setBoard(grid);
   }, []);
 
+  useEffect(() => {
+    console.log(board);
+  });
+
   function handleCheck(e: ChangeEvent<HTMLInputElement>, i: number, j: number) {
     if (e.target.checked === true) {
       let x = board;
@@ -52,6 +56,8 @@ function VariantTable({ variantColors, variantSizes }: Props) {
       setBoard(x);
     }
   }
+
+  // if (board[0] === undefined) return null;
   return (
     <>
       <Table>

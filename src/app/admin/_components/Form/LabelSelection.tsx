@@ -7,24 +7,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
-import {
-  TypeCategory,
-  TypeColor,
-  TypeInitialState,
-  TypeSize,
-} from "@/lib/types";
+import { TypeCategory, TypeColor, TypeSize } from "@/lib/types";
 import { useModal } from "../Modal/ModalContext";
 
 type Props = {
   name: string;
   label: string;
   selection: TypeCategory[] | TypeColor[] | TypeSize[];
-  setSelectionTarget?: Dispatch<SetStateAction<string>>;
   placeholder?: number | string | undefined;
-  editting?: boolean;
+  editting: boolean;
   form: string;
   defaultValueId?: number;
 };
@@ -33,7 +27,6 @@ export default function LabelSelection({
   name,
   label,
   selection,
-  setSelectionTarget,
   placeholder,
   editting,
   form,
@@ -43,13 +36,8 @@ export default function LabelSelection({
   const [selected, setSelected] = useState<string | undefined>(
     defaultValueId?.toString()
   );
-  ////
-
   const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
     useModal();
-
-  ////
-  // Drop Down Stuff -- this component
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -60,7 +48,6 @@ export default function LabelSelection({
     }));
   };
 
-  //
   // Controlled State so that placeholder updates to the most recent modalForm submission
   const [placeHolderAfterSubmit, setPlaceHolderAfterSubmit] = useState<
     Record<string, string>
@@ -69,7 +56,18 @@ export default function LabelSelection({
     color: "",
     size: "",
   });
+  // removes  modalstate when unmounting
+  // otherwise will populate after changing page
+  useEffect(() => {
+    return () => {
+      setModalFormState({
+        status: "",
+        message: [""],
+      });
+    };
+  }, []);
 
+  // Updates placeholder and modal status after successful modal form submit
   useEffect(() => {
     if (modalFormState.status === "success") {
       const key: string = modalFormState.message[1].toString();
@@ -80,15 +78,10 @@ export default function LabelSelection({
       }));
       setSelected(modalFormState.message[3].toString());
       setIsModalOpen(false);
-    } else console.log(modalFormState);
+    } else if (modalFormState.status === "failure") console.log(modalFormState);
   }, [modalFormState.message, modalFormState.status]);
 
   // do i need this?
-  if (editting === undefined) editting = true;
-
-  useEffect(() => {
-    console.log(modalFormState);
-  });
 
   // so that only one of the modals is open at a time
   const [modalTarget, setModalTarget] = useState("");
@@ -107,7 +100,9 @@ export default function LabelSelection({
           <ModalForm selectionTarget={label} />
         </Modal>
       )}
+
       {editting === false ? (
+        // this is what appears when viewing existing products while not editting
         <p>
           {label}: {placeholder}
         </p>
@@ -134,7 +129,7 @@ export default function LabelSelection({
                   modalFormState.status === "success" &&
                   modalFormState.message[1] === label.toLowerCase()
                     ? placeHolderAfterSubmit[label.toLowerCase()]
-                    : placeholder
+                    : ""
                 }
               ></SelectValue>
             </SelectTrigger>

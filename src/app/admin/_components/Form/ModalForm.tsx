@@ -1,9 +1,7 @@
 "use client";
-
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useFormState } from "react-dom";
 import { addCategories } from "../../_actions/categories";
-import { Button } from "@/components/ui/button";
 import SubmitButton from "../SubmitButton";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -11,22 +9,13 @@ import { addColor } from "../../_actions/colors";
 import { addSize } from "../../_actions/size";
 import { useModal } from "../Modal/ModalContext";
 
+// this form opens when wanting to add color or size or category
+// while adding/editting products
+// (anywhere there is a LabelSelection component)
 type Props = {
-  // closeModal: () => void;
   selectionTarget: string;
-  // setModalFormState: Dispatch<
-  //   SetStateAction<{
-  //     status: string;
-  //     message: (string | number)[];
-  //   }>
-  // >;
 };
-
-const ModalForm = ({
-  // closeModal,
-  selectionTarget,
-}: // setModalFormState,
-Props) => {
+const ModalForm = ({ selectionTarget }: Props) => {
   const initialState: {
     status: string;
     message: (string | number)[];
@@ -57,8 +46,7 @@ Props) => {
     if (target === "size") state = stateSize;
   }
 
-  const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
-    useModal();
+  const { setIsModalOpen, setModalFormState } = useModal();
 
   useEffect(() => {
     if (selectionTarget.toLowerCase() === "size") state = stateSize;
@@ -86,10 +74,8 @@ Props) => {
       >
         <Label htmlFor="name">Name</Label>
         <Input form="modalForm" name="name" id="name" required />
-
         <Label htmlFor="description">Description</Label>
         <Input form="modalForm" name="description" id="description" />
-
         <SubmitButton
           form="modalForm"
           onClick={() => {
