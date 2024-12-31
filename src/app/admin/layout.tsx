@@ -2,6 +2,15 @@ import Link from "next/link";
 import { LayoutProps } from "../../../.next/types/app/layout";
 
 const Layout = ({ children }: LayoutProps) => {
+  const navItem = [
+    { name: "Dashboard", link: "/admin" },
+    { name: "Products", link: "/admin/products" },
+    { name: "Test", link: "/admin/test" },
+    { name: "Orders", link: "/admin/orders" },
+    { name: "Stock", link: "/admin/stock" },
+    { name: "Database", link: "/admin/database" },
+  ];
+
   return (
     <>
       <nav className="bg-secondary text-secondary-foreground h-24 flex items-center justify-center text-2xl md:text-4xl md:h-30">
@@ -21,14 +30,5 @@ const Layout = ({ children }: LayoutProps) => {
     </>
   );
 };
-
-const navItem = [
-  { name: "Dashboard", link: "/admin" },
-  { name: "Products", link: "/admin/products" },
-  { name: "Test", link: "/admin/test" },
-  { name: "Orders", link: "/admin/orders" },
-  { name: "Stock", link: "/admin/stock" },
-  { name: "Database", link: "/admin/database" },
-];
 
 export default Layout;

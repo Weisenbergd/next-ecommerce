@@ -21,8 +21,8 @@ export default function RootLayout({
       <ModalProvider>
         <body
           className={cn(
-            "dark bg-background min-h-screen font-sans antialiased",
-            fontSans.variable
+            "dark bg-background min-h-screen antialiased",
+            fontSans.className
           )}
         >
           {children}

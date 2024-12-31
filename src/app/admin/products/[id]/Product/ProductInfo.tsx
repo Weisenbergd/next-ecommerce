@@ -14,6 +14,8 @@ import {
   TypeInitialState,
   TypeSetEditting,
 } from "@/lib/types";
+import { deleteProduct } from "@/app/admin/_actions/Products/deleteProduct";
+import { useRouter } from "next/navigation";
 
 type Props = {
   editting: TypeEditting;
@@ -35,11 +37,22 @@ export default function ProductInfo({
     initialState
   );
 
+  const [deleteProductState, deleteProductAction] = useFormState(
+    deleteProduct,
+    initialState
+  );
+
+  const router = useRouter();
+
   useEffect(() => {
     if (editProductState?.status === "success") {
       setEditting({ category: "", target: -1 });
     }
-  }, [editProductState]);
+    if (deleteProductState?.status === "success") {
+      console.log("test");
+      router.refresh;
+    }
+  }, [editProductState, deleteProductState, router]);
 
   const formatCreatedAt = formatDateTime(product.createdAt);
   const formatUpdatedAt = formatDateTime(product.updatedAt);
@@ -93,14 +106,24 @@ export default function ProductInfo({
       <li>
         <div>
           {editting.category === "product" && (
-            <FormButton
-              form="editProduct"
-              action={editProductAction}
-              hiddenInputNames="productId"
-              hiddenInputValues={product.id}
-            >
-              Submit Changes
-            </FormButton>
+            <>
+              <FormButton
+                form="editProduct"
+                action={editProductAction}
+                hiddenInputNames="productId"
+                hiddenInputValues={product.id}
+              >
+                Submit Changes
+              </FormButton>
+              <FormButton
+                form="deleteProduct"
+                hiddenInputNames="productId"
+                hiddenInputValues={product.id}
+                action={deleteProductAction}
+              >
+                Delete Product
+              </FormButton>
+            </>
           )}
           <EditButton
             editting={editting}

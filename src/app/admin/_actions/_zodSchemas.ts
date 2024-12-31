@@ -112,3 +112,7 @@ export const editProductSchema = z.object({
     .min(1, { message: "categoryId required" })
     .transform((str) => parseInt(str, 10)),
 });
+
+export const deleteProductSchema = z.object({
+  productId: z.string().transform((str) => parseInt(str, 10)),
+});

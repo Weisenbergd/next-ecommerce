@@ -51,7 +51,7 @@ model Variant {
   updatedAt      DateTime     @updatedAt
   variantGroup   VariantGroup @relation(fields: [variantGroupId], references: [id], onDelete: Cascade)
   size           Size         @relation(fields: [sizeId], references: [id])
-  product        Product      @relation(fields: [productId], references: [id])
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId      Int
   cartItem       CartItem[]
 }
