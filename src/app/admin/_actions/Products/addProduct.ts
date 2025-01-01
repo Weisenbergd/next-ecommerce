@@ -97,18 +97,6 @@ export async function addProduct(prevState: any, formData: FormData) {
           });
         }
       }
-
-      // old code for images also tied to product
-      // for (const image of postedImages) {
-      //   if (image.name === -1 && image.url != null) {
-      //     await prisma.image.create({
-      //       data: {
-      //         url: image.url,
-      //         productId,
-      //       },
-      //     });
-      //   }
-      // }
       revalidatePath("/");
       return {
         status: "success",

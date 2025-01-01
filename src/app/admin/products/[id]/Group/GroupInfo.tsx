@@ -8,6 +8,7 @@ import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
 import { TypeColor, TypeDeepProduct, TypeVariantGroup } from "@/lib/types";
 import PreFormButton from "../PreFormButton";
 import { addGroup } from "@/app/admin/_actions/Groups/addGroup";
+import { deleteProduct } from "@/app/admin/_actions/Products/deleteProduct";
 type Props = {
   variantGroup: TypeVariantGroup;
   colors: TypeColor[];
@@ -42,26 +43,21 @@ export default function GroupInfo({
     editGroup,
     initialState
   );
+
   const [deleteGroupState, deleteGroupAction] = useFormState(
     deleteGroup,
     initialState
   );
-
-  const [addGroupState, addGroupAction] = useFormState(addGroup, initialState);
 
   useEffect(() => {
     if (editGroupState?.status === "success") {
       setEditting({ category: "", target: -1 });
     }
 
-    if (addGroupState?.status === "success") {
-      setEditting({ category: "", target: -1 });
-    }
-
     if (deleteGroupState?.status === "success") {
       setEditting({ category: "", target: -1 });
     }
-  }, [editGroupState, addGroupState, deleteGroupState]);
+  }, [editGroupState, deleteGroupState]);
 
   return (
     <ol>
@@ -96,18 +92,6 @@ export default function GroupInfo({
             >
               Delete Group
             </FormButton>
-            <div>
-              <PreFormButton
-                label="color"
-                action={addGroupAction}
-                form="addGroup"
-                hiddenInputNames="productId"
-                hiddenInputValues={product.id}
-                selection={colors}
-              >
-                Add Group
-              </PreFormButton>
-            </div>
           </li>
         </>
       ) : (

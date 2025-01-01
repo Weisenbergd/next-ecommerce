@@ -56,7 +56,28 @@ export const editVariantSchema = z.object({
 
 export const addGroupSchema = z.object({
   productId: z.string().transform((str) => parseInt(str, 10)),
-  colorId: z.string().transform((str) => parseInt(str, 10)),
+  variantGroups: z.array(
+    z.object({
+      colorId: z.string().min(1, { message: "colorId required" }),
+      // images: imageShema.optional(),
+      images: z.array(imageSchema),
+      description: z.string().optional(),
+      variants: z.array(
+        z.object({
+          // variantName: z.string(),
+          sizeId: z.string().min(1, { message: "sizeId required" }),
+          inventory: z.preprocess(
+            (a) => parseFloat(a as string),
+            z.number().gte(0, { message: "Stock must be at least 0" })
+          ),
+          price: z.preprocess(
+            (a) => parseFloat(a as string),
+            z.number().gte(0.01, { message: "price must be at least 0.01" })
+          ),
+        })
+      ),
+    })
+  ),
 });
 
 export const deleteGroupSchema = z.object({
@@ -73,11 +94,6 @@ export const editGroupSchema = z.object({
 export const productSchema = z.object({
   name: z.string().min(1, { message: "Product Name is required" }),
   description: z.string().min(1, { message: "description required" }),
-  // images: z.array(imageSchema),
-  // basePrice: z.preprocess(
-  //   (a) => parseFloat(a as string),
-  //   z.number().gte(0.01, { message: "price must be at least 0.01" })
-  // ),
   categoryId: z.string().min(1, { message: "categoryId required" }),
   variantGroups: z.array(
     z.object({

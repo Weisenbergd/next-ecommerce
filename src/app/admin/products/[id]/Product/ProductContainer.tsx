@@ -44,6 +44,8 @@ export default function ProductContainer({
             editting={editting}
             setEditting={setEditting}
             initialState={initialState}
+            colors={colors}
+            sizes={sizes}
           />
           {product.variantGroups[0] && (
             <li>

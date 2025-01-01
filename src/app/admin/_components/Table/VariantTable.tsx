@@ -20,9 +20,10 @@ type Props = {
     size: string;
     id: string;
   }[];
+  form?: string;
 };
 
-function VariantTable({ variantColors, variantSizes }: Props) {
+function VariantTable({ variantColors, variantSizes, form }: Props) {
   // need state update to refresh when checkbox checked/unchecked
   const [something, setSomething] = useState(0);
   const [board, setBoard] = useState<number[][]>([]);
@@ -66,10 +67,14 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                     type="file"
                     multiple
                     name={i + ":" + color.color + ";images"}
+                    form={form}
                   />
                 </TableCell>
                 <TableCell>
-                  <Input name={i + ":" + color.color + ";description"} />
+                  <Input
+                    name={i + ":" + color.color + ";description"}
+                    form={form}
+                  />
                 </TableCell>
                 <TableCell>
                   <Table>
@@ -86,7 +91,12 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                         return (
                           <TableRow key={size.size}>
                             <TableCell>
-                              <input hidden name="varVar" defaultValue={j} />
+                              {/* <input
+                                hidden
+                                name="varVar"
+                                defaultValue={j}
+                                form={form}
+                              /> */}
                               <Input
                                 className="min-w-3"
                                 type="checkbox"
@@ -121,6 +131,7 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                   size.size +
                                   ";add"
                                 }
+                                form={form}
                               />
 
                               <input
@@ -136,6 +147,7 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                 }
                                 type="hidden"
                                 value={size.id}
+                                form={form}
                               />
                               <input
                                 name={
@@ -150,6 +162,7 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                 }
                                 type="hidden"
                                 value={color.id}
+                                form={form}
                               />
                             </TableCell>
                             <TableCell>{size.size}</TableCell>
@@ -171,6 +184,7 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                   size.size +
                                   ";price"
                                 }
+                                form={form}
                               />
                             </TableCell>
                             <TableCell>
@@ -188,6 +202,7 @@ function VariantTable({ variantColors, variantSizes }: Props) {
                                   size.size +
                                   ";inventory"
                                 }
+                                form={form}
                               />
                             </TableCell>
                           </TableRow>

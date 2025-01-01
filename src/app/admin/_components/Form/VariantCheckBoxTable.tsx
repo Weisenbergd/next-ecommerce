@@ -8,7 +8,9 @@ type Props = {
   hasVariants: number;
   colors: TypeColor[];
   sizes: TypeSize[];
-  setHasVariants: React.Dispatch<React.SetStateAction<number>>;
+  setHasVariants?: React.Dispatch<React.SetStateAction<number>>;
+  existingColors?: number[];
+  form?: string;
 };
 
 export default function VariantCheckBoxTable({
@@ -16,6 +18,8 @@ export default function VariantCheckBoxTable({
   colors,
   sizes,
   setHasVariants,
+  existingColors,
+  form,
 }: Props) {
   const [variantTable, setVariantTable] = useState(0);
   const [variantColors, setVariantColors] = useState<
@@ -55,21 +59,25 @@ export default function VariantCheckBoxTable({
   return (
     <div>
       <div>
-        <h2>Will this product have different variants?</h2>
-        <div>
-          <Button
-            type="button"
-            onClick={() => {
-              setHasVariants(1);
-            }}
-            disabled={hasVariants ? true : false}
-          >
-            Yes
-          </Button>
-          <Button type="button" onClick={() => setHasVariants(0)}>
-            No
-          </Button>
-        </div>
+        {setHasVariants ? (
+          <div>
+            <h2>Will this product have different variants?</h2>
+            <div>
+              <Button
+                type="button"
+                onClick={() => {
+                  setHasVariants(1);
+                }}
+                disabled={hasVariants ? true : false}
+              >
+                Yes
+              </Button>
+              <Button type="button" onClick={() => setHasVariants(0)}>
+                No
+              </Button>
+            </div>{" "}
+          </div>
+        ) : null}
       </div>
       {hasVariants ? (
         // notes -- has variants is number (can't use && without output '0')
@@ -79,15 +87,22 @@ export default function VariantCheckBoxTable({
           sizes={sizes}
           handleVariant={handleVariant}
           setVariantTable={setVariantTable}
+          existingColors={existingColors}
         />
       ) : null}
       {variantTable ? (
         <VariantTable
           variantColors={variantColors}
           variantSizes={variantSizes}
+          form={form}
         />
       ) : null}
-      <input type="hidden" name="varNum" value={variantColors.length} />
+      <input
+        type="hidden"
+        name="varNum"
+        value={variantColors.length}
+        form={form}
+      />
     </div>
   );
 }

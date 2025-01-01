@@ -8,14 +8,18 @@ import InputEdit from "@/app/admin/_components/Form/InputEdit";
 import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
 import {
   TypeCategory,
+  TypeColor,
   TypeDeepProduct,
   TypeEditting,
   TypeIndexDeepProduct,
   TypeInitialState,
   TypeSetEditting,
+  TypeSize,
 } from "@/lib/types";
 import { deleteProduct } from "@/app/admin/_actions/Products/deleteProduct";
 import { useRouter } from "next/navigation";
+import PreFormButton from "../PreFormButton";
+import { addGroup } from "@/app/admin/_actions/Groups/addGroup";
 
 type Props = {
   editting: TypeEditting;
@@ -23,6 +27,8 @@ type Props = {
   product: TypeDeepProduct;
   categories: TypeCategory[];
   initialState: TypeInitialState;
+  colors: TypeColor[];
+  sizes: TypeSize[];
 };
 
 export default function ProductInfo({
@@ -31,34 +37,38 @@ export default function ProductInfo({
   product,
   categories,
   initialState,
+  colors,
+  sizes,
 }: Props) {
   const [editProductState, editProductAction] = useFormState(
     editProduct,
     initialState
   );
 
+  const router = useRouter();
+
+  const [addGroupState, addGroupAction] = useFormState(addGroup, initialState);
   const [deleteProductState, deleteProductAction] = useFormState(
     deleteProduct,
     initialState
   );
-
-  const router = useRouter();
 
   useEffect(() => {
     if (editProductState?.status === "success") {
       setEditting({ category: "", target: -1 });
     }
     if (deleteProductState?.status === "success") {
-      console.log("test");
       router.refresh;
     }
-  }, [editProductState, deleteProductState, router]);
+    if (addGroupState?.status === "success") {
+      setEditting({ category: "", target: -1 });
+    }
+  }, [editProductState, deleteProductState, addGroupState, router]);
 
   const formatCreatedAt = formatDateTime(product.createdAt);
   const formatUpdatedAt = formatDateTime(product.updatedAt);
 
   const productFormat = ["name", "description", "category"];
-
   return (
     // everything inside <ol>
     <>
@@ -85,6 +95,7 @@ export default function ProductInfo({
                 label={name}
                 editting={editting.category == "product"}
                 defaultValueId={product.categoryId}
+                placeholder={product.category.name}
               />
             )}
           </li>
@@ -123,6 +134,19 @@ export default function ProductInfo({
               >
                 Delete Product
               </FormButton>
+              <PreFormButton
+                label="color"
+                action={addGroupAction}
+                form="addGroup"
+                hiddenInputNames="productId"
+                hiddenInputValues={product.id}
+                selection={colors}
+                colors={colors}
+                sizes={sizes}
+                groups={product.variantGroups}
+              >
+                Add Groups
+              </PreFormButton>
             </>
           )}
           <EditButton

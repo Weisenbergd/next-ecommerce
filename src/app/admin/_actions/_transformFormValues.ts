@@ -1,4 +1,4 @@
-export function transformFormValues(formData: FormData) {
+export function transformFormValues(formData: FormData, group?: string) {
   const formValues: { [key: string]: any } = {};
 
   const valueMap: { [key: string]: any[] } = {};
@@ -26,5 +26,6 @@ export function transformFormValues(formData: FormData) {
       formValues[key] = valueMap[key];
     }
   }
+
   return formValues;
 }

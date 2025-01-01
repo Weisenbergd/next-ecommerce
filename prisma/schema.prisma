@@ -30,15 +30,16 @@ model Product {
 }
 
 model VariantGroup {
-  id        Int       @id @default(autoincrement())
-  productId Int
-  colorId   Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  color     Color     @relation(fields: [colorId], references: [id])
-  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  images    Image[]
-  variants  Variant[]
+  id          Int       @id @default(autoincrement())
+  productId   Int
+  colorId     Int
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  color       Color     @relation(fields: [colorId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images      Image[]
+  variants    Variant[]
 }
 
 model Variant {

@@ -2,6 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 
 export type TypeDeepProduct = {
   variantGroups: TypeVariantGroup[];
+  category: {
+    id: number;
+    name: string;
+  };
 } & TypeDates &
   TypeLightProduct;
 

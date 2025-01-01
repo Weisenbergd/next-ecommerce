@@ -17,7 +17,7 @@ type Props = {
   name: string;
   label: string;
   selection: TypeCategory[] | TypeColor[] | TypeSize[];
-  placeholder?: number | string | undefined;
+  placeholder: number | string | undefined | null;
   editting: boolean;
   form: string;
   defaultValueId?: number;
@@ -34,7 +34,7 @@ export default function LabelSelection({
 }: Props) {
   // selected is the id of whats selected
   const [selected, setSelected] = useState<string | undefined>(
-    defaultValueId?.toString()
+    defaultValueId?.toString() || ""
   );
   const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
     useModal();
@@ -117,8 +117,8 @@ export default function LabelSelection({
               e === true && setModalTarget(label);
             }}
             name={name}
-            defaultValue={modalFormState.message[3]?.toString() || ""}
-            value={selected}
+            // defaultValue={modalFormState.message[3]?.toString() || ""}
+            value={selected || ""}
             onValueChange={(e) => {
               setSelected(e);
             }}
@@ -129,7 +129,7 @@ export default function LabelSelection({
                   modalFormState.status === "success" &&
                   modalFormState.message[1] === label.toLowerCase()
                     ? placeHolderAfterSubmit[label.toLowerCase()]
-                    : ""
+                    : placeholder?.toString() || "Select an option"
                 }
               ></SelectValue>
             </SelectTrigger>

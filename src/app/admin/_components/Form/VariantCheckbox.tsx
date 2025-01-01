@@ -22,6 +22,7 @@ type Props = {
     checked: boolean
   ): void;
   setVariantTable: Dispatch<SetStateAction<number>>;
+  existingColors?: number[];
 };
 
 export default function VariantCheckbox({
@@ -29,6 +30,7 @@ export default function VariantCheckbox({
   colors,
   handleVariant,
   setVariantTable,
+  existingColors,
 }: Props) {
   const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
     useModal();
@@ -81,6 +83,8 @@ export default function VariantCheckbox({
     handleVariant(e.target.name, name, id, e.target.checked);
   };
 
+  console.log(existingColors);
+
   return (
     <div>
       {isModalOpen && (
@@ -117,6 +121,7 @@ export default function VariantCheckbox({
 
             {mapVar.map((variant) => {
               const key = `${variantOutline.label.toLowerCase()}-${variant.id}`;
+
               return (
                 <div key={key}>
                   <label htmlFor={key}>{variant.name}</label>
@@ -135,6 +140,10 @@ export default function VariantCheckbox({
                       );
                     }}
                     checked={checkedState[key] || false}
+                    disabled={
+                      variantOutline.name === "colorId" &&
+                      existingColors?.includes(variant.id)
+                    }
                   />
                 </div>
               );
