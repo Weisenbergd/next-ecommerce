@@ -6,13 +6,10 @@ import React from "react";
 import LabelInput from "./LabelInput";
 import LabelSelection from "./LabelSelection";
 import { redirect } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   TypeAction,
   TypeCategory,
   TypeColor,
-  TypeFormStructure,
   TypeInputPlaceholders,
   TypeSelectPlaceholders,
   TypeSize,

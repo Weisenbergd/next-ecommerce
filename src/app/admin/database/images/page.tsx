@@ -1,17 +1,19 @@
-import { getAllImages } from "../../_actions/imagesDelete";
-import ImageList from "./imagelist";
+// import { getAllImages } from "../../_actions/Images/imagesDelete";
+// import ImageList from "./imagelist";
 
 export default async function page() {
-  const images = await getAllImages();
+  // const images = await getAllImages();
   // console.log(images);
 
-  return !images ? (
-    <p>no images</p>
-  ) : (
-    <div>
-      {images.map((el) => {
-        return <ImageList el={el} />;
-      })}
-    </div>
-  );
+  return <p>images</p>;
+
+  // return !images ? (
+  //   <p>no images</p>
+  // ) : (
+  //   <div>
+  //     {images.map((el) => {
+  //       return <ImageList el={el} />;
+  //     })}
+  //   </div>
+  // );
 }
