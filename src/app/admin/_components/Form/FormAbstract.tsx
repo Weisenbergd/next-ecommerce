@@ -131,46 +131,50 @@ export default function FormAbstract({
           colors={colors}
           sizes={sizes}
           setHasVariants={setHasVariants}
-        />
+        >
+          <SubmitButton />
+        </VariantCheckBoxTable>
 
         {!hasVariants && (
-          <div>
-            {/* <div>
+          <>
+            <div>
+              {/* <div>
               <Label>Image</Label>
               <Input type="file" multiple name={"images"} form="productForm" />
             </div> */}
-            {productFormVar.map((el, i) => {
-              const key: keyof TypeInputPlaceholders = el.label
-                .toLowerCase()
-                .replace(/\s/g, "") as keyof TypeInputPlaceholders;
-              const keySelect: keyof TypeSelectPlaceholders = el.label
-                .toLowerCase()
-                .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
+              {productFormVar.map((el, i) => {
+                const key: keyof TypeInputPlaceholders = el.label
+                  .toLowerCase()
+                  .replace(/\s/g, "") as keyof TypeInputPlaceholders;
+                const keySelect: keyof TypeSelectPlaceholders = el.label
+                  .toLowerCase()
+                  .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
 
-              return (
-                <div key={el.label + i} className="flex flex-col gap-2">
-                  {el.input !== "selection" && (
-                    <LabelInput
-                      el={el}
-                      placeholder={placeholders && placeholders[key]}
-                    />
-                  )}
-                  {el.input === "selection" && (
-                    <LabelSelection
-                      placeholder=""
-                      editting={true}
-                      name={el.name}
-                      label={el.label}
-                      selection={pickSelection(el.label)}
-                      form="addProduct"
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                return (
+                  <div key={el.label + i} className="flex flex-col gap-2">
+                    {el.input !== "selection" && (
+                      <LabelInput
+                        el={el}
+                        placeholder={placeholders && placeholders[key]}
+                      />
+                    )}
+                    {el.input === "selection" && (
+                      <LabelSelection
+                        placeholder=""
+                        editting={true}
+                        name={el.name}
+                        label={el.label}
+                        selection={pickSelection(el.label)}
+                        form="addProduct"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <SubmitButton />
+          </>
         )}
-        <SubmitButton />
       </form>
     </div>
   );

@@ -1,8 +1,10 @@
 import { TypeColor, TypeSize } from "@/lib/types";
 import VariantTable from "../Table/VariantTable";
 import VariantCheckbox from "./VariantCheckbox";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
+import SubmitButton from "../SubmitButton";
+import FormButton from "../../products/[id]/FormButton";
 
 type Props = {
   hasVariants: number;
@@ -11,6 +13,7 @@ type Props = {
   setHasVariants?: React.Dispatch<React.SetStateAction<number>>;
   existingColors?: number[];
   form?: string;
+  children: ReactNode;
 };
 
 export default function VariantCheckBoxTable({
@@ -20,6 +23,7 @@ export default function VariantCheckBoxTable({
   setHasVariants,
   existingColors,
   form,
+  children,
 }: Props) {
   const [variantTable, setVariantTable] = useState(0);
   const [variantColors, setVariantColors] = useState<
@@ -91,11 +95,14 @@ export default function VariantCheckBoxTable({
         />
       ) : null}
       {variantTable ? (
-        <VariantTable
-          variantColors={variantColors}
-          variantSizes={variantSizes}
-          form={form}
-        />
+        <>
+          <VariantTable
+            variantColors={variantColors}
+            variantSizes={variantSizes}
+            form={form}
+          />
+          {children}
+        </>
       ) : null}
       <input
         type="hidden"

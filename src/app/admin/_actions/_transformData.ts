@@ -159,9 +159,6 @@ export function transformData(props: any, group?: string) {
         variants: <VariantType[]>[],
       };
 
-      console.log(groupObject);
-      return;
-
       // removes image and description (in group)
       variantGroup.shift();
       variantGroup.shift();
@@ -197,40 +194,3 @@ export function transformData(props: any, group?: string) {
     return transformedObject;
   }
 }
-
-// example output
-
-/*
-{
-  name: 'asdf',
-  description: 'asdf',
-  images: [
-    File {
-      size: 822457,
-      type: 'image/png',
-      name: 'Screenshot 2024-09-10 at 12-55-55 Amazon.com COOFANDY Mens Button Up Shirts Long Sleeve Slim Fit Dress Shirts Wrinkle-Free Stretch Shirt Purple Clothing Shoes & Jewelry.png',
-      lastModified: 1731717524327
-    },
-    File {
-      size: 1038308,
-      type: 'image/png',
-      name: 'Screenshot 2024-09-10 at 12-56-04 Amazon.com COOFANDY Mens Button Up Shirts Long Sleeve Slim Fit Dress Shirts Wrinkle-Free Stretch Shirt Purple Clothing Shoes & Jewelry.png',
-      lastModified: 1731717524331
-    }
-  ],
-  basePrice: '234',
-  categoryId: '269',
-  variantGroups: [
-    {
-      images: [Array],
-      description: '234',
-      colorId: '30',
-      variants: [Array]
-    },
-    {
-      images: [],
-      description: '234',
-      colorId: '31',
-      variants: [Array]
-    }
-  */

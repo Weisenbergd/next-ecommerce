@@ -64,30 +64,22 @@ export default function PreFormButton({
       </Button>
       {showInput && (
         <div>
-          {/* <LabelSelection
-            name="colorId"
-            selection={selection}
-            label="color"
-            form={form}
-            placeholder={null}
-            editting={true}
-          /> */}
-
           <VariantCheckBoxTable
             colors={colors}
             sizes={sizes}
             hasVariants={1}
             existingColors={existingColors}
             form={form}
-          />
-          <FormButton
-            form={form}
-            action={action}
-            hiddenInputNames={hiddenInputNames}
-            hiddenInputValues={hiddenInputValues}
           >
-            Add Groups
-          </FormButton>
+            <FormButton
+              form={form}
+              action={action}
+              hiddenInputNames={hiddenInputNames}
+              hiddenInputValues={hiddenInputValues}
+            >
+              Add Groupssdf
+            </FormButton>
+          </VariantCheckBoxTable>
         </div>
       )}
     </div>
