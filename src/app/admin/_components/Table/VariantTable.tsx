@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
@@ -168,7 +169,7 @@ function VariantTable({ variantColors, variantSizes, form }: Props) {
                             <TableCell>{size.size}</TableCell>
                             <TableCell>
                               <input
-                                className="bg-black "
+                                className=""
                                 type="number"
                                 defaultValue={0}
                                 step={0.01}
@@ -189,7 +190,7 @@ function VariantTable({ variantColors, variantSizes, form }: Props) {
                             </TableCell>
                             <TableCell>
                               <input
-                                className="bg-black "
+                                className=""
                                 type="number"
                                 defaultValue={0}
                                 name={
@@ -216,6 +217,10 @@ function VariantTable({ variantColors, variantSizes, form }: Props) {
           })}
         </TableBody>
       </Table>
+      <Link
+        href="./products/add-product"
+        className="px-4 py-2 rounded bg-primary text-primary-foreground"
+      ></Link>
     </>
   );
 }

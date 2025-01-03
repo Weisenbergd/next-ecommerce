@@ -60,35 +60,87 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    if (screenWidth < 760) {
+      setColumnVisibility({
+        id: true,
+        name: true,
+        description: false,
+        categoryId: true,
+        createdAt: false,
+        updatedAt: false,
+      });
+    }
+
+    if (screenWidth > 759) {
+      setColumnVisibility({
+        id: true,
+        name: true,
+        description: true,
+        categoryId: true,
+        createdAt: true,
+        updatedAt: true,
+      });
+    }
+
+    const x = table.getHeaderGroups();
+    console.log(x);
+  }, [screenWidth]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+      console.log("Screen width:", window.innerWidth);
+    };
+
+    // Attach event listener on mount
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <div>
-      <div className="flex items-center py-4">
+    <div className="">
+      <p>{screenWidth}</p>
+      {/* filter -- search through names */}
+      <div className="flex items-center justify-center py-4 md:justify-start">
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full md:max-w-sm"
         />
       </div>
-      <div className="flex-1 text-sm text-muted-foreground">
+
+      {/* 
+      --for show multiple selected (not using currently)
+      <div className="flex-1 text-sm">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
-      <div className="rounded-md border">
-        <Table>
+      </div> */}
+
+      <div className="rounded-md border-none md:border">
+        <Table className="w-full table-fixed">
           <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="relative -left-3">
                 {/* Add an empty header for link cell */}
-                <TableHead className="absolute"></TableHead>
+                <TableHead className="w-0"></TableHead>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="">
+                  <TableHead key={header.id} className="truncate">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
+                          screenWidth > 860
+                            ? header.column.columnDef.header
+                            : header.column.columnDef.header,
                           header.getContext()
                         )}
                   </TableHead>
@@ -102,11 +154,10 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="relative group"
+                  className="relative"
                 >
                   <TableCell className="absolute w-[92%] h-full z-10">
                     <Link
-                      // href={`./${(row.original as Product).id}`}
                       href={`${getPath()}/${
                         (row.original as TypeLightProduct).id
                       }`}
@@ -117,10 +168,20 @@ export function DataTable<TData, TValue>({
                     </Link>
                   </TableCell>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-8 text-left">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                    <TableCell key={cell.id} className="text-left">
+                      {cell.column.id === "description" ||
+                      cell.column.id === "name" ? (
+                        <div className="line-clamp-4 max-w-44">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </div>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
                       )}
                     </TableCell>
                   ))}
@@ -129,8 +190,8 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + 1} // Adjust colSpan to include the new column
-                  className="h-24 text-center"
+                  colSpan={columns.length + 1}
+                  className="h-24 text-left"
                 >
                   No results.
                 </TableCell>
@@ -139,15 +200,22 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
+      <div
+        className={`flex py-10 space-x-2 ${
+          !table.getCanPreviousPage() ? "justify-end" : "justify-end"
+        }`}
+      >
+        {table.getCanPreviousPage() === true && (
+          <Button
+            className="w-fit"
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+        )}
         <Button
           variant="outline"
           size="sm"

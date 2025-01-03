@@ -14,6 +14,7 @@ import { formatDateTime, getPath } from "@/lib/functions";
 import Link from "next/link";
 import { TypeLightProduct } from "@/lib/types";
 import { revalidatePath } from "next/cache";
+import { useEffect, useState } from "react";
 
 export const productHead = [
   "id",
@@ -31,10 +32,10 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center text-sm" // Center text vertically and align left
+        className="flex items- justify-start text-sm" // Center text vertically and align left
       >
-        ID
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <span className="">ID</span>
+        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
       </Button>
     ),
   },
@@ -47,7 +48,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
         className="flex items-center text-left text-sm" // Center text vertically and align left
       >
         Name
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
       </Button>
     ),
   },
@@ -60,7 +61,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
         className="flex items-center text-left text-sm" // Center text vertically and align left
       >
         Description
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
       </Button>
     ),
   },
@@ -73,7 +74,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
         className="flex items-center text-left text-sm" // Center text vertically and align left
       >
         Category
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
       </Button>
     ),
   },
@@ -86,7 +87,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
         className="flex items-center text-left text-sm"
       >
         Created
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
       </Button>
     ),
     cell: ({ row }) => {
@@ -110,7 +111,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
         className="flex items-center text-left text-sm"
       >
         Updated
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
       </Button>
     ),
     cell: ({ row }) => {

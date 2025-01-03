@@ -17,14 +17,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="">
       <ModalProvider>
-        <body
-          className={cn(
-            "dark bg-background min-h-screen antialiased",
-            fontSans.className
-          )}
-        >
+        <body className={cn("min-h-screen antialiased ", fontSans.className)}>
           {children}
           <div id="modal-root" />
         </body>

@@ -83,8 +83,6 @@ export default function VariantCheckbox({
     handleVariant(e.target.name, name, id, e.target.checked);
   };
 
-  console.log(existingColors);
-
   return (
     <div>
       {isModalOpen && (

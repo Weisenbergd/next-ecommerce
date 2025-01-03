@@ -1,30 +1,12 @@
 import Link from "next/link";
 import { LayoutProps } from "../../../.next/types/app/layout";
+import NavBar from "./_components/Nav/NavBar";
 
 const Layout = ({ children }: LayoutProps) => {
-  const navItem = [
-    { name: "Dashboard", link: "/admin" },
-    { name: "Products", link: "/admin/products" },
-    { name: "Test", link: "/admin/test" },
-    { name: "Orders", link: "/admin/orders" },
-    { name: "Stock", link: "/admin/stock" },
-    { name: "Database", link: "/admin/database" },
-  ];
-
   return (
     <>
-      <nav className="bg-secondary text-secondary-foreground h-24 flex items-center justify-center text-2xl md:text-4xl md:h-30">
-        <div className="flex justify-between gap-10 md:gap-14">
-          {navItem.map((el) => {
-            return (
-              <Link key={el.name} href={el.link}>
-                {el.name}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
-      <main className="xl:w-[1300px] w-screen text-2xl lg:text-4xl px-4 md:px-10 lg:w-[1000px] py-24 ml-auto mr-auto bg-background">
+      <NavBar />
+      <main className="container mx-auto px-4 max-w-7xl mt-2 md:mt-10">
         {children}
       </main>
     </>

@@ -25,7 +25,6 @@ export default async function page() {
 
   return (
     <div>
-      <Link href="./products/add-product">Add Product &gt;</Link>
       <DataTable columns={columns} data={products} />
     </div>
   );
