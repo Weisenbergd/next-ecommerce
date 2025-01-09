@@ -1,9 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { ReactNode, useEffect, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import FormButton from "./FormButton";
 import { Input } from "@/components/ui/input";
 import LabelSelection from "../../_components/Form/LabelSelection";
-import { TypeColor, TypeSize, TypeVariantGroup } from "@/lib/types";
+import {
+  TypeColor,
+  TypeInitialState,
+  TypeSize,
+  TypeVariantGroup,
+} from "@/lib/types";
 import VariantCheckBoxTable from "../../_components/Form/VariantCheckBoxTable";
 
 type Props = {
@@ -18,6 +29,7 @@ type Props = {
   colors: TypeColor[];
   sizes: TypeSize[];
   groups: TypeVariantGroup[];
+  state: TypeInitialState;
 };
 
 export default function PreFormButton({
@@ -32,56 +44,17 @@ export default function PreFormButton({
   colors,
   sizes,
   groups,
+  state,
 }: Props) {
-  // this is for when in editting mode an option requires new form (not just delete update whats there)
-  // example: addGroup >> AddGroup Form
-
-  const [showInput, setShowInput] = useState(false);
-  const [varCheckBox, setVarCheckBox] = useState(false);
-
-  // console.log(groups);
-
-  const [existingColors, setExistingColors] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (groups) {
-      const colorIds = groups.map((group) => group.colorId);
-      setExistingColors((prevColors) =>
-        Array.from(new Set([...prevColors, ...colorIds]))
-      );
-    }
-  }, [groups]);
-
   return (
-    <div>
-      <Button
-        onClick={() => {
-          setVarCheckBox(true);
-          setShowInput(!showInput);
-        }}
-      >
-        {showInput ? "cancel" : children}
-      </Button>
-      {showInput && (
-        <div>
-          <VariantCheckBoxTable
-            colors={colors}
-            sizes={sizes}
-            hasVariants={1}
-            existingColors={existingColors}
-            form={form}
-          >
-            <FormButton
-              form={form}
-              action={action}
-              hiddenInputNames={hiddenInputNames}
-              hiddenInputValues={hiddenInputValues}
-            >
-              Add Groupssdf
-            </FormButton>
-          </VariantCheckBoxTable>
-        </div>
-      )}
-    </div>
+    <VariantCheckBoxTable
+      action={action}
+      groups={groups}
+      colors={colors}
+      sizes={sizes}
+      hasVariants={1}
+      form={form}
+      state={state}
+    ></VariantCheckBoxTable>
   );
 }

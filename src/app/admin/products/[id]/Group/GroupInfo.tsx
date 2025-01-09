@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import {
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { useFormState } from "react-dom";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
@@ -9,6 +15,7 @@ import { TypeColor, TypeDeepProduct, TypeVariantGroup } from "@/lib/types";
 import PreFormButton from "../PreFormButton";
 import { addGroup } from "@/app/admin/_actions/Groups/addGroup";
 import { deleteProduct } from "@/app/admin/_actions/Products/deleteProduct";
+import StyledDropDown from "@/app/admin/_components/StyledDropDown";
 type Props = {
   variantGroup: TypeVariantGroup;
   colors: TypeColor[];
@@ -27,7 +34,7 @@ type Props = {
     }>
   >;
   product: TypeDeepProduct;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export default function GroupInfo({
   variantGroup,
@@ -36,6 +43,7 @@ export default function GroupInfo({
   setEditting,
   initialState,
   product,
+  ...props
 }: Props) {
   // status working
 
@@ -59,52 +67,63 @@ export default function GroupInfo({
     }
   }, [editGroupState, deleteGroupState]);
 
+  const [showAddVariant, setShowAddVariant] = useState(false);
+
   return (
-    <ol>
-      {variantGroup.id}.
+    <div {...props}>
+      <div className="flex items-center justify-between ">
+        <h3>
+          <span className="font-bold">Group Id: </span>
+          {variantGroup.id}
+        </h3>
+        <div className="bg-primary text-primary-foreground rounded-lg p-2">
+          <StyledDropDown
+            form="editVariantGroup"
+            editting={editting}
+            setEditting={setEditting}
+            category="group"
+            target={variantGroup.id}
+            triggerText="edit group"
+            deleteAction={deleteGroupAction}
+            hiddenInputNames="variantGroupId"
+            hiddenInputValues={variantGroup.id}
+            showAdd={showAddVariant}
+            setShowAdd={setShowAddVariant}
+            menuLabel="Edit Group"
+          />
+        </div>
+      </div>
       {editting.category === "group" && editting.target === variantGroup.id ? (
-        <>
-          <li>
-            <LabelSelection
-              name="colorId"
-              placeholder={variantGroup.color.name}
-              selection={colors}
-              label="color"
-              editting={true}
-              form="editVariantGroup"
-              defaultValueId={variantGroup.color.id}
-            />
-          </li>
-          <li>
-            <FormButton
-              form="editVariantGroup"
-              action={editGroupAction}
-              hiddenInputNames="variantGroupId"
-              hiddenInputValues={variantGroup.id}
-            >
-              Submit Change
-            </FormButton>
-            <FormButton
-              form="deleteVariantGroup"
-              action={deleteGroupAction}
-              hiddenInputNames="variantGroupId"
-              hiddenInputValues={variantGroup.id}
-            >
-              Delete Group
-            </FormButton>
-          </li>
-        </>
+        <div className="flex flex-col gap-4">
+          <LabelSelection
+            name="colorId"
+            placeholder={variantGroup.color.name}
+            selection={colors}
+            label="color"
+            editting={true}
+            form="editVariantGroup"
+            defaultValueId={variantGroup.color.id}
+          />
+
+          <FormButton
+            className="w-full"
+            form="editVariantGroup"
+            action={editGroupAction}
+            hiddenInputNames="variantGroupId"
+            hiddenInputValues={variantGroup.id}
+          >
+            Submit Change
+          </FormButton>
+        </div>
       ) : (
-        <li>color: {variantGroup.color.name}</li>
+        <div>
+          <p>
+            <span className="font-bold">color: </span>
+            {variantGroup.color.name}
+          </p>
+          {showAddVariant && <p>ass</p>}
+        </div>
       )}
-      <EditButton
-        editting={editting}
-        setEditting={setEditting}
-        category="group"
-        target={variantGroup.id}
-      >
-        Edit Group
-      </EditButton>
-    </ol>
+    </div>
   );
 }

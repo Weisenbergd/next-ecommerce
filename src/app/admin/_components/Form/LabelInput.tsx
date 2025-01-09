@@ -1,7 +1,10 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import clsx from "clsx";
 import { useState } from "react";
+import StyledLabel from "./StyledLabel";
+import { StyledInput } from "./StyledInput";
+import StyledLabelInputDiv from "./StyledLabelInputDiv";
+import { Textarea } from "@/components/ui/textarea";
+import ImageInput from "./ImageInput";
 
 type Props = {
   el: {
@@ -13,56 +16,64 @@ type Props = {
   };
   placeholder?: string | number;
   name?: string;
+  state: {
+    status: string;
+    message: (string | number)[];
+  };
 };
 
-export default function LabelInput({ el, placeholder, name }: Props) {
+export default function LabelInput({ el, placeholder, name, state }: Props) {
   const [productName, setProductName] = useState("");
-  const [state, setState] = useState(placeholder);
-  const [files, setFiles] = useState<File[]>([]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      // Convert FileList to File[] and update the state
-      setFiles(Array.from(files));
-    }
-  };
+  const [controlState, setControlState] = useState(placeholder);
 
   return (
-    <>
-      <Label
-        className="dark:text-primary text-primary-foreground"
-        htmlFor={el.label}
-      >
-        {el.label}
-      </Label>
-      {el.name != "images" && el.name != "variantImages" && (
-        <Input
-          className={`dark:text-primary text-primary-foreground`}
+    <StyledLabelInputDiv>
+      <StyledLabel htmlFor={el.label}>{el.label}</StyledLabel>
+      {el.name != "images" && el.name != "description" && (
+        <StyledInput
           type={el.input}
           name={name ? name : el.name}
           id={el.label}
           required={el.required}
           step={el.name === "price" ? 0.01 : 1}
+          min={el.name === "price" ? 0.01 : ""}
           placeholder={placeholder?.toString()}
-          value={placeholder && state}
+          value={placeholder && controlState}
           onChange={(e) => {
-            placeholder && setState(e.target.value);
+            placeholder && setControlState(e.target.value);
             setProductName && setProductName(e.target.value);
           }}
         />
       )}
+      {el.name === "description" && (
+        <Textarea
+          id={el.label}
+          required={el.required}
+          name={name ? name : el.name}
+          className="border-border"
+          placeholder={
+            placeholder?.toString() ||
+            "Max length 1000 characters. Preserves line breaks"
+          }
+          maxLength={1000}
+          onChange={(e) => {
+            placeholder && setControlState(e.target.value);
+            setProductName && setProductName(e.target.value);
+          }}
+        ></Textarea>
+      )}
+
       {["images", "variantImages"].includes(el.name) && (
-        <Input
-          className={`dark:text-primary text-primary-foreground`}
+        <ImageInput
+          state={state}
+          index={0}
           type="file"
           name={name ? name : el.name}
           id={el.label}
           required={el.required}
           multiple
-          onChange={handleFileChange}
         />
       )}
-    </>
+    </StyledLabelInputDiv>
   );
 }

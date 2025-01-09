@@ -2,12 +2,23 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError, ZodType } from "zod";
 
 export function schemaCheck(error: unknown) {
-  console.log(error);
   let errorArray: string[] = [];
+  let imageErrors = 0;
   if (error instanceof ZodError) {
     for (let i = 0; i < error.issues.length; i++) {
-      errorArray.push(error.issues[i].path + " " + error.issues[i].message);
+      if (
+        error.issues[i].message.match("File must be one of the following types")
+      ) {
+        imageErrors++;
+        // console.log(error.issues[i]);
+        errorArray.push([
+          "imageError",
+          error.issues[i].message,
+          error.issues[i].path,
+        ]);
+      } else errorArray.push([error.issues[i].path, error.issues[i].message]);
     }
+    console.log(errorArray);
     return { status: "error", message: errorArray };
   }
 

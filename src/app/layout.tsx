@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <ModalProvider>
-        <body className={cn("min-h-screen antialiased ", fontSans.className)}>
+        <body className={cn("min-h-screen antialiased", fontSans.className)}>
           {children}
           <div id="modal-root" />
         </body>

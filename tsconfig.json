@@ -32,10 +32,11 @@
     "src/app/admin/_components/Table/TableAbstract.old.tsx",
     "src/app/admin/products/[id]/Image/ImageList.tsx.old",
     "src/app/admin/_components/Form/FormAbstract.old",
-    "src/app/admin/_components/Form/InputEdit.old",
+    "src/app/admin/_components/Form/InputEdit.tsx",
     "src/app/admin/_components/Form/InputSelection.old",
     "src/app/admin/_components/Form/_FormTest.old",
-    "src/app/admin/_components/Form/_InputSelection.old"
+    "src/app/admin/_components/Form/_InputSelection.old",
+    "src/app/admin/_components/Form/InputEdit.tsx.old"
   ],
   "exclude": ["node_modules"]
 }

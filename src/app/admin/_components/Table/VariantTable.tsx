@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
+import ImageInput from "../Form/ImageInput";
 
 type Props = {
   variantColors: {
@@ -22,9 +23,13 @@ type Props = {
     id: string;
   }[];
   form?: string;
+  state: {
+    status: string;
+    message: any[];
+  };
 };
 
-function VariantTable({ variantColors, variantSizes, form }: Props) {
+function VariantTable({ variantColors, variantSizes, form, state }: Props) {
   // need state update to refresh when checkbox checked/unchecked
   const [something, setSomething] = useState(0);
   const [board, setBoard] = useState<number[][]>([]);
@@ -64,12 +69,16 @@ function VariantTable({ variantColors, variantSizes, form }: Props) {
               <TableRow key={color.color}>
                 <TableCell>{color.color}</TableCell>
                 <TableCell>
-                  <Input
-                    type="file"
-                    multiple
-                    name={i + ":" + color.color + ";images"}
-                    form={form}
-                  />
+                  <>
+                    <ImageInput
+                      index={i}
+                      state={state}
+                      type="file"
+                      multiple
+                      name={i + ":" + color.color + ";images"}
+                      form={form as string}
+                    />
+                  </>
                 </TableCell>
                 <TableCell>
                   <Input
@@ -217,10 +226,6 @@ function VariantTable({ variantColors, variantSizes, form }: Props) {
           })}
         </TableBody>
       </Table>
-      <Link
-        href="./products/add-product"
-        className="px-4 py-2 rounded bg-primary text-primary-foreground"
-      ></Link>
     </>
   );
 }

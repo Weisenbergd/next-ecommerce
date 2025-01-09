@@ -23,6 +23,7 @@ type Props = {
   ): void;
   setVariantTable: Dispatch<SetStateAction<number>>;
   existingColors?: number[];
+  variantTable: number;
 };
 
 export default function VariantCheckbox({
@@ -31,6 +32,7 @@ export default function VariantCheckbox({
   handleVariant,
   setVariantTable,
   existingColors,
+  variantTable,
 }: Props) {
   const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
     useModal();
@@ -83,8 +85,35 @@ export default function VariantCheckbox({
     handleVariant(e.target.name, name, id, e.target.checked);
   };
 
+  const tableMeetsStandards = () => {
+    const activeChecks = Object.entries(checkedState).filter(
+      ([key, value]) => value.valueOf() === true
+    );
+    if (activeChecks.length < 2) return false;
+    if (activeChecks.length >= 2) {
+      let colorCheck = false;
+      let sizeCheck = false;
+      for (const check of activeChecks) {
+        if (check[0].split("-")[0] === "color") colorCheck = true;
+        if (check[0].split("-")[0] === "size") sizeCheck = true;
+        if (colorCheck === true && sizeCheck === true) break;
+      }
+      if (colorCheck === true && sizeCheck === true) return true;
+      else return false;
+    }
+  };
+
+  useEffect(() => {
+    const activeChecks = Object.entries(checkedState).filter(
+      ([key, value]) => value.valueOf() === true
+    );
+    if (activeChecks.length < 2 && variantTable === 1) {
+      setVariantTable(0);
+    }
+  });
+
   return (
-    <div>
+    <div className="my-10 flex flex-col gap-4 md:gap-6">
       {isModalOpen && (
         <Modal>
           <ModalForm selectionTarget={selectionTarget} />
@@ -97,67 +126,105 @@ export default function VariantCheckbox({
         let mapVar = variantOutline.label === "Size" ? sizes : colors;
         return (
           <div
-            className="bg-slate-800 flex flex-col gap-6 mb-10"
+            className="border-border bg-secondary text-secondary-foreground py-2 flex flex-col  overflow-hidden"
             key={variantOutline.name}
           >
-            <h2>{variantOutline.label}s</h2>
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                setSelectionTarget(
-                  variantOutline.name === "colorId" ? "color" : "size"
-                );
-                setIsModalOpen(true);
-              }}
-              variant="ghost"
-              size="sm"
-              className="absolute left-64"
-              type="button"
-            >
-              Add new {variantOutline.label} FIx This!!!
-            </Button>
+            <div className="md:px-6 rounded-t-md rounded-b-md pb-10">
+              <div className="flex justify-between items-center p-2 pb-4 rounded-t-md">
+                <h2 className="font-semibold text-xl">
+                  {variantOutline.label}s
+                </h2>
+                <Button
+                  variant="outline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelectionTarget(
+                      variantOutline.name === "colorId" ? "color" : "size"
+                    );
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Add New {variantOutline.label}
+                </Button>
+              </div>
 
-            {mapVar.map((variant) => {
-              const key = `${variantOutline.label.toLowerCase()}-${variant.id}`;
+              <div className="max-h-96 overflow-auto flex flex-col gap-4 ">
+                {mapVar.map((variant) => {
+                  const key = `${variantOutline.label.toLowerCase()}-${
+                    variant.id
+                  }`;
 
-              return (
-                <div key={key}>
-                  <label htmlFor={key}>{variant.name}</label>
-                  <input
-                    form="variantForm"
-                    name={variant.name}
-                    id={key}
-                    type="checkbox"
-                    onChange={(e) => {
-                      handleCheckboxChange(e, key);
-                      handleVariant(
-                        e.target.name,
-                        variantOutline.name,
-                        variant.id.toString(),
-                        e.target.checked
-                      );
-                    }}
-                    checked={checkedState[key] || false}
-                    disabled={
-                      variantOutline.name === "colorId" &&
-                      existingColors?.includes(variant.id)
-                    }
-                  />
-                </div>
-              );
-            })}
+                  return (
+                    <div
+                      className={`flex gap-1 items-center bg-card text-card-foreground shadow-sm rounded-xl py-4 px-4 left-4 ${
+                        variantOutline.name === "colorId" &&
+                        existingColors?.includes(variant.id) &&
+                        "font-bold "
+                      }`}
+                      key={key}
+                    >
+                      <input
+                        className="size-5 p-2"
+                        form="variantForm"
+                        name={variant.name}
+                        id={key}
+                        type="checkbox"
+                        onChange={(e) => {
+                          handleCheckboxChange(e, key);
+                          handleVariant(
+                            e.target.name,
+                            variantOutline.name,
+                            variant.id.toString(),
+                            e.target.checked
+                          );
+                        }}
+                        checked={checkedState[key] || false}
+                        disabled={
+                          variantOutline.name === "colorId" &&
+                          existingColors?.includes(variant.id)
+                        }
+                      />
+                      <div className="p-2 pr-10 flex items-center">
+                        <label
+                          className={`peer hover:cursor-pointer hover:font-bold truncate p-2 pr-10 ${
+                            variantOutline.name === "colorId" &&
+                            existingColors?.includes(variant.id) &&
+                            "hover:cursor-not-allowed line-through"
+                          }`}
+                          htmlFor={key}
+                        >
+                          {variant.name}
+                        </label>
+                        {variantOutline.name === "colorId" &&
+                          existingColors?.includes(variant.id) && (
+                            <p className="peer-hover:visible font-light invisible">
+                              color already added
+                            </p>
+                          )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         );
       })}
-      <Button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          setVariantTable(1);
-        }}
-      >
-        test
-      </Button>
+      {!variantTable && (
+        <Button
+          className="md:w-fit p-6"
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            if (tableMeetsStandards()) setVariantTable(1);
+          }}
+          disabled={!tableMeetsStandards()}
+        >
+          {tableMeetsStandards()
+            ? "Add selected properties to continue"
+            : "Select at least one size and one color"}
+        </Button>
+      )}
     </div>
   );
 }

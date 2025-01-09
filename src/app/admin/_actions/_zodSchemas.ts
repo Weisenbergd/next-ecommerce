@@ -8,7 +8,7 @@ import { z } from "zod";
 // });
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
-const ACCEPTED_FILE_TYPES = ["image/png"];
+const ACCEPTED_FILE_TYPES = ["image/png", "image/jpeg"];
 
 // important -- if no images must be empty array
 
@@ -17,6 +17,7 @@ const ACCEPTED_FILE_TYPES = ["image/png"];
 export const imageSchema = z
   .custom<File>((file) => file instanceof Blob, {
     message: "Invalid file type. Expected a browser-native File.",
+    path: ["file"],
   })
   .refine((file) => file.size <= MAX_UPLOAD_SIZE, {
     message: "File size must be less than 3MB",
@@ -98,7 +99,6 @@ export const productSchema = z.object({
   variantGroups: z.array(
     z.object({
       colorId: z.string().min(1, { message: "colorId required" }),
-      // images: imageShema.optional(),
       images: z.array(imageSchema),
       description: z.string().optional(),
       variants: z.array(

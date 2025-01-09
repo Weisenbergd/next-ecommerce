@@ -25,7 +25,7 @@ export default function ImageList({
   product,
 }: Props) {
   return (
-    <div>
+    <div key={imageIndex}>
       {editting.category === "images" && editting.target === groupIndex && (
         <input
           onChange={(e) => imageCheckFunction(e, el.url)}

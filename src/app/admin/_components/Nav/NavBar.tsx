@@ -17,7 +17,7 @@ export default function NavBar() {
   const [openHamburger, setOpenHamburger] = useState(false);
 
   return (
-    <nav className="bg-secondary text-secondary-foreground">
+    <nav className="bg-primary text-primary-foreground">
       <div className="h-16 flex items-center justify-end lg:justify-center px-4 md:px-8 relative">
         <Logo />
         <Hamburger
@@ -37,7 +37,7 @@ export default function NavBar() {
 
       {/* Mobile (Full-Screen) Menu */}
       <div
-        className={`md:hidden bg-background fixed top-0 left-0 w-full h-full z-[100] flex items-start justify-center transform transition-all duration-300 ${
+        className={`md:hidden bg-background text-foreground fixed top-0 left-0 w-full h-full z-[100] flex items-start justify-center transform transition-all duration-300 ${
           openHamburger
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"

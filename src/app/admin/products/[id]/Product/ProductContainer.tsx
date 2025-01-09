@@ -6,8 +6,12 @@ import {
   TypeColor,
   TypeDeepProduct,
   TypeSize,
+  TypeVariant,
 } from "@/lib/types";
 import GroupContainer from "../Group/GroupContainer";
+import GroupInfo from "../Group/GroupInfo";
+import ImageContainer from "../Image/ImageContainer";
+import VariantContainer from "../Variant/VariantContainer";
 
 type Props = {
   product: TypeDeepProduct;
@@ -34,44 +38,76 @@ export default function ProductContainer({
     message: [""],
   });
 
+  /*  
+    h1 -- Product Name
+    h2 -- "Product Groupings"
+    h3 -- productGrouping
+    h5 -- variants
+  
+  */
+
   return (
-    <>
-      <div className="bg-gray-800">
-        <ol className="ProductUL">
-          <ProductInfo
-            product={product}
-            categories={categories}
-            editting={editting}
-            setEditting={setEditting}
-            initialState={initialState}
-            colors={colors}
-            sizes={sizes}
-          />
-          {product.variantGroups[0] && (
-            <li>
-              <ol className="GroupUL">
-                {product.variantGroups.map((el, groupIndex) => {
-                  return (
-                    <li key={groupIndex}>
-                      <GroupContainer
-                        key={groupIndex}
-                        product={product}
-                        colors={colors}
-                        groupIndex={groupIndex}
-                        variantGroup={el}
-                        sizes={sizes}
-                        editting={editting}
-                        setEditting={setEditting}
-                        initialState={initialState}
-                      />
-                    </li>
-                  );
-                })}
-              </ol>
-            </li>
-          )}
-        </ol>
+    <div className="flex flex-col gap-8">
+      <ProductInfo
+        product={product}
+        categories={categories}
+        editting={editting}
+        setEditting={setEditting}
+        initialState={initialState}
+        colors={colors}
+        sizes={sizes}
+      />
+
+      <div className="bg-secondary py-4 md:px-10 md:py-6 rounded-xl ">
+        <h2 className="px-4 md:px-0 text-2xl mb-3 md:mb-6">
+          Product Groupings
+        </h2>
+        <div className="flex flex-col gap-4">
+          {product.variantGroups[0] &&
+            product.variantGroups.map((el, groupIndex) => {
+              return (
+                <GroupContainer
+                  className="flex flex-col gap-4 p-4 pb-8 bg-muted odd:bg-muted rounded-xl "
+                  key={groupIndex}
+                  product={product}
+                  colors={colors}
+                  groupIndex={groupIndex}
+                  variantGroup={el}
+                  sizes={sizes}
+                  editting={editting}
+                  setEditting={setEditting}
+                  initialState={initialState}
+                >
+                  <ImageContainer
+                    className="invisible size-0 lg:visible lg:size-auto"
+                    editting={editting}
+                    setEditting={setEditting}
+                    product={product}
+                    variantGroup={el}
+                    groupIndex={groupIndex}
+                    initialState={initialState}
+                  />
+                  <div className="flex gap-8">
+                    {el.variants.map(
+                      (variant: TypeVariant, variantIndex: number) => {
+                        return (
+                          <VariantContainer
+                            key={variantIndex}
+                            editting={editting}
+                            setEditting={setEditting}
+                            sizes={sizes}
+                            variant={variant}
+                            initialState={initialState}
+                          />
+                        );
+                      }
+                    )}
+                  </div>
+                </GroupContainer>
+              );
+            })}
+        </div>
       </div>
-    </>
+    </div>
   );
 }

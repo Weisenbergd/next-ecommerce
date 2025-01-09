@@ -12,6 +12,8 @@ import Modal from "../Modal/Modal";
 import ModalForm from "./ModalForm";
 import { TypeCategory, TypeColor, TypeSize } from "@/lib/types";
 import { useModal } from "../Modal/ModalContext";
+import StyledLabel from "./StyledLabel";
+import StyledLabelInputDiv from "./StyledLabelInputDiv";
 
 type Props = {
   name: string;
@@ -34,7 +36,7 @@ export default function LabelSelection({
 }: Props) {
   // selected is the id of whats selected
   const [selected, setSelected] = useState<string | undefined>(
-    defaultValueId?.toString() || ""
+    defaultValueId?.toString()
   );
   const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
     useModal();
@@ -50,11 +52,11 @@ export default function LabelSelection({
 
   // Controlled State so that placeholder updates to the most recent modalForm submission
   const [placeHolderAfterSubmit, setPlaceHolderAfterSubmit] = useState<
-    Record<string, string>
+    Record<string, undefined | string>
   >({
-    category: "",
-    color: "",
-    size: "",
+    category: undefined,
+    color: undefined,
+    size: undefined,
   });
   // removes  modalstate when unmounting
   // otherwise will populate after changing page
@@ -103,12 +105,14 @@ export default function LabelSelection({
 
       {editting === false ? (
         // this is what appears when viewing existing products while not editting
-        <p>
+        <p className="">
           {label}: {placeholder}
         </p>
       ) : (
-        <>
-          <Label htmlFor={name}>{label}</Label>
+        <StyledLabelInputDiv>
+          <Label className="font-bold text-lg" htmlFor={name}>
+            {label}
+          </Label>
           <Select
             required
             open={dropdownOpen[name] || false}
@@ -117,19 +121,19 @@ export default function LabelSelection({
               e === true && setModalTarget(label);
             }}
             name={name}
-            // defaultValue={modalFormState.message[3]?.toString() || ""}
-            value={selected || ""}
+            value={selected}
             onValueChange={(e) => {
               setSelected(e);
             }}
           >
-            <SelectTrigger value={"test"} defaultValue={"test"}>
+            <SelectTrigger className="border-border">
               <SelectValue
+                onSubmit={(e) => console.log(e)}
                 placeholder={
                   modalFormState.status === "success" &&
                   modalFormState.message[1] === label.toLowerCase()
                     ? placeHolderAfterSubmit[label.toLowerCase()]
-                    : placeholder?.toString() || "Select an option"
+                    : placeholder?.toString() || `Select a ${label}`
                 }
               ></SelectValue>
             </SelectTrigger>
@@ -149,14 +153,12 @@ export default function LabelSelection({
                   setIsModalOpen(true);
                   setDropdownOpen({});
                 }}
-                variant="ghost"
-                size="sm"
               >
                 Add new {label}
               </Button>
             </SelectContent>
           </Select>
-        </>
+        </StyledLabelInputDiv>
       )}
     </>
   );

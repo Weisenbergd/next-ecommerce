@@ -1,6 +1,6 @@
 import { TypeSize, TypeVariant } from "@/lib/types.ts";
 import VariantInfo from "./VariantInfo.tsx";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, HTMLAttributes, SetStateAction } from "react";
 
 type Props = {
   sizes: TypeSize[];
@@ -19,7 +19,7 @@ type Props = {
     message: (string | number)[];
   };
   variant: TypeVariant;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export default function VariantContainer({
   variant,
@@ -27,14 +27,17 @@ export default function VariantContainer({
   editting,
   setEditting,
   initialState,
+  ...props
 }: Props) {
   return (
-    <VariantInfo
-      variant={variant}
-      sizes={sizes}
-      editting={editting}
-      initialState={initialState}
-      setEditting={setEditting}
-    />
+    <div {...props}>
+      <VariantInfo
+        variant={variant}
+        sizes={sizes}
+        editting={editting}
+        initialState={initialState}
+        setEditting={setEditting}
+      />
+    </div>
   );
 }

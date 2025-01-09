@@ -32,7 +32,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items- justify-start text-sm" // Center text vertically and align left
+        className="flex justify-start text-sm" // Center text vertically and align left
       >
         <span className="">ID</span>
         {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
@@ -58,7 +58,7 @@ export const columns: ColumnDef<TypeLightProduct>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center text-left text-sm" // Center text vertically and align left
+        className="flex items-center  text-left text-sm" // Center text vertically and align left
       >
         Description
         {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}

@@ -6,7 +6,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <NavBar />
-      <main className="container mx-auto px-4 max-w-7xl mt-2 md:mt-10">
+      <main className="container px-1.5 mx-auto md:px-4 max-w-7xl mt-2 md:mt-10 mb-12 md:mb-32">
         {children}
       </main>
     </>

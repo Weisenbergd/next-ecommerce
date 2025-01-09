@@ -8,7 +8,7 @@ import {
 import ImageContainer from "../Image/ImageContainer";
 import VariantContainer from "../Variant/VariantContainer";
 import GroupInfo from "./GroupInfo.tsx";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, HTMLAttributes, ReactNode, SetStateAction } from "react";
 
 type Props = {
   sizes: TypeSize[];
@@ -30,7 +30,8 @@ type Props = {
     status: string;
     message: (string | number)[];
   };
-};
+  children: ReactNode;
+} & HTMLAttributes<HTMLDivElement>;
 
 export default function GroupContainer({
   sizes,
@@ -41,9 +42,11 @@ export default function GroupContainer({
   product,
   colors,
   initialState,
+  children,
+  ...props
 }: Props) {
   return (
-    <>
+    <div {...props}>
       <GroupInfo
         variantGroup={variantGroup}
         colors={colors}
@@ -52,28 +55,7 @@ export default function GroupContainer({
         initialState={initialState}
         product={product}
       />
-      <ImageContainer
-        editting={editting}
-        setEditting={setEditting}
-        product={product}
-        variantGroup={variantGroup}
-        groupIndex={groupIndex}
-        initialState={initialState}
-      />
-      {variantGroup.variants.map(
-        (variant: TypeVariant, variantIndex: number) => {
-          return (
-            <VariantContainer
-              key={variantIndex}
-              editting={editting}
-              setEditting={setEditting}
-              sizes={sizes}
-              variant={variant}
-              initialState={initialState}
-            />
-          );
-        }
-      )}
-    </>
+      {children}
+    </div>
   );
 }

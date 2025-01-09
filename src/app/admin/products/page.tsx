@@ -3,6 +3,8 @@ import { DataTable } from "../_components/Table/DataTable.tsx";
 import { getProducts } from "../_fetches/products";
 import Link from "next/link";
 import { TypeLightProduct } from "@/lib/types.ts";
+import prisma from "@/lib/prisma.ts";
+import { revalidatePath } from "next/cache";
 
 // for deleting everything
 // import prisma from "@/lib/prisma.ts";
@@ -10,13 +12,14 @@ import { TypeLightProduct } from "@/lib/types.ts";
 
 export default async function page() {
   // for deleting everything
-  // await prisma.category.deleteMany({});
-  // await prisma.color.deleteMany({});
-  // await prisma.size.deleteMany({});
 
   // await prisma.variant.deleteMany({});
   // await prisma.product.deleteMany({});
   // await prisma.image.deleteMany({});
+
+  // await prisma.category.deleteMany({});
+  // await prisma.color.deleteMany({});
+  // await prisma.size.deleteMany({});
   // revalidatePath("/");
 
   const products: TypeLightProduct[] = await getProducts();

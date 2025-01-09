@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   ChangeEvent,
   Dispatch,
+  HTMLAttributes,
   SetStateAction,
   useEffect,
   useState,
@@ -32,7 +33,7 @@ type Props = {
     status: string;
     message: (string | number)[];
   };
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export default function ImageContainer({
   variantGroup,
@@ -41,6 +42,7 @@ export default function ImageContainer({
   editting,
   groupIndex,
   initialState,
+  ...props
 }: Props) {
   const [deleteImagesState, deleteImagesAction] = useFormState(
     deleteImages,
@@ -72,7 +74,7 @@ export default function ImageContainer({
     }
   }, [addImagesState]);
   return (
-    <ol>
+    <div {...props}>
       {variantGroup.images[0] &&
         variantGroup.images[0].url &&
         variantGroup.images.map(
@@ -83,20 +85,19 @@ export default function ImageContainer({
             imageIndex: number
           ) => {
             return (
-              <li key={imageIndex}>
-                <ImageList
-                  imageIndex={imageIndex}
-                  groupIndex={groupIndex}
-                  el={el}
-                  editting={editting}
-                  product={product}
-                  imageCheckFunction={imageCheckFunction}
-                />
-              </li>
+              <ImageList
+                key={imageIndex}
+                imageIndex={imageIndex}
+                groupIndex={groupIndex}
+                el={el}
+                editting={editting}
+                product={product}
+                imageCheckFunction={imageCheckFunction}
+              />
             );
           }
         )}
-      <li>
+      <div>
         {editting.category === "images" && editting.target === groupIndex && (
           <Button form="deleteImages">delete images</Button>
         )}
@@ -117,7 +118,7 @@ export default function ImageContainer({
         >
           edit images
         </EditButton>
-      </li>
-    </ol>
+      </div>
+    </div>
   );
 }

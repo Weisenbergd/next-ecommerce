@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TypeActionForm } from "@/lib/types";
-import { ReactNode } from "react";
+import clsx from "clsx";
+import { HTMLAttributes, ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
@@ -8,7 +9,7 @@ type Props = {
   action: TypeActionForm;
   hiddenInputNames: string;
   hiddenInputValues: number;
-};
+} & HTMLAttributes<HTMLButtonElement>;
 
 export default function FormButton({
   children,
@@ -16,10 +17,13 @@ export default function FormButton({
   action,
   hiddenInputNames,
   hiddenInputValues,
+  className,
 }: Props) {
   return (
-    <div>
-      <Button form={form}>{children}</Button>
+    <>
+      <Button className={clsx(``, className)} form={form}>
+        {children}
+      </Button>
       <form id={form} action={action} hidden></form>
       <input
         hidden
@@ -27,6 +31,6 @@ export default function FormButton({
         defaultValue={hiddenInputValues}
         form={form}
       />
-    </div>
+    </>
   );
 }

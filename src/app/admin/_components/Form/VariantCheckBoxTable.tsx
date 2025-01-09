@@ -1,19 +1,33 @@
-import { TypeColor, TypeSize } from "@/lib/types";
+import { TypeColor, TypeSize, TypeVariantGroup } from "@/lib/types";
 import VariantTable from "../Table/VariantTable";
 import VariantCheckbox from "./VariantCheckbox";
-import { ChangeEvent, ReactNode, useState } from "react";
-import { Button } from "@/components/ui/button";
-import SubmitButton from "../SubmitButton";
+import { useEffect, useState } from "react";
+import StyledLabelInputDiv from "./StyledLabelInputDiv";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import StyledLabel from "./StyledLabel";
 import FormButton from "../../products/[id]/FormButton";
+import SubmitButton from "../SubmitButton";
 
 type Props = {
   hasVariants: number;
   colors: TypeColor[];
   sizes: TypeSize[];
   setHasVariants?: React.Dispatch<React.SetStateAction<number>>;
-  existingColors?: number[];
+  state: {
+    status: string;
+    message: any[];
+  };
   form?: string;
-  children: ReactNode;
+  groups?: TypeVariantGroup[];
+  action?: (payload: FormData) => void;
+  hiddenInputNames?: string;
+  hiddenInputValues?: number;
 };
 
 export default function VariantCheckBoxTable({
@@ -21,9 +35,12 @@ export default function VariantCheckBoxTable({
   colors,
   sizes,
   setHasVariants,
-  existingColors,
   form,
-  children,
+  state,
+  groups,
+  action,
+  hiddenInputNames,
+  hiddenInputValues,
 }: Props) {
   const [variantTable, setVariantTable] = useState(0);
   const [variantColors, setVariantColors] = useState<
@@ -32,6 +49,17 @@ export default function VariantCheckBoxTable({
   const [variantSizes, setVariantSizes] = useState<
     { size: string; id: string }[]
   >([]);
+
+  const [existingColors, setExistingColors] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (groups) {
+      const colorIds = groups.map((group) => group.colorId);
+      setExistingColors((prevColors) =>
+        Array.from(new Set([...prevColors, ...colorIds]))
+      );
+    }
+  }, [groups]);
 
   function handleVariant(
     varName: string, // "cool blue"
@@ -61,26 +89,30 @@ export default function VariantCheckBoxTable({
   }
 
   return (
-    <div>
+    <div className="">
       <div>
         {setHasVariants ? (
-          <div>
-            <h2>Will this product have different variants?</h2>
+          <StyledLabelInputDiv>
+            <StyledLabel>Will this product have multiple variants?</StyledLabel>
             <div>
-              <Button
-                type="button"
-                onClick={() => {
-                  setHasVariants(1);
+              <Select
+                required
+                onValueChange={(e) => {
+                  if (e === "no") setHasVariants(0);
+                  if (e === "yes") setHasVariants(1);
                 }}
-                disabled={hasVariants ? true : false}
+                defaultValue="no"
               >
-                Yes
-              </Button>
-              <Button type="button" onClick={() => setHasVariants(0)}>
-                No
-              </Button>
-            </div>{" "}
-          </div>
+                <SelectTrigger className="border-border">
+                  <SelectValue></SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="no">No</SelectItem>
+                  <SelectItem value="yes">Yes</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </StyledLabelInputDiv>
         ) : null}
       </div>
       {hasVariants ? (
@@ -92,18 +124,34 @@ export default function VariantCheckBoxTable({
           handleVariant={handleVariant}
           setVariantTable={setVariantTable}
           existingColors={existingColors}
+          variantTable={variantTable}
         />
       ) : null}
       {variantTable ? (
-        <>
+        <div className="flex flex-col gap-6">
           <VariantTable
             variantColors={variantColors}
             variantSizes={variantSizes}
             form={form}
+            state={state}
           />
-          {children}
-        </>
+
+          {form && action && hiddenInputNames && hiddenInputValues ? (
+            // this for adding groups in already existing products
+            <FormButton
+              form={form}
+              action={action}
+              hiddenInputNames={hiddenInputNames}
+              hiddenInputValues={hiddenInputValues}
+            >
+              Add Group(s)
+            </FormButton>
+          ) : (
+            <SubmitButton className="w-full">Add Product</SubmitButton>
+          )}
+        </div>
       ) : null}
+
       <input
         type="hidden"
         name="varNum"

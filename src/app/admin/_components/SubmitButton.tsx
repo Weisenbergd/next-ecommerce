@@ -1,16 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { ButtonHTMLAttributes } from "react";
 import { useFormStatus } from "react-dom";
 
 type Props = {
-  onClick?: () => void; // Define the onClick prop with an optional function type
   form?: string;
-};
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function SubmitButton({ onClick, form }: Props) {
+export default function SubmitButton({ form, ...buttonProps }: Props) {
   const { pending } = useFormStatus();
+
   return (
-    <Button form={form} onClick={onClick}>
-      {pending ? "Saving..." : "Submit"}
+    <Button form={form} {...buttonProps}>
+      {pending ? "Saving..." : buttonProps.children || "Submit"}
     </Button>
   );
 }

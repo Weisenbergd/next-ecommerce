@@ -52,7 +52,7 @@ export function transformData(props: any, group?: string) {
           images: props[variantGroup[0]].size
             ? [props[variantGroup[0]]]
             : props[variantGroup[0]],
-          description: props[variantGroup[1]] || null,
+          description: props[variantGroup[1]] || "",
           colorId: props[variantGroup[4]],
           variants: <VariantType[]>[],
         };
@@ -154,7 +154,7 @@ export function transformData(props: any, group?: string) {
         images: props[variantGroup[0]].size
           ? [props[variantGroup[0]]]
           : props[variantGroup[0]],
-        description: props[variantGroup[1]] || null,
+        description: props[variantGroup[1]] || "",
         colorId: props[variantGroup[4]],
         variants: <VariantType[]>[],
       };

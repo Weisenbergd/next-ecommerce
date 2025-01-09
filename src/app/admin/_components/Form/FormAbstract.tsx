@@ -16,6 +16,7 @@ import {
 } from "@/lib/types";
 import VariantCheckBoxTable from "./VariantCheckBoxTable";
 import { productFormBase, productFormVar } from "./FormStructure";
+import StyledFormSections from "./StyledFormSections";
 
 type Props = {
   edit?: {
@@ -43,6 +44,7 @@ type Props = {
   [key: string]: any;
 };
 
+// todo -- handle formErrors
 // important -- current code assumes only 2 properties for variants table: colors and sizes
 export default function FormAbstract({
   placeholders,
@@ -55,13 +57,17 @@ export default function FormAbstract({
   name,
   edit,
 }: Props) {
-  const initialState = {
+  const initialState: {
+    status: string;
+    message: any[];
+  } = {
     status: "",
-    message: [""],
+    message: [],
   };
   const [state, formAction] = useFormState(action, initialState);
   const [hasVariants, setHasVariants] = useState(0);
   const ref = useRef<HTMLFormElement>(null);
+
   useEffect(() => {
     if (hasVariants) {
       setHasVariants(1);
@@ -85,14 +91,13 @@ export default function FormAbstract({
   }
 
   return (
-    <div>
-      <h2 className="capitalize mb-6">Add {name}</h2>
+    <div className="md:grid md:justify-center">
       <form
         name="test"
         ref={ref}
         id="productForm"
         action={formAction}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4 w-full md:w-[700px]"
       >
         {productFormBase.map((el, i) => {
           const key: keyof TypeInputPlaceholders = el.label
@@ -102,11 +107,12 @@ export default function FormAbstract({
             .toLowerCase()
             .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
           return (
-            <div key={el.label + i} className="flex flex-col gap-2">
+            <StyledFormSections key={el.label + i} className="...">
               {el.input !== "selection" ? (
                 <LabelInput
                   el={el}
                   placeholder={placeholders && placeholders[key]}
+                  state={state}
                 />
               ) : (
                 <LabelSelection
@@ -120,56 +126,52 @@ export default function FormAbstract({
                   editting={true}
                 />
               )}
-            </div>
+            </StyledFormSections>
           );
         })}
-        <VariantCheckBoxTable
-          hasVariants={hasVariants}
-          colors={colors}
-          sizes={sizes}
-          setHasVariants={setHasVariants}
-        >
-          <SubmitButton />
-        </VariantCheckBoxTable>
+        <StyledFormSections>
+          <VariantCheckBoxTable
+            hasVariants={hasVariants}
+            colors={colors}
+            sizes={sizes}
+            setHasVariants={setHasVariants}
+            state={state}
+          ></VariantCheckBoxTable>
+        </StyledFormSections>
 
         {!hasVariants && (
           <>
-            <div>
-              {/* <div>
-              <Label>Image</Label>
-              <Input type="file" multiple name={"images"} form="productForm" />
-            </div> */}
-              {productFormVar.map((el, i) => {
-                const key: keyof TypeInputPlaceholders = el.label
-                  .toLowerCase()
-                  .replace(/\s/g, "") as keyof TypeInputPlaceholders;
-                const keySelect: keyof TypeSelectPlaceholders = el.label
-                  .toLowerCase()
-                  .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
+            {productFormVar.map((el, i) => {
+              const key: keyof TypeInputPlaceholders = el.label
+                .toLowerCase()
+                .replace(/\s/g, "") as keyof TypeInputPlaceholders;
+              const keySelect: keyof TypeSelectPlaceholders = el.label
+                .toLowerCase()
+                .replace(/\s/g, "") as keyof TypeSelectPlaceholders;
 
-                return (
-                  <div key={el.label + i} className="flex flex-col gap-2">
-                    {el.input !== "selection" && (
-                      <LabelInput
-                        el={el}
-                        placeholder={placeholders && placeholders[key]}
-                      />
-                    )}
-                    {el.input === "selection" && (
-                      <LabelSelection
-                        placeholder=""
-                        editting={true}
-                        name={el.name}
-                        label={el.label}
-                        selection={pickSelection(el.label)}
-                        form="addProduct"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <SubmitButton />
+              return (
+                <StyledFormSections key={el.label + i} className="">
+                  {el.input !== "selection" && (
+                    <LabelInput
+                      el={el}
+                      placeholder={placeholders && placeholders[key]}
+                      state={state}
+                    />
+                  )}
+                  {el.input === "selection" && (
+                    <LabelSelection
+                      placeholder=""
+                      editting={true}
+                      name={el.name}
+                      label={el.label}
+                      selection={pickSelection(el.label)}
+                      form="addProduct"
+                    />
+                  )}
+                </StyledFormSections>
+              );
+            })}
+            <SubmitButton form="productForm" />;
           </>
         )}
       </form>

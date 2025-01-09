@@ -1,4 +1,7 @@
 "use client";
+
+import dynamic from "next/dynamic";
+
 import { useEffect, useState } from "react";
 import {
   ColumnDef,
@@ -24,7 +27,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Input } from "@/components/ui/input.tsx";
 import { getPath } from "@/lib/functions";
-import { revalidatePath } from "next/cache";
 import { TypeLightProduct } from "@/lib/types";
 
 interface DataTableProps<TData, TValue> {
@@ -60,53 +62,42 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [isWideScreen, setIsWideScreen] = useState(false);
 
   useEffect(() => {
-    if (screenWidth < 760) {
-      setColumnVisibility({
-        id: true,
-        name: true,
-        description: false,
-        categoryId: true,
-        createdAt: false,
-        updatedAt: false,
-      });
-    }
-
-    if (screenWidth > 759) {
-      setColumnVisibility({
-        id: true,
-        name: true,
-        description: true,
-        categoryId: true,
-        createdAt: true,
-        updatedAt: true,
-      });
-    }
-
-    const x = table.getHeaderGroups();
-    console.log(x);
-  }, [screenWidth]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-      console.log("Screen width:", window.innerWidth);
+    const checkScreenWidth = () => {
+      setIsWideScreen(window.innerWidth > 760);
     };
 
-    // Attach event listener on mount
-    window.addEventListener("resize", handleResize);
+    checkScreenWidth();
+    window.addEventListener("resize", checkScreenWidth);
 
-    // Cleanup event listener on unmount
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", checkScreenWidth);
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setColumnVisibility({
+        id: true,
+        name: true,
+        description: isWideScreen,
+        categoryId: true,
+        createdAt: isWideScreen,
+        updatedAt: isWideScreen,
+      });
+    };
+    // Set initial visibility
+    handleResize();
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isWideScreen]);
+
   return (
     <div className="">
-      <p>{screenWidth}</p>
       {/* filter -- search through names */}
       <div className="flex items-center justify-center py-4 md:justify-start">
         <Input
@@ -128,17 +119,17 @@ export function DataTable<TData, TValue>({
 
       <div className="rounded-md border-none md:border">
         <Table className="w-full table-fixed">
-          <TableHeader className="">
+          <TableHeader className="text-primary-foreground border-b-2">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="relative -left-3">
                 {/* Add an empty header for link cell */}
                 <TableHead className="w-0"></TableHead>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="truncate">
+                  <TableHead key={header.id} className="">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          screenWidth > 860
+                          isWideScreen
                             ? header.column.columnDef.header
                             : header.column.columnDef.header,
                           header.getContext()
@@ -154,9 +145,9 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="relative"
+                  className="relative hover:bg-muted"
                 >
-                  <TableCell className="absolute w-[92%] h-full z-10">
+                  <TableCell className="absolute w-[77%] md:w-[87%] h-full z-10">
                     <Link
                       href={`${getPath()}/${
                         (row.original as TypeLightProduct).id

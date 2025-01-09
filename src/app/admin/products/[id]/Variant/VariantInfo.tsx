@@ -1,12 +1,13 @@
 import { deleteVariant } from "@/app/admin/_actions/Variants/deleteVariant";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
 import { editVariant } from "@/app/admin/_actions/Variants/editVariant";
 import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
-import InputEdit from "@/app/admin/_components/Form/InputEdit";
 import { TypeIndexVariant, TypeSize, TypeVariant } from "@/lib/types";
+import InputEdit from "@/app/admin/_components/Form/InputEdit";
+import StyledDropDown from "@/app/admin/_components/StyledDropDown";
 
 type Props = {
   sizes: TypeSize[];
@@ -51,70 +52,93 @@ export default function VariantInfo({
   }, [editVariantState]);
 
   const variantFormat = ["size", "price", "stock"];
+  const [showAddVariant, setShowAddVariant] = useState(false);
 
   return (
-    <ol>
-      {variantFormat.map((name, i) => {
-        return (
-          <li key={name}>
-            {name === "size" ? (
-              <LabelSelection
-                name={name + "Id"}
-                placeholder={variant.size.name}
-                defaultValueId={variant.size.id}
-                selection={sizes}
-                form="editVariant"
-                label={name}
-                editting={
-                  editting.category === "variant" &&
-                  editting.target === variant.id
-                }
-              />
-            ) : (
-              <InputEdit
-                editting={
-                  editting.category === "variant" &&
-                  editting.target === variant.id
-                }
-                label={name}
-                inputName={name}
-                formName="editVariant"
-                placeholder={(variant as TypeIndexVariant)[name].toString()}
-              />
-            )}
-          </li>
-        );
-      })}
-      <li>
-        <EditButton
+    <>
+      <div className="flex justify-start pb-2">
+        <StyledDropDown
+          form="editVariant"
           editting={editting}
           setEditting={setEditting}
           category="variant"
           target={variant.id}
-        >
-          Edit Variant
-        </EditButton>
-        {editting.category === "variant" && editting.target === variant.id && (
-          <div>
-            <FormButton
-              form="editVariant"
-              action={editVariantAction}
-              hiddenInputNames="variantId"
-              hiddenInputValues={variant.id}
-            >
-              Submit Changes!!!!!!
-            </FormButton>
-            <FormButton
-              form="deleteVariant"
-              action={deleteVariantAction}
-              hiddenInputNames="variantId"
-              hiddenInputValues={variant.id}
-            >
-              Delete Variant
-            </FormButton>
-          </div>
-        )}
-      </li>
-    </ol>
+          triggerText="edit"
+          deleteAction={deleteVariantAction}
+          hiddenInputNames="variantId"
+          hiddenInputValues={variant.id}
+          showAdd={showAddVariant}
+          setShowAdd={setShowAddVariant}
+          menuLabel="Edit Variant"
+        />
+      </div>
+      <h4>
+        <span className="font-bold">Variant Id: </span>
+        {variant.id}
+      </h4>
+      {editting.category != "variant" ||
+      (editting.category === "variant" && editting.target != variant.id) ? (
+        <>
+          <p>
+            <span className="font-bold">size: </span>
+            {variant.size.name}
+          </p>
+          <p>
+            <span className="font-bold">price: </span>
+            {variant.price}
+          </p>
+          <p>
+            <span className="font-bold">stock: </span>
+            {variant.stock}
+          </p>
+        </>
+      ) : (
+        <>
+          {variantFormat.map((name, i) => {
+            return (
+              <div key={name}>
+                {name === "size" ? (
+                  <LabelSelection
+                    name={name + "Id"}
+                    placeholder={variant.size.name}
+                    defaultValueId={variant.size.id}
+                    selection={sizes}
+                    form="editVariant"
+                    label={name}
+                    editting={
+                      editting.category === "variant" &&
+                      editting.target === variant.id
+                    }
+                  />
+                ) : (
+                  <InputEdit
+                    editting={
+                      editting.category === "variant" &&
+                      editting.target === variant.id
+                    }
+                    label={name}
+                    inputName={name}
+                    formName="editVariant"
+                    placeholder={(variant as TypeIndexVariant)[name].toString()}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </>
+      )}
+      {editting.category === "variant" && editting.target === variant.id && (
+        <div className="pt-4">
+          <FormButton
+            form="editVariant"
+            action={editVariantAction}
+            hiddenInputNames="variantId"
+            hiddenInputValues={variant.id}
+          >
+            Submit Changes!!!!!!
+          </FormButton>
+        </div>
+      )}
+    </>
   );
 }
