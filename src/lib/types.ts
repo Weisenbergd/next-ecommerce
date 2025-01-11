@@ -27,7 +27,6 @@ export type TypeVariant = {
   id: number;
   stock: number;
   price: number;
-  productId: number;
 } & TypeDates;
 
 export type TypeVariantGroup = {
