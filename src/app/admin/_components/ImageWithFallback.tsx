@@ -14,7 +14,12 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   const [imgSrc, setImgSrc] = useState(src);
 
   return (
-    <Image {...rest} src={imgSrc} onError={() => setImgSrc(fallbackSrc)} />
+    <Image
+      className=""
+      {...rest}
+      src={imgSrc}
+      onError={() => setImgSrc(fallbackSrc)}
+    />
   );
 };
 

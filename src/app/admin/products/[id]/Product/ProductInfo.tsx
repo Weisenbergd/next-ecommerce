@@ -81,23 +81,9 @@ export default function ProductInfo({
   return (
     <div className="mt-10 text-lg relative flex flex-col gap-2">
       <div className="w-full flex justify-between px-2 items-center">
-        <p>Product {product.id}</p>
-        <div className="p-2 bg-primary text-primary-foreground rounded-xl">
-          <StyledDropDown
-            editting={editting}
-            setEditting={setEditting}
-            category="product"
-            target={product.id}
-            menuLabel="Edit Product"
-            triggerText="edit"
-            deleteAction={deleteProductAction}
-            form="deleteProduct"
-            hiddenInputNames="productId"
-            hiddenInputValues={product.id}
-            showAdd={showAddGroup}
-            setShowAdd={setShowAddGroup}
-          />
-        </div>
+        <p className="p-2 px-4 bg-primary text-primary-foreground relative before:absolute before:top-0 before:bottom-0 before:-left-14 before:w-[calc(100%+2rem)] before:bg-primary before:-z-10">
+          Product {product.id}
+        </p>
       </div>
       {editting.category != "product" ? (
         <div className="flex flex-col gap-4">
@@ -121,6 +107,22 @@ export default function ProductInfo({
               {formatUpdatedAt.formattedDate}--
               {formatUpdatedAt.formattedTime}
             </p>
+            <div className="p-2 bg-primary text-primary-foreground w-fit mt-2 px-4 rounded-sm">
+              <StyledDropDown
+                editting={editting}
+                setEditting={setEditting}
+                category="product"
+                target={product.id}
+                menuLabel="Edit Product"
+                triggerText="edit"
+                deleteAction={deleteProductAction}
+                form="deleteProduct"
+                hiddenInputNames="productId"
+                hiddenInputValues={product.id}
+                showAdd={showAddGroup}
+                setShowAdd={setShowAddGroup}
+              />
+            </div>
           </div>
         </div>
       ) : (
@@ -155,7 +157,23 @@ export default function ProductInfo({
               </div>
             );
           })}
-          <div className="">
+          <div className="flex flex-col gap-4">
+            <div className="p-2 w-fit mt-2 px-4 border shadow-sm rounded-sm">
+              <StyledDropDown
+                editting={editting}
+                setEditting={setEditting}
+                category="product"
+                target={product.id}
+                menuLabel="Edit Product"
+                triggerText="edit"
+                deleteAction={deleteProductAction}
+                form="deleteProduct"
+                hiddenInputNames="productId"
+                hiddenInputValues={product.id}
+                showAdd={showAddGroup}
+                setShowAdd={setShowAddGroup}
+              />
+            </div>
             {editting.category === "product" && (
               <div className="w-full flex flex-col">
                 <FormButton

@@ -56,22 +56,6 @@ export default function VariantInfo({
 
   return (
     <>
-      <div className="flex justify-start pb-2">
-        <StyledDropDown
-          form="editVariant"
-          editting={editting}
-          setEditting={setEditting}
-          category="variant"
-          target={variant.id}
-          triggerText="edit"
-          deleteAction={deleteVariantAction}
-          hiddenInputNames="variantId"
-          hiddenInputValues={variant.id}
-          showAdd={showAddVariant}
-          setShowAdd={setShowAddVariant}
-          menuLabel="Edit Variant"
-        />
-      </div>
       <h4>
         <span className="font-bold">Variant Id: </span>
         {variant.id}
@@ -91,6 +75,22 @@ export default function VariantInfo({
             <span className="font-bold">stock: </span>
             {variant.stock}
           </p>
+          <div className="flex justify-start pb-2">
+            <StyledDropDown
+              form="editVariant"
+              editting={editting}
+              setEditting={setEditting}
+              category="variant"
+              target={variant.id}
+              triggerText="edit"
+              deleteAction={deleteVariantAction}
+              hiddenInputNames="variantId"
+              hiddenInputValues={variant.id}
+              showAdd={showAddVariant}
+              setShowAdd={setShowAddVariant}
+              menuLabel="Edit Variant"
+            />
+          </div>
         </>
       ) : (
         <>
@@ -128,7 +128,23 @@ export default function VariantInfo({
         </>
       )}
       {editting.category === "variant" && editting.target === variant.id && (
-        <div className="pt-4">
+        <div className="pt-4 flex flex-col gap-4">
+          <div className="bg-background w-fit p-2 border shadow-sm ">
+            <StyledDropDown
+              form="editVariant"
+              editting={editting}
+              setEditting={setEditting}
+              category="variant"
+              target={variant.id}
+              triggerText="edit"
+              deleteAction={deleteVariantAction}
+              hiddenInputNames="variantId"
+              hiddenInputValues={variant.id}
+              showAdd={showAddVariant}
+              setShowAdd={setShowAddVariant}
+              menuLabel="Edit Variant"
+            />
+          </div>
           <FormButton
             form="editVariant"
             action={editVariantAction}

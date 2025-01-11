@@ -25,20 +25,22 @@ export default function ImageList({
   product,
 }: Props) {
   return (
-    <div key={imageIndex}>
-      {editting.category === "images" && editting.target === groupIndex && (
-        <input
-          onChange={(e) => imageCheckFunction(e, el.url)}
-          type="checkbox"
+    <div className="">
+      <div key={imageIndex}>
+        {editting.category === "images" && editting.target === groupIndex && (
+          <input
+            onChange={(e) => imageCheckFunction(e, el.url)}
+            type="checkbox"
+          />
+        )}
+        <ImageWithFallback
+          key={imageIndex + el.url}
+          alt={`${product.name} picture`}
+          src={el.url}
+          width={400}
+          height={400}
         />
-      )}
-      <ImageWithFallback
-        key={imageIndex + el.url}
-        alt={`${product.name} picture`}
-        src={el.url}
-        width={400}
-        height={400}
-      />
+      </div>
     </div>
   );
 }

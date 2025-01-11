@@ -78,30 +78,23 @@ export default function ProductContainer({
                   setEditting={setEditting}
                   initialState={initialState}
                 >
-                  <ImageContainer
-                    className="invisible size-0 lg:visible lg:size-auto"
-                    editting={editting}
-                    setEditting={setEditting}
-                    product={product}
-                    variantGroup={el}
-                    groupIndex={groupIndex}
-                    initialState={initialState}
-                  />
-                  <div className="flex gap-8">
-                    {el.variants.map(
-                      (variant: TypeVariant, variantIndex: number) => {
-                        return (
-                          <VariantContainer
-                            key={variantIndex}
-                            editting={editting}
-                            setEditting={setEditting}
-                            sizes={sizes}
-                            variant={variant}
-                            initialState={initialState}
-                          />
-                        );
-                      }
-                    )}
+                  <div className="flex justify-between">
+                    <div className="flex gap-8">
+                      {el.variants.map(
+                        (variant: TypeVariant, variantIndex: number) => {
+                          return (
+                            <VariantContainer
+                              key={variantIndex}
+                              editting={editting}
+                              setEditting={setEditting}
+                              sizes={sizes}
+                              variant={variant}
+                              initialState={initialState}
+                            />
+                          );
+                        }
+                      )}
+                    </div>
                   </div>
                 </GroupContainer>
               );

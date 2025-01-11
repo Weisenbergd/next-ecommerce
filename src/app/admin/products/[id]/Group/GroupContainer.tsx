@@ -55,6 +55,15 @@ export default function GroupContainer({
         initialState={initialState}
         product={product}
       />
+      <ImageContainer
+        className="flex flex-col gap-2"
+        editting={editting}
+        setEditting={setEditting}
+        product={product}
+        variantGroup={variantGroup}
+        groupIndex={groupIndex}
+        initialState={initialState}
+      />
       {children}
     </div>
   );

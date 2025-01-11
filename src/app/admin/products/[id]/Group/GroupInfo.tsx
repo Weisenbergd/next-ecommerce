@@ -76,22 +76,6 @@ export default function GroupInfo({
           <span className="font-bold">Group Id: </span>
           {variantGroup.id}
         </h3>
-        <div className="bg-primary text-primary-foreground rounded-lg p-2">
-          <StyledDropDown
-            form="editVariantGroup"
-            editting={editting}
-            setEditting={setEditting}
-            category="group"
-            target={variantGroup.id}
-            triggerText="edit group"
-            deleteAction={deleteGroupAction}
-            hiddenInputNames="variantGroupId"
-            hiddenInputValues={variantGroup.id}
-            showAdd={showAddVariant}
-            setShowAdd={setShowAddVariant}
-            menuLabel="Edit Group"
-          />
-        </div>
       </div>
       {editting.category === "group" && editting.target === variantGroup.id ? (
         <div className="flex flex-col gap-4">
@@ -104,6 +88,23 @@ export default function GroupInfo({
             form="editVariantGroup"
             defaultValueId={variantGroup.color.id}
           />
+
+          <div className="shadow-sm border p-2 w-fit bg-background ">
+            <StyledDropDown
+              form="editVariantGroup"
+              editting={editting}
+              setEditting={setEditting}
+              category="group"
+              target={variantGroup.id}
+              triggerText="edit"
+              deleteAction={deleteGroupAction}
+              hiddenInputNames="variantGroupId"
+              hiddenInputValues={variantGroup.id}
+              showAdd={showAddVariant}
+              setShowAdd={setShowAddVariant}
+              menuLabel="Edit Group"
+            />
+          </div>
 
           <FormButton
             className="w-full"
@@ -122,6 +123,22 @@ export default function GroupInfo({
             {variantGroup.color.name}
           </p>
           {showAddVariant && <p>ass</p>}
+          <div className="">
+            <StyledDropDown
+              form="editVariantGroup"
+              editting={editting}
+              setEditting={setEditting}
+              category="group"
+              target={variantGroup.id}
+              triggerText="edit"
+              deleteAction={deleteGroupAction}
+              hiddenInputNames="variantGroupId"
+              hiddenInputValues={variantGroup.id}
+              showAdd={showAddVariant}
+              setShowAdd={setShowAddVariant}
+              menuLabel="Edit Group"
+            />
+          </div>
         </div>
       )}
     </div>
