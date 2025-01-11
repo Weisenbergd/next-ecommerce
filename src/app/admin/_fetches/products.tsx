@@ -35,7 +35,7 @@ export async function getProducts() {
 
 export async function getSingleProduct(id: number) {
   // throws a bunch of consoles error otherwise
-  // if (!id) return undefined;
+  if (!id) return null;
 
   return await prisma.product.findUnique({
     where: {
