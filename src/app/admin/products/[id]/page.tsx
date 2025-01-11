@@ -23,14 +23,14 @@ type Props = {
 export default async function page({ params }: Props) {
   if (!params) return <p>loading...</p>;
 
-  const product: TypeDeepProduct | null | undefined = await getSingleProduct(
+  const product: TypeDeepProduct | null = await getSingleProduct(
     parseInt(params.id)
   );
-  if (!product) return <p>product doesn't exist</p>;
 
   const sizes: TypeSize[] = await getSizes();
   const categories: TypeCategory[] = await getCategories();
   const colors: TypeColor[] = await getColors();
+  if (!product) return <p>product doesn't exist</p>;
 
   return (
     <ProductContainer
