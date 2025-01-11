@@ -28,7 +28,7 @@ type Props = {
   action?: (payload: FormData) => void;
   hiddenInputNames?: string;
   hiddenInputValues?: number;
-  sizesOnly: boolean;
+  sizesOnly?: boolean;
   selectedColors?: TypeColor[];
   selectedSizes?: TypeSize[];
 };

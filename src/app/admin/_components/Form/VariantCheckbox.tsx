@@ -256,7 +256,9 @@ export default function VariantCheckbox({
         >
           {tableMeetsStandards()
             ? "Add selected properties to continue"
-            : "Select at least one size and one color"}
+            : sizesOnly
+            ? "Select new size(s)"
+            : "Select new color(s) and sizes"}
         </Button>
       )}
     </div>

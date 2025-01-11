@@ -2,7 +2,8 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError, ZodType } from "zod";
 
 export function schemaCheck(error: unknown) {
-  let errorArray: string[] = [];
+  // todo fix any
+  let errorArray: any = [];
   let imageErrors = 0;
   if (error instanceof ZodError) {
     for (let i = 0; i < error.issues.length; i++) {
