@@ -54,6 +54,7 @@ export default function GroupContainer({
         setEditting={setEditting}
         initialState={initialState}
         product={product}
+        sizes={sizes}
       />
       <ImageContainer
         className="flex flex-col gap-2"

@@ -24,6 +24,9 @@ type Props = {
   setVariantTable: Dispatch<SetStateAction<number>>;
   existingColors?: number[];
   variantTable: number;
+  sizesOnly?: boolean;
+  selectedColors?: TypeColor[];
+  existingSizes?: number[];
 };
 
 export default function VariantCheckbox({
@@ -32,14 +35,19 @@ export default function VariantCheckbox({
   handleVariant,
   setVariantTable,
   existingColors,
+  existingSizes,
   variantTable,
+  sizesOnly,
+  selectedColors,
 }: Props) {
   const { isModalOpen, setIsModalOpen, modalFormState, setModalFormState } =
     useModal();
 
   const [selectionTarget, setSelectionTarget] = useState("");
 
-  const [checkedState, setCheckedState] = useState<Record<string, boolean>>({});
+  const [checkedState, setCheckedState] = useState<Record<string, boolean>>(
+    sizesOnly ? {} : {}
+  );
 
   // Initialize checked state based on sizes and colors
   useEffect(() => {
@@ -49,6 +57,13 @@ export default function VariantCheckbox({
     });
     colors.forEach((color) => {
       initialCheckedState[`color-${color.id}`] = false;
+      if (selectedColors) {
+        selectedColors.forEach((selectedColor) => {
+          if (selectedColor.id === color.id) {
+            initialCheckedState[`color-${color.id}`] = true;
+          }
+        });
+      }
     });
     setCheckedState((prev) => ({ ...initialCheckedState, ...prev }));
   }, [sizes, colors]);
@@ -98,6 +113,7 @@ export default function VariantCheckbox({
         if (check[0].split("-")[0] === "size") sizeCheck = true;
         if (colorCheck === true && sizeCheck === true) break;
       }
+      if (sizesOnly && sizeCheck === true) return true;
       if (colorCheck === true && sizeCheck === true) return true;
       else return false;
     }
@@ -112,6 +128,8 @@ export default function VariantCheckbox({
     }
   });
 
+  console.log(existingSizes);
+
   return (
     <div className="my-10 flex flex-col gap-4 md:gap-6">
       {isModalOpen && (
@@ -120,13 +138,17 @@ export default function VariantCheckbox({
         </Modal>
       )}
       {productFormVar.map((variantOutline) => {
+        // if (sizesOnly && variantOutline.name === "colorId") return;
+
         if (variantOutline.name != "colorId" && variantOutline.name != "sizeId")
           return null;
         let x = variantOutline.label.toLowerCase();
         let mapVar = variantOutline.label === "Size" ? sizes : colors;
         return (
           <div
-            className="border-border bg-secondary text-secondary-foreground py-2 flex flex-col  overflow-hidden"
+            className={`border-border bg-secondary text-secondary-foreground py-2 flex flex-col  overflow-hidden ${
+              variantOutline.name === "colorId" && sizesOnly ? "hidden" : ""
+            }`}
             key={variantOutline.name}
           >
             <div className="md:px-6 rounded-t-md rounded-b-md pb-10">
@@ -157,9 +179,9 @@ export default function VariantCheckbox({
                   return (
                     <div
                       className={`flex gap-1 items-center bg-card text-card-foreground shadow-sm rounded-xl py-4 px-4 left-4 ${
-                        variantOutline.name === "colorId" &&
-                        existingColors?.includes(variant.id) &&
-                        "font-bold "
+                        variantOutline.name === "colorId"
+                          ? existingColors?.includes(variant.id) && "font-bold "
+                          : existingSizes?.includes(variant.id) && "font-bold"
                       }`}
                       key={key}
                     >
@@ -171,36 +193,48 @@ export default function VariantCheckbox({
                         type="checkbox"
                         onChange={(e) => {
                           handleCheckboxChange(e, key);
-                          handleVariant(
-                            e.target.name,
-                            variantOutline.name,
-                            variant.id.toString(),
-                            e.target.checked
-                          );
+                          // handleVariant(
+                          //   e.target.name,
+                          //   variantOutline.name,
+                          //   variant.id.toString(),
+                          //   e.target.checked
+                          // );
                         }}
                         checked={checkedState[key] || false}
                         disabled={
-                          variantOutline.name === "colorId" &&
-                          existingColors?.includes(variant.id)
+                          sizesOnly
+                            ? variantOutline.name === "sizeId" &&
+                              existingSizes?.includes(variant.id)
+                            : variantOutline.name === "colorId" &&
+                              existingColors?.includes(variant.id)
                         }
                       />
                       <div className="p-2 pr-10 flex items-center">
                         <label
                           className={`peer hover:cursor-pointer hover:font-bold truncate p-2 pr-10 ${
-                            variantOutline.name === "colorId" &&
-                            existingColors?.includes(variant.id) &&
-                            "hover:cursor-not-allowed line-through"
+                            variantOutline.name === "colorId"
+                              ? existingColors?.includes(variant.id) &&
+                                "hover:cursor-not-allowed line-through"
+                              : existingSizes?.includes(variant.id)
+                              ? "hover:cursor-not-allowed line-through"
+                              : ""
                           }`}
                           htmlFor={key}
                         >
                           {variant.name}
                         </label>
-                        {variantOutline.name === "colorId" &&
-                          existingColors?.includes(variant.id) && (
-                            <p className="peer-hover:visible font-light invisible">
-                              color already added
-                            </p>
-                          )}
+                        {sizesOnly
+                          ? existingSizes?.includes(variant.id) && (
+                              <p className="peer-hover:visible font-light invisible">
+                                size already added
+                              </p>
+                            )
+                          : variantOutline.name === "colorId" &&
+                            existingColors?.includes(variant.id) && (
+                              <p className="peer-hover:visible font-light invisible">
+                                color already added
+                              </p>
+                            )}
                       </div>
                     </div>
                   );

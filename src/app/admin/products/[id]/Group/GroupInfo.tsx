@@ -11,11 +11,18 @@ import FormButton from "../FormButton";
 import { deleteGroup } from "@/app/admin/_actions/Groups/deleteGroup";
 import { editGroup } from "@/app/admin/_actions/Groups/editGroup";
 import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
-import { TypeColor, TypeDeepProduct, TypeVariantGroup } from "@/lib/types";
+import {
+  TypeColor,
+  TypeDeepProduct,
+  TypeInitialState,
+  TypeSize,
+  TypeVariantGroup,
+} from "@/lib/types";
 import PreFormButton from "../PreFormButton";
 import { addGroup } from "@/app/admin/_actions/Groups/addGroup";
 import { deleteProduct } from "@/app/admin/_actions/Products/deleteProduct";
 import StyledDropDown from "@/app/admin/_components/StyledDropDown";
+import VariantCheckBoxTable from "@/app/admin/_components/Form/VariantCheckBoxTable";
 type Props = {
   variantGroup: TypeVariantGroup;
   colors: TypeColor[];
@@ -34,6 +41,7 @@ type Props = {
     }>
   >;
   product: TypeDeepProduct;
+  sizes: TypeSize[];
 } & HTMLAttributes<HTMLDivElement>;
 
 export default function GroupInfo({
@@ -43,9 +51,15 @@ export default function GroupInfo({
   setEditting,
   initialState,
   product,
+  sizes,
   ...props
 }: Props) {
   // status working
+
+  const state: TypeInitialState = {
+    status: "",
+    message: [],
+  };
 
   const [editGroupState, editGroupAction] = useFormState(
     editGroup,
@@ -122,7 +136,6 @@ export default function GroupInfo({
             <span className="font-bold">color: </span>
             {variantGroup.color.name}
           </p>
-          {showAddVariant && <p>ass</p>}
           <div className="">
             <StyledDropDown
               form="editVariantGroup"
@@ -139,6 +152,19 @@ export default function GroupInfo({
               menuLabel="Edit Group"
             />
           </div>
+          {showAddVariant && (
+            <VariantCheckBoxTable
+              colors={colors}
+              sizes={sizes}
+              hasVariants={1}
+              state={state}
+              sizesOnly={true}
+              selectedColors={[variantGroup.color]}
+              selectedSizes={variantGroup.variants.map(
+                (variant) => variant.size
+              )}
+            />
+          )}
         </div>
       )}
     </div>

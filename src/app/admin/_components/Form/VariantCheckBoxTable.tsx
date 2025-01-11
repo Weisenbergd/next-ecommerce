@@ -28,6 +28,9 @@ type Props = {
   action?: (payload: FormData) => void;
   hiddenInputNames?: string;
   hiddenInputValues?: number;
+  sizesOnly: boolean;
+  selectedColors?: TypeColor[];
+  selectedSizes?: TypeSize[];
 };
 
 export default function VariantCheckBoxTable({
@@ -41,7 +44,15 @@ export default function VariantCheckBoxTable({
   action,
   hiddenInputNames,
   hiddenInputValues,
+  sizesOnly,
+  selectedColors,
+  selectedSizes,
 }: Props) {
+  // id: 2
+  // name: small
+
+  console.log(selectedSizes);
+
   const [variantTable, setVariantTable] = useState(0);
   const [variantColors, setVariantColors] = useState<
     { color: string; id: string }[]
@@ -50,7 +61,19 @@ export default function VariantCheckBoxTable({
     { size: string; id: string }[]
   >([]);
 
-  const [existingColors, setExistingColors] = useState<number[]>([]);
+  const [existingColors, setExistingColors] = useState<number[]>(
+    selectedColors?.forEach((color) => [color.id]) || []
+  );
+
+  const [existingSizes, setExistinSizes] = useState<number[]>(
+    selectedSizes?.forEach((size) => [size.id]) || selectedSizes
+      ? selectedSizes?.map((size) => size.id)
+      : []
+  );
+
+  useEffect(() => {
+    console.log(existingSizes);
+  });
 
   useEffect(() => {
     if (groups) {
@@ -88,6 +111,17 @@ export default function VariantCheckBoxTable({
     }
   }
 
+  useEffect(() => {
+    if (sizesOnly && selectedColors) {
+      for (let color of selectedColors) {
+        handleVariant(color.name, "colorId", color.id.toString(), true);
+      }
+      // for (let sizes of selectedSizes) {
+      //   handleVariant(sizes.name, "sizeId", sizes.id.toString(), true);
+      // }
+    }
+  }, []);
+
   return (
     <div className="">
       <div>
@@ -124,7 +158,10 @@ export default function VariantCheckBoxTable({
           handleVariant={handleVariant}
           setVariantTable={setVariantTable}
           existingColors={existingColors}
+          existingSizes={existingSizes}
           variantTable={variantTable}
+          sizesOnly={sizesOnly}
+          selectedColors={selectedColors}
         />
       ) : null}
       {variantTable ? (
