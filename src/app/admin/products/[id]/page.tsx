@@ -26,11 +26,11 @@ export default async function page({ params }: Props) {
   const product: TypeDeepProduct | null | undefined = await getSingleProduct(
     parseInt(params.id)
   );
+  if (!product) return <p>product doesn't exist</p>;
+
   const sizes: TypeSize[] = await getSizes();
   const categories: TypeCategory[] = await getCategories();
   const colors: TypeColor[] = await getColors();
-
-  if (!product) return <p>product doesn't exist</p>;
 
   return (
     <ProductContainer
