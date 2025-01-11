@@ -30,14 +30,13 @@ export default function VariantContainer({
   ...props
 }: Props) {
   return (
-    <div {...props}>
-      <VariantInfo
-        variant={variant}
-        sizes={sizes}
-        editting={editting}
-        initialState={initialState}
-        setEditting={setEditting}
-      />
-    </div>
+    <VariantInfo
+      variant={variant}
+      sizes={sizes}
+      editting={editting}
+      initialState={initialState}
+      setEditting={setEditting}
+      {...props}
+    />
   );
 }

@@ -6,6 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectWithTrigger,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
@@ -113,7 +114,7 @@ export default function LabelSelection({
           <Label className="font-bold text-lg" htmlFor={name}>
             {label}
           </Label>
-          <Select
+          <SelectWithTrigger
             required
             open={dropdownOpen[name] || false}
             onOpenChange={(e) => {
@@ -126,17 +127,29 @@ export default function LabelSelection({
               setSelected(e);
             }}
           >
-            <SelectTrigger className="border-border">
-              <SelectValue
-                onSubmit={(e) => console.log(e)}
-                placeholder={
-                  modalFormState.status === "success" &&
-                  modalFormState.message[1] === label.toLowerCase()
-                    ? placeHolderAfterSubmit[label.toLowerCase()]
-                    : placeholder?.toString() || `Select a ${label}`
-                }
-              ></SelectValue>
-            </SelectTrigger>
+            {/* <Select
+            required
+            open={dropdownOpen[name] || false}
+            onOpenChange={(e) => {
+              toggleDropdown(name);
+              e === true && setModalTarget(label);
+            }}
+            name={name}
+            value={selected}
+            onValueChange={(e) => {
+              setSelected(e);
+            }}
+          > */}
+            {/* <SelectTrigger className="border-border bg-red-50"> */}
+            <SelectValue
+              placeholder={
+                modalFormState.status === "success" &&
+                modalFormState.message[1] === label.toLowerCase()
+                  ? placeHolderAfterSubmit[label.toLowerCase()]
+                  : placeholder?.toString() || `Select a ${label}`
+              }
+            ></SelectValue>
+            {/* </SelectTrigger> */}
             <SelectContent>
               {selection &&
                 selection.map(
@@ -157,7 +170,8 @@ export default function LabelSelection({
                 Add new {label}
               </Button>
             </SelectContent>
-          </Select>
+            {/* </Select> */}
+          </SelectWithTrigger>
         </StyledLabelInputDiv>
       )}
     </>

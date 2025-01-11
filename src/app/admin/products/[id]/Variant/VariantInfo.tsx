@@ -1,5 +1,11 @@
 import { deleteVariant } from "@/app/admin/_actions/Variants/deleteVariant";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { useFormState } from "react-dom";
 import EditButton from "../EditButton";
 import FormButton from "../FormButton";
@@ -8,6 +14,7 @@ import LabelSelection from "@/app/admin/_components/Form/LabelSelection";
 import { TypeIndexVariant, TypeSize, TypeVariant } from "@/lib/types";
 import InputEdit from "@/app/admin/_components/Form/InputEdit";
 import StyledDropDown from "@/app/admin/_components/StyledDropDown";
+import clsx from "clsx";
 
 type Props = {
   sizes: TypeSize[];
@@ -26,7 +33,7 @@ type Props = {
     message: (string | number)[];
   };
   variant: TypeVariant;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export default function VariantInfo({
   variant,
@@ -34,6 +41,7 @@ export default function VariantInfo({
   editting,
   setEditting,
   initialState,
+  ...props
 }: Props) {
   const [editVariantState, editVariantAction] = useFormState(
     editVariant,
@@ -55,7 +63,7 @@ export default function VariantInfo({
   const [showAddVariant, setShowAddVariant] = useState(false);
 
   return (
-    <>
+    <div className={clsx("", props.className)}>
       <h4>
         <span className="font-bold">Variant Id: </span>
         {variant.id}
@@ -75,7 +83,7 @@ export default function VariantInfo({
             <span className="font-bold">stock: </span>
             {variant.stock}
           </p>
-          <div className="flex justify-start pb-2">
+          <div className="flex justify-start">
             <StyledDropDown
               form="editVariant"
               editting={editting}
@@ -96,7 +104,7 @@ export default function VariantInfo({
         <>
           {variantFormat.map((name, i) => {
             return (
-              <div key={name}>
+              <div key={name} className="">
                 {name === "size" ? (
                   <LabelSelection
                     name={name + "Id"}
@@ -155,6 +163,6 @@ export default function VariantInfo({
           </FormButton>
         </div>
       )}
-    </>
+    </div>
   );
 }

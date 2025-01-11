@@ -23,6 +23,7 @@ import { addGroup } from "@/app/admin/_actions/Groups/addGroup";
 import { deleteProduct } from "@/app/admin/_actions/Products/deleteProduct";
 import StyledDropDown from "@/app/admin/_components/StyledDropDown";
 import VariantCheckBoxTable from "@/app/admin/_components/Form/VariantCheckBoxTable";
+import { addVariant } from "@/app/admin/_actions/Variants/addVariant";
 type Props = {
   variantGroup: TypeVariantGroup;
   colors: TypeColor[];
@@ -68,6 +69,11 @@ export default function GroupInfo({
 
   const [deleteGroupState, deleteGroupAction] = useFormState(
     deleteGroup,
+    initialState
+  );
+
+  const [addVariantState, addVariantAction] = useFormState(
+    addVariant,
     initialState
   );
 
@@ -154,6 +160,10 @@ export default function GroupInfo({
           </div>
           {showAddVariant && (
             <VariantCheckBoxTable
+              form="addVariants"
+              hiddenInputNames="groupId"
+              hiddenInputValues={variantGroup.id}
+              action={addVariantAction}
               colors={colors}
               sizes={sizes}
               hasVariants={1}

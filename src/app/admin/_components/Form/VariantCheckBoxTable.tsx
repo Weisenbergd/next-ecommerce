@@ -51,8 +51,6 @@ export default function VariantCheckBoxTable({
   // id: 2
   // name: small
 
-  console.log(selectedSizes);
-
   const [variantTable, setVariantTable] = useState(0);
   const [variantColors, setVariantColors] = useState<
     { color: string; id: string }[]
@@ -175,16 +173,27 @@ export default function VariantCheckBoxTable({
 
           {form && action && hiddenInputNames && hiddenInputValues ? (
             // this for adding groups in already existing products
-            <FormButton
-              form={form}
-              action={action}
-              hiddenInputNames={hiddenInputNames}
-              hiddenInputValues={hiddenInputValues}
-            >
-              Add Group(s)
-            </FormButton>
+            sizesOnly ? (
+              <FormButton
+                form={form}
+                action={action}
+                hiddenInputNames={hiddenInputNames}
+                hiddenInputValues={hiddenInputValues}
+              >
+                Add Variants
+              </FormButton>
+            ) : (
+              <FormButton
+                form={form}
+                action={action}
+                hiddenInputNames={hiddenInputNames}
+                hiddenInputValues={hiddenInputValues}
+              >
+                Add Group(s)
+              </FormButton>
+            )
           ) : (
-            <SubmitButton className="w-full">Add Product</SubmitButton>
+            <SubmitButton>Add Product</SubmitButton>
           )}
         </div>
       ) : null}

@@ -58,7 +58,7 @@ export default function ProductContainer({
         sizes={sizes}
       />
 
-      <div className="bg-secondary py-4 md:px-10 md:py-6 rounded-xl ">
+      <div className="bg-background py-4 md:px-10 md:py-6 rounded-xl ">
         <h2 className="px-4 md:px-0 text-2xl mb-3 md:mb-6">
           Product Groupings
         </h2>
@@ -67,7 +67,7 @@ export default function ProductContainer({
             product.variantGroups.map((el, groupIndex) => {
               return (
                 <GroupContainer
-                  className="flex flex-col gap-4 p-4 pb-8 bg-muted odd:bg-muted rounded-xl "
+                  className="flex flex-col gap-4 p-4 pb-8 rounded-xl bg-secondary"
                   key={groupIndex}
                   product={product}
                   colors={colors}
@@ -79,11 +79,18 @@ export default function ProductContainer({
                   initialState={initialState}
                 >
                   <div className="flex justify-between">
-                    <div className="flex gap-8">
+                    <div
+                      className="grid grid-cols-2  gap-4 p-2 auto-rows-[minmax(auto, max-content)] w-full"
+                      style={{
+                        gridAutoRows: "minmax(auto, max-content)", // Ensures rows grow dynamically
+                      }}
+                    >
                       {el.variants.map(
                         (variant: TypeVariant, variantIndex: number) => {
                           return (
                             <VariantContainer
+                              className={`bg-background p-4 shadow-md h-fit
+                                `}
                               key={variantIndex}
                               editting={editting}
                               setEditting={setEditting}

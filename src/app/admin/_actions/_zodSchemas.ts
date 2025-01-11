@@ -40,6 +40,24 @@ export const deleteVariantSchema = z.object({
   variantId: z.string().transform((str) => parseInt(str, 10)),
 });
 
+export const addVariantSchema = z.object({
+  groupId: z.string().transform((str) => parseInt(str, 10)),
+  variants: z.array(
+    z.object({
+      // variantName: z.string(),
+      sizeId: z.string().min(1, { message: "sizeId required" }),
+      inventory: z.preprocess(
+        (a) => parseFloat(a as string),
+        z.number().gte(0, { message: "Stock must be at least 0" })
+      ),
+      price: z.preprocess(
+        (a) => parseFloat(a as string),
+        z.number().gte(0.01, { message: "price must be at least 0.01" })
+      ),
+    })
+  ),
+});
+
 export const editVariantSchema = z.object({
   variantId: z.string().transform((str) => parseInt(str, 10)),
   price: z.preprocess(

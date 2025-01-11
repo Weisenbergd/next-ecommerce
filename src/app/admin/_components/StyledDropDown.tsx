@@ -59,7 +59,11 @@ export default function StyledDropDown({
       ) : (
         <>
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger
+              onClick={() => console.log("test")}
+              // onTouchStart={(e) => e.preventDefault()}
+              // onTouchEnd={(e) => e.preventDefault()}
+            >
               <div className="">{triggerText}</div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="capitalize">
