@@ -115,18 +115,19 @@ export default function LabelSelection({
           </Label>
           <Select
             required
-            // open={dropdownOpen[name] || false}
-            // onOpenChange={(e) => {
-            //   toggleDropdown(name);
-            //   e === true && setModalTarget(label);
-            // }}
+            open={dropdownOpen[name] || false}
+            onOpenChange={(e) => {
+              toggleDropdown(name);
+
+              e === true && setModalTarget(label);
+            }}
             name={name}
             value={selected}
             onValueChange={(e) => {
               setSelected(e);
             }}
           >
-            <SelectTrigger className="border-border bg-red-50">
+            <SelectTrigger className="border-border">
               <SelectValue
                 placeholder={
                   modalFormState.status === "success" &&
@@ -136,7 +137,14 @@ export default function LabelSelection({
                 }
               ></SelectValue>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+              ref={(ref) => {
+                if (!ref) return;
+                ref.ontouchstart = (e) => {
+                  e.preventDefault();
+                };
+              }}
+            >
               {selection &&
                 selection.map(
                   (el: TypeCategory | TypeSize | TypeColor, j: number) => {

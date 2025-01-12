@@ -10,11 +10,26 @@ const SelectContext = React.createContext<
   React.Dispatch<React.SetStateAction<boolean>>
 >(() => {});
 
-const Select: React.FC<SelectPrimitive.SelectProps> = (props) => {
+const Select: React.FC<SelectPrimitive.SelectProps> = ({
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  ...props
+}) => {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const isControlled = controlledOpen !== undefined;
+  const openState = isControlled ? controlledOpen : isOpen;
+  const onOpenChange = isControlled ? controlledOnOpenChange : setIsOpen;
+
   return (
-    <SelectContext.Provider value={setIsOpen}>
-      <SelectPrimitive.Root open={isOpen} onOpenChange={setIsOpen} {...props} />
+    <SelectContext.Provider
+      value={onOpenChange as React.Dispatch<React.SetStateAction<boolean>>}
+    >
+      <SelectPrimitive.Root
+        open={openState}
+        onOpenChange={onOpenChange}
+        {...props}
+      />
     </SelectContext.Provider>
   );
 };
@@ -23,53 +38,63 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
-const SelectWithTrigger = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
->(({ children, ...props }, ref) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  return (
-    <SelectPrimitive.Root open={isOpen} onOpenChange={setIsOpen} {...props}>
-      <SelectPrimitive.Trigger
-        onPointerDown={(e) => e.preventDefault()}
-        onClick={() => {
-          setIsOpen((state) => !state);
-        }}
-        ref={ref}
-        className={cn(
-          "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-        )}
-      >
-        {children}
-        <SelectPrimitive.Icon asChild>
-          <ChevronDown className="h-4 w-4 opacity-50" />
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
-    </SelectPrimitive.Root>
-  );
-});
+// const SelectWithTrigger = React.forwardRef<
+//   React.ElementRef<typeof SelectPrimitive.Trigger>,
+//   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
+// >(({ children, ...props }, ref) => {
+//   const [isOpen, setIsOpen] = React.useState(false);
+//   return (
+//     <SelectPrimitive.Root open={isOpen} onOpenChange={setIsOpen} {...props}>
+//       <SelectPrimitive.Trigger
+//         onPointerDown={(e) => e.preventDefault()}
+//         onClick={() => {
+//           setIsOpen((state) => !state);
+//         }}
+//         ref={ref}
+//         className={cn(
+//           "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+//         )}
+//       >
+//         {children}
+//         <SelectPrimitive.Icon asChild>
+//           <ChevronDown className="h-4 w-4 opacity-50" />
+//         </SelectPrimitive.Icon>
+//       </SelectPrimitive.Trigger>
+//     </SelectPrimitive.Root>
+//   );
+// });
 
-SelectWithTrigger.displayName = "SelectWithTrigger";
+// SelectWithTrigger.displayName = "SelectWithTrigger";
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => {
   const setIsOpen = React.useContext(SelectContext); // Assume this context is correctly set up elsewhere
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (e.pointerType === "touch") {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent the event from affecting sibling buttons
+      setIsOpen(true); // Open dropdown
+    }
+  };
 
   return (
     <SelectPrimitive.Trigger
       ref={ref}
       onPointerDown={(e) => {
-        if (e.pointerType === "touch") e.preventDefault(); // Disable default touch behavior
-      }}
-      onPointerUp={(e) => {
         if (e.pointerType === "touch") {
-          setIsOpen((prevState) => !prevState); // Simulate click behavior on touch release
+          e.preventDefault();
+          e.stopPropagation();
         }
       }}
+      onPointerUp={handlePointerUp}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Ensure no click event propagates
+      }}
       className={cn(
-        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 bg-red-50",
+        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 z-50",
         className
       )}
       {...props}
@@ -199,7 +224,7 @@ const SelectSeparator = React.forwardRef<
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export {
-  SelectWithTrigger,
+  // SelectWithTrigger,
   Select,
   SelectGroup,
   SelectValue,

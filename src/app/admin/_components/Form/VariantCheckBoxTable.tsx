@@ -138,7 +138,14 @@ export default function VariantCheckBoxTable({
                 <SelectTrigger className="border-border">
                   <SelectValue></SelectValue>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent
+                  ref={(ref) => {
+                    if (!ref) return;
+                    ref.ontouchstart = (e) => {
+                      e.preventDefault();
+                    };
+                  }}
+                >
                   <SelectItem value="no">No</SelectItem>
                   <SelectItem value="yes">Yes</SelectItem>
                 </SelectContent>

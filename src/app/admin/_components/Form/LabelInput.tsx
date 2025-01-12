@@ -65,6 +65,7 @@ export default function LabelInput({ el, placeholder, name, state }: Props) {
 
       {["images", "variantImages"].includes(el.name) && (
         <ImageInput
+          className=""
           state={state}
           index={0}
           type="file"
