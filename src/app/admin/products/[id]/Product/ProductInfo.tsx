@@ -158,7 +158,7 @@ export default function ProductInfo({
             );
           })}
           <div className="flex flex-col gap-4">
-            <div className="p-2 w-fit mt-2 px-4 border shadow-sm rounded-sm">
+            <div className=" ">
               <StyledDropDown
                 editting={editting}
                 setEditting={setEditting}

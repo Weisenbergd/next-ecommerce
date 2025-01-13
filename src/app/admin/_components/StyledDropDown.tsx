@@ -48,7 +48,9 @@ export default function StyledDropDown({
       {(editting.category === category && editting.target === target) ||
       showAdd ? (
         <button
-          className=""
+          className={`p-2 text-highlight rounded-lg shadow-sm border border-highlight  ${
+            category === "group" ? "bg-background" : "bg-secondary"
+          }`}
           onClick={() => {
             setEditting({ category: "", target: -1 });
             setShowAdd(false);
@@ -59,12 +61,16 @@ export default function StyledDropDown({
       ) : (
         <>
           <DropdownMenu>
-            <DropdownMenuTrigger
-              onClick={() => console.log("test")}
-              // onTouchStart={(e) => e.preventDefault()}
-              // onTouchEnd={(e) => e.preventDefault()}
-            >
-              <div className="">{triggerText}</div>
+            <DropdownMenuTrigger>
+              <div
+                className={
+                  category === "group" || category === "variant"
+                    ? "text-highlight"
+                    : ""
+                }
+              >
+                {triggerText}
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="capitalize">
               <DropdownMenuLabel>{menuLabel}</DropdownMenuLabel>

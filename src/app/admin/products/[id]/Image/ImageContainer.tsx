@@ -133,7 +133,7 @@ export default function ImageContainer({
         <div>
           {addingImages || deletingImages ? (
             <button
-              className="p-2 w-fit bg-background text-foreground border shadow-sm"
+              className="p-2 w-fit bg-background text-highlight border border-highlight shadow-md"
               onClick={() => {
                 setDeletingImages(false);
                 setAddingImages(false);

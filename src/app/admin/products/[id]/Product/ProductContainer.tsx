@@ -58,16 +58,16 @@ export default function ProductContainer({
         sizes={sizes}
       />
 
-      <div className="bg-background py-4 md:px-10 md:py-6 rounded-xl ">
+      <div className="bg-background py-4 md:px-0 md:py-6 rounded-xl ">
         <h2 className="px-4 md:px-0 text-2xl mb-3 md:mb-6">
           Product Groupings
         </h2>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-8">
           {product.variantGroups[0] &&
             product.variantGroups.map((el, groupIndex) => {
               return (
                 <GroupContainer
-                  className="flex flex-col gap-4 p-4 pb-8 rounded-xl bg-secondary"
+                  className="flex flex-col gap-4 p-4 md:px-8 pb-8 rounded-xl bg-secondary shadow-md"
                   key={groupIndex}
                   product={product}
                   colors={colors}
@@ -80,7 +80,7 @@ export default function ProductContainer({
                 >
                   <div className="flex justify-between">
                     <div
-                      className="grid grid-cols-2  gap-4 p-2 auto-rows-[minmax(auto, max-content)] w-full"
+                      className="grid grid-cols-2 gap-4 p-2 md:px-0 auto-rows-[minmax(auto, max-content)] w-full"
                       style={{
                         gridAutoRows: "minmax(auto, max-content)", // Ensures rows grow dynamically
                       }}

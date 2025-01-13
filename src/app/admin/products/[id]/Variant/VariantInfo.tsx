@@ -137,7 +137,7 @@ export default function VariantInfo({
       )}
       {editting.category === "variant" && editting.target === variant.id && (
         <div className="pt-4 flex flex-col gap-4">
-          <div className="bg-background w-fit p-2 border shadow-sm ">
+          <div className="">
             <StyledDropDown
               form="editVariant"
               editting={editting}
@@ -159,7 +159,7 @@ export default function VariantInfo({
             hiddenInputNames="variantId"
             hiddenInputValues={variant.id}
           >
-            Submit Changes!!!!!!
+            Submit Changes
           </FormButton>
         </div>
       )}

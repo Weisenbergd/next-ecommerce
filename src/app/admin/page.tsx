@@ -1,3 +1,9 @@
+import Link from "next/link";
+
 export default function page() {
-  return <div>nothing here</div>;
+  return (
+    <div>
+      <div>Admin home</div>
+    </div>
+  );
 }

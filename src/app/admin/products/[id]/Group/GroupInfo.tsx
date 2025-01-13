@@ -109,7 +109,7 @@ export default function GroupInfo({
             defaultValueId={variantGroup.color.id}
           />
 
-          <div className="shadow-sm border p-2 w-fit bg-background ">
+          <div className="">
             <StyledDropDown
               form="editVariantGroup"
               editting={editting}

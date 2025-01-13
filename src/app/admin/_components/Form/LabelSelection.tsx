@@ -110,9 +110,9 @@ export default function LabelSelection({
         </p>
       ) : (
         <StyledLabelInputDiv>
-          <Label className="font-bold text-lg" htmlFor={name}>
+          <StyledLabel className="" htmlFor={name}>
             {label}
-          </Label>
+          </StyledLabel>
           <Select
             required
             open={dropdownOpen[name] || false}

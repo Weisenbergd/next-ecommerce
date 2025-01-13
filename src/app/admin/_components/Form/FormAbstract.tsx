@@ -97,7 +97,7 @@ export default function FormAbstract({
         ref={ref}
         id="productForm"
         action={formAction}
-        className="flex flex-col gap-4 w-full md:w-[700px]"
+        className="flex flex-col gap-4 md:gap-6 w-full md:w-[700px]"
       >
         {productFormBase.map((el, i) => {
           const key: keyof TypeInputPlaceholders = el.label
@@ -171,7 +171,7 @@ export default function FormAbstract({
                 </StyledFormSections>
               );
             })}
-            <SubmitButton form="productForm" />;
+            <SubmitButton className="mt-2" form="productForm" />
           </>
         )}
       </form>

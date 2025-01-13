@@ -4,6 +4,9 @@
 
 @layer base {
   :root {
+    --highlight: 210 90% 30%;
+
+    /* default shadcn/ui */
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;

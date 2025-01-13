@@ -70,10 +70,6 @@ export default function VariantCheckBoxTable({
   );
 
   useEffect(() => {
-    console.log(existingSizes);
-  });
-
-  useEffect(() => {
     if (groups) {
       const colorIds = groups.map((group) => group.colorId);
       setExistingColors((prevColors) =>
