@@ -1,3 +1,3 @@
 export default function Footer() {
-  return <footer className="bg-primary h-32 w-full"></footer>;
+  return <footer className="bg-primary h-footerHeight w-full "></footer>;
 }

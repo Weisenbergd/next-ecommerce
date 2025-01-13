@@ -15,7 +15,7 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
   return (
     <Image
-      className=""
+      className="w-auto h-auto"
       {...rest}
       src={imgSrc}
       onError={() => setImgSrc(fallbackSrc)}

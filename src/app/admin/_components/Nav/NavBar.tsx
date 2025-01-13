@@ -18,7 +18,7 @@ export default function NavBar() {
 
   return (
     <nav className="bg-primary text-primary-foreground">
-      <div className="h-16 flex items-center justify-end lg:justify-center px-4 md:px-8 relative">
+      <div className="h-navHeight flex items-center justify-end lg:justify-center px-4 md:px-8 relative">
         <Logo />
         <Hamburger
           openHamburger={openHamburger}

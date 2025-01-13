@@ -24,6 +24,10 @@ const config = {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
+      height: {
+        footerHeight: "var(--footerHeight)",
+        navHeight: "var(--navHeight)",
+      },
       colors: {
         highlight: "hsl(var(--highlight))",
         border: "hsl(var(--border))",

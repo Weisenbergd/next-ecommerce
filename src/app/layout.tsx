@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ModalProvider } from "./admin/_components/Modal/ModalContext";
+import Footer from "./admin/_components/Foot/Footer";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -19,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <ModalProvider>
-        <body className={cn("min-h-screen antialiased", fontSans.className)}>
+        <body className={cn("antialiased ", fontSans.className)}>
           {children}
           <div id="modal-root" />
         </body>
