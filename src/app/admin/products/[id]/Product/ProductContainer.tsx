@@ -80,7 +80,7 @@ export default function ProductContainer({
                 >
                   <div className="flex justify-between">
                     <div
-                      className="grid grid-cols-2 gap-4 p-2 md:px-0 auto-rows-[minmax(auto, max-content)] w-full"
+                      className="grid grid-cols-2 gap-4 py-2 md:px-0 auto-rows-[minmax(auto, max-content)] w-full"
                       style={{
                         gridAutoRows: "minmax(auto, max-content)", // Ensures rows grow dynamically
                       }}
