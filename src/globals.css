@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --highlight: 210 90% 30%;
-    --footerHeight: 8rem;
+    --footerHeight: 4rem;
     --navHeight: 4rem;
 
     /* default shadcn/ui */
