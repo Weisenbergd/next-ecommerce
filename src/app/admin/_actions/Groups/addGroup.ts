@@ -70,7 +70,6 @@ export async function addGroup(prevState: any, formData: FormData) {
         for (const variant of variantGroup.variants) {
           const dbVariant = await prisma.variant.create({
             data: {
-              productId: productId,
               price: variant.price,
               stock: variant.inventory,
               sizeId: parseInt(variant.sizeId),

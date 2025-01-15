@@ -24,8 +24,6 @@ export default async function page() {
 
   const products: TypeLightProduct[] = await getProducts();
 
-  // const variants = await getVariants();
-
   return (
     <div>
       <DataTable columns={columns} data={products} />

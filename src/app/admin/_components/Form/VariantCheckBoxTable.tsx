@@ -182,6 +182,7 @@ export default function VariantCheckBoxTable({
                 action={action}
                 hiddenInputNames={hiddenInputNames}
                 hiddenInputValues={hiddenInputValues}
+                state={state}
               >
                 Add Variants
               </FormButton>
@@ -191,6 +192,7 @@ export default function VariantCheckBoxTable({
                 action={action}
                 hiddenInputNames={hiddenInputNames}
                 hiddenInputValues={hiddenInputValues}
+                state={state}
               >
                 Add Group(s)
               </FormButton>

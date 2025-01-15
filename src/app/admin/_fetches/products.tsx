@@ -89,7 +89,7 @@ export async function getSingleProduct(id: number) {
 export async function getVariants(id: number) {
   return await prisma.variant.findMany({
     where: {
-      productId: id,
+      variantGroupId: id,
     },
     orderBy: {
       variantGroupId: "asc",
