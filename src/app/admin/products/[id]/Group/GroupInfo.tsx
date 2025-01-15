@@ -132,6 +132,7 @@ export default function GroupInfo({
             action={editGroupAction}
             hiddenInputNames="variantGroupId"
             hiddenInputValues={variantGroup.id}
+            state={editGroupState}
           >
             Submit Change
           </FormButton>

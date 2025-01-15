@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import SubmitButton from "../SubmitButton";
 import React from "react";
 import LabelInput from "./LabelInput";
@@ -17,6 +17,9 @@ import {
 import VariantCheckBoxTable from "./VariantCheckBoxTable";
 import { productFormBase, productFormVar } from "./FormStructure";
 import StyledFormSections from "./StyledFormSections";
+import ImageInput from "./ImageInput";
+import { LoadingSpinner } from "../LoadingSpinner";
+import { error } from "console";
 
 type Props = {
   edit?: {
@@ -67,6 +70,8 @@ export default function FormAbstract({
   const [state, formAction] = useFormState(action, initialState);
   const [hasVariants, setHasVariants] = useState(0);
   const ref = useRef<HTMLFormElement>(null);
+
+  const { pending, data, method, action: action2 } = useFormStatus();
 
   useEffect(() => {
     if (hasVariants) {
@@ -175,6 +180,20 @@ export default function FormAbstract({
           </>
         )}
       </form>
+      {state.status === "error" && (
+        <div className="mt-2">
+          <p className="text-destructive">form error</p>
+          <ul>
+            {state.message.map((err, i) => {
+              return (
+                <p key={i} className="text-destructive">
+                  {err}
+                </p>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

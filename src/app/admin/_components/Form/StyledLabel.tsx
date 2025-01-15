@@ -1,8 +1,12 @@
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { HTMLAttributes, LabelHTMLAttributes } from "react";
 
-export default function StyledLabel({ ...props }) {
+type Props = {} & LabelHTMLAttributes<HTMLLabelElement>;
+
+export default function StyledLabel({ className, ...props }: Props) {
   return (
-    <Label {...props} className="text-base">
+    <Label {...props} className={cn("text-base", className)}>
       {props.children}
     </Label>
   );

@@ -20,7 +20,7 @@ export default function InputEdit({
   const [state, setState] = useState(placeholder);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       <label className="font-bold" htmlFor={inputName}>
         {label}
       </label>

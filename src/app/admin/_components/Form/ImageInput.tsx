@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -10,7 +11,13 @@ type Props = {
   index: number;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-export default function ImageInput({ name, state, index, ...props }: Props) {
+export default function ImageInput({
+  name,
+  state,
+  index,
+  className,
+  ...props
+}: Props) {
   const [showError, setShowError] = useState(false);
 
   function handleImageError() {
@@ -51,11 +58,12 @@ export default function ImageInput({ name, state, index, ...props }: Props) {
   return (
     <Input
       name={name}
-      className={`${
-        showError === true
-          ? " border-red-500 bg-red-200  focus:ring-red-500 dark:file:text-background dark:text-background"
-          : ""
-      }`}
+      className={cn(
+        {
+          "border-red-500 bg-red-200 focus:ring-red-500": showError,
+        },
+        className
+      )}
       {...props}
       type="file"
       multiple

@@ -181,6 +181,7 @@ export default function ProductInfo({
                   action={editProductAction}
                   hiddenInputNames="productId"
                   hiddenInputValues={product.id}
+                  state={editProductState}
                 >
                   Submit Changes
                 </FormButton>

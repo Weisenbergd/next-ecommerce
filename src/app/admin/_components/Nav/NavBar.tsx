@@ -7,7 +7,7 @@ import Logo from "./Logo";
 
 export default function NavBar() {
   const navItem = [
-    { name: "New Product", link: "/admin/products/add-product" },
+    { name: "New Product", link: "/admin/add-product" },
     { name: "Products", link: "/admin/products" },
     { name: "Orders", link: "/admin/orders" },
     { name: "Stock", link: "/admin/stock" },

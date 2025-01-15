@@ -20,7 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <ModalProvider>
-        <body className={cn("antialiased ", fontSans.className)}>
+        <body
+          className={cn(
+            "antialiased cmin-h-screen grid grid-rows-[1fr_auto]",
+            fontSans.className
+          )}
+        >
           {children}
           <div id="modal-root" />
         </body>

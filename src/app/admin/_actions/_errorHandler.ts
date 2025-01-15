@@ -27,12 +27,12 @@ export function schemaCheck(error: unknown) {
 }
 
 export function errorHandler(error: PrismaClientKnownRequestError) {
-  console.log(error);
+  // console.log(error);
   if (!error.meta) error.meta = {};
   if (error.code === "P2002")
     return {
       status: "error",
-      message: [`${error.meta.target} -- must be unique`],
+      message: [`unique key constraint`, error.meta.target],
     };
   if (error.code === "P2003") {
     return {

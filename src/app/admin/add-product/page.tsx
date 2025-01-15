@@ -1,7 +1,7 @@
 import { TypeCategory, TypeColor, TypeSize } from "@/lib/types";
-import { addProduct } from "../../_actions/Products/addProduct";
-import FormAbstract from "../../_components/Form/FormAbstract";
-import { getCategories, getColors, getSizes } from "../../_fetches/products";
+import { addProduct } from "../_actions/Products/addProduct";
+import FormAbstract from "../_components/Form/FormAbstract";
+import { getCategories, getColors, getSizes } from "../_fetches/products";
 
 export default async function page() {
   const category: TypeCategory[] = await getCategories();

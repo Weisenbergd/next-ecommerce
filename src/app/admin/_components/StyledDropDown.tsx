@@ -81,16 +81,16 @@ export default function StyledDropDown({
                 {`edit ${category}`}
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <form id="test" action={deleteAction} hidden></form>
+                <form id="deleteForm" action={deleteAction} hidden></form>
                 <input
                   hidden
                   name={hiddenInputNames}
                   defaultValue={hiddenInputValues}
-                  form="test"
+                  form="deleteForm"
                 />
                 <button
                   className="capitalize"
-                  form="test"
+                  form="deleteForm"
                 >{`delete ${category}`}</button>
               </DropdownMenuItem>
               {category != "variant" && (

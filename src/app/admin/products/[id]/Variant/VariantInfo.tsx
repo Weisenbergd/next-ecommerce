@@ -41,6 +41,7 @@ export default function VariantInfo({
   editting,
   setEditting,
   initialState,
+  className,
   ...props
 }: Props) {
   const [editVariantState, editVariantAction] = useFormState(
@@ -53,6 +54,8 @@ export default function VariantInfo({
     initialState
   );
 
+  const [clearErrors, setClearErrors] = useState(false);
+
   useEffect(() => {
     if (editVariantState?.status === "success") {
       setEditting({ category: "", target: -1 });
@@ -63,7 +66,7 @@ export default function VariantInfo({
   const [showAddVariant, setShowAddVariant] = useState(false);
 
   return (
-    <div className={clsx("", props.className)}>
+    <div className={clsx("", className)}>
       <h4>
         <span className="font-bold">Variant Id: </span>
         {variant.id}
@@ -101,7 +104,7 @@ export default function VariantInfo({
           </div>
         </>
       ) : (
-        <>
+        <div className="flex flex-col gap-2">
           {variantFormat.map((name, i) => {
             return (
               <div key={name} className="">
@@ -133,7 +136,7 @@ export default function VariantInfo({
               </div>
             );
           })}
-        </>
+        </div>
       )}
       {editting.category === "variant" && editting.target === variant.id && (
         <div className="pt-4 flex flex-col gap-4">
@@ -158,6 +161,7 @@ export default function VariantInfo({
             action={editVariantAction}
             hiddenInputNames="variantId"
             hiddenInputValues={variant.id}
+            state={editVariantState}
           >
             Submit Changes
           </FormButton>

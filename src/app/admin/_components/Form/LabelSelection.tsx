@@ -110,8 +110,8 @@ export default function LabelSelection({
         </p>
       ) : (
         <StyledLabelInputDiv>
-          <StyledLabel className="" htmlFor={name}>
-            {label}
+          <StyledLabel htmlFor={name}>
+            <p className="font-bold -mb-1">{label}</p>
           </StyledLabel>
           <Select
             required
@@ -156,6 +156,7 @@ export default function LabelSelection({
                   }
                 )}
               <Button
+                className="mt-4"
                 onClick={(e) => {
                   setIsModalOpen(true);
                   setDropdownOpen({});
