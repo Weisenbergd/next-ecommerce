@@ -12,7 +12,7 @@ export async function editVariant(prevState: any, formData: FormData) {
   const result = editVariantSchema.safeParse(formValues);
 
   if (!result.success) return schemaCheck(result.error);
-  const { variantId, sizeId, price, stock } = result.data;
+  const { variantId, sizeId, price, stock, overwriteStock } = result.data;
   if (!variantId) return schemaCheck(result.error);
   try {
     await prisma.variant.update({
@@ -22,7 +22,11 @@ export async function editVariant(prevState: any, formData: FormData) {
       data: {
         sizeId: sizeId,
         price,
-        stock,
+        stock: overwriteStock
+          ? stock
+          : {
+              increment: stock,
+            },
       },
     });
     revalidatePath("/");

@@ -69,6 +69,13 @@ export const editVariantSchema = z.object({
     z.number().gte(0, { message: "stock can't be less than 0" })
   ),
   sizeId: z.string().transform((str) => parseInt(str, 10)),
+  overwriteStock: z.string().transform((str) => {
+    const num = parseInt(str, 10);
+    if (num !== 0 && num !== 1) {
+      throw new Error("overwriteStock must be either 0 or 1");
+    }
+    return num;
+  }),
 });
 
 //// Groups

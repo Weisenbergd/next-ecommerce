@@ -31,7 +31,9 @@ export default function FormButton({
         {children}
       </Button>
       <form id={form} action={action} hidden></form>
-      {state.status === "error" &&
+      {state &&
+      state.status &&
+      state.status === "error" &&
       state.message[0] === "unique key constraint" ? (
         form === "editVariant" ? (
           <p className="text-sm text-red-500 font-bold">
@@ -49,6 +51,8 @@ export default function FormButton({
           )
         )
       ) : (
+        state &&
+        state.status &&
         state.status === "error" && (
           <ul>
             {state.message.map((err: any, i: number) => {

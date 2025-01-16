@@ -22,7 +22,7 @@ export default function RootLayout({
       <ModalProvider>
         <body
           className={cn(
-            "antialiased cmin-h-screen grid grid-rows-[1fr_auto]",
+            "antialiased min-h-[100dvh] grid grid-rows-[1fr_auto]",
             fontSans.className
           )}
         >
