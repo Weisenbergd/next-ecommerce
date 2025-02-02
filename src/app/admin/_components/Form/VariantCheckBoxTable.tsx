@@ -117,8 +117,8 @@ export default function VariantCheckBoxTable({
   }, []);
 
   return (
-    <div className="">
-      <div>
+    <div className="max-sm:px-2 flex flex-col items-center overflow-clip">
+      <div className="w-full md:w-[700px] mx-auto">
         {setHasVariants ? (
           <StyledLabelInputDiv>
             <StyledLabel>Will this product have multiple variants?</StyledLabel>
@@ -153,29 +153,29 @@ export default function VariantCheckBoxTable({
       {hasVariants ? (
         // notes -- has variants is number (can't use && without output '0')
         // todo -- change to boolean -- check backend
-        <VariantCheckbox
-          colors={colors}
-          sizes={sizes}
-          handleVariant={handleVariant}
-          setVariantTable={setVariantTable}
-          existingColors={existingColors}
-          existingSizes={existingSizes}
-          variantTable={variantTable}
-          sizesOnly={sizesOnly}
-          selectedColors={selectedColors}
-        />
+        <div className="w-full md:w-[700px]">
+          <VariantCheckbox
+            colors={colors}
+            sizes={sizes}
+            handleVariant={handleVariant}
+            setVariantTable={setVariantTable}
+            existingColors={existingColors}
+            existingSizes={existingSizes}
+            variantTable={variantTable}
+            sizesOnly={sizesOnly}
+            selectedColors={selectedColors}
+          />
+        </div>
       ) : null}
       {variantTable ? (
-        <div className="flex flex-col gap-6">
+        <div className="w-full">
           <VariantTable
             variantColors={variantColors}
             variantSizes={variantSizes}
             form={form}
             state={state}
           />
-
           {form && action && hiddenInputNames && hiddenInputValues ? (
-            // this for adding groups in already existing products
             sizesOnly ? (
               <FormButton
                 form={form}

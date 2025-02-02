@@ -127,7 +127,7 @@ export default function LabelSelection({
               setSelected(e);
             }}
           >
-            <SelectTrigger className="border-border">
+            <SelectTrigger className="border-border ">
               <SelectValue
                 placeholder={
                   modalFormState.status === "success" &&
