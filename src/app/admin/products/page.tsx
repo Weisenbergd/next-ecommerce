@@ -10,6 +10,8 @@ import { revalidatePath } from "next/cache";
 // import prisma from "@/lib/prisma.ts";
 // import { revalidatePath } from "next/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function page() {
   // for deleting everything
 
