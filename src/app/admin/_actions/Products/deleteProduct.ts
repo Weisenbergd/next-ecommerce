@@ -50,7 +50,6 @@ export async function deleteProduct(prevState: any, formData: FormData) {
         deleteImagesError.push(err);
       }
     }
-    revalidatePath("/");
     if (deleteImagesError.length > 0)
       return {
         status: "success",
@@ -60,6 +59,7 @@ export async function deleteProduct(prevState: any, formData: FormData) {
           deleteImagesError,
         ],
       };
+    revalidatePath("/");
     return {
       status: "success",
       message: [`Deleted Product ${productId}`, productId],
